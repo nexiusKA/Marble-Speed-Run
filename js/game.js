@@ -8,9 +8,9 @@ const GEN_SEGMENT = 500;
 // Pickup spawn rate: one pickup per this many world-units on average
 const PICKUP_RATE = 900;
 
-// Pickup type weights [speed, dash, fog_slow, shield]
-const PICKUP_WEIGHTS = [0.35, 0.28, 0.25, 0.12];
-const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield'];
+// Pickup type weights [speed, dash, fog_slow, shield, ghost]
+const PICKUP_WEIGHTS = [0.28, 0.22, 0.22, 0.10, 0.18];
+const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
 
 class Game {
   constructor(canvas) {
@@ -55,6 +55,7 @@ class Game {
     // Pickup effects
     this.speedBoostTimer = 0;
     this.shieldTimer     = 0;
+    this.ghostTimer      = 0;
     this.pickupMsg       = null; // { text, timer }
 
     // Level-generation cursor (last world Y for which content was generated)
@@ -106,7 +107,7 @@ class Game {
     }
 
     // ── Fog ─────────────────────────────────────────────────────────────────
-    this.fog.update(dt, elapsedSec);
+    this.fog.update(dt, this.distance);
 
     if (this.fog.isCatching(this.marble)) {
       if (this.shieldTimer > 0) {
@@ -124,8 +125,9 @@ class Game {
     // ── Obstacles ───────────────────────────────────────────────────────────
     for (const obs of this.obstacles) {
       obs.update(dt);
-      obs.checkCollision(this.marble);
+      if (this.ghostTimer <= 0) obs.checkCollision(this.marble);
     }
+    if (this.ghostTimer > 0) this.ghostTimer -= dt;
 
     // ── Pickups ─────────────────────────────────────────────────────────────
     for (const pu of this.pickups) {
@@ -218,6 +220,9 @@ class Game {
         break;
       case 'shield':
         this.shieldTimer = 8;
+        break;
+      case 'ghost':
+        this.ghostTimer = 5;
         break;
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
@@ -321,6 +326,22 @@ class Game {
       ctx.arc(this.marble.x, msy, this.marble.radius * 1.9, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(255,200,0,${0.4 + 0.35 * Math.sin(Date.now() / 140)})`;
       ctx.lineWidth   = 2;
+      ctx.stroke();
+    }
+
+    // Ghost aura – pulsing purple ring; obstacles are passable while active
+    if (this.ghostTimer > 0) {
+      const msy = this.marble.y - this.cameraY;
+      const pulse = 0.45 + 0.45 * Math.sin(Date.now() / 120);
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 2.5, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(200,100,255,${pulse})`;
+      ctx.lineWidth   = 3;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 1.7, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(230,160,255,${pulse * 0.6})`;
+      ctx.lineWidth   = 1.5;
       ctx.stroke();
     }
 
@@ -433,6 +454,7 @@ class Game {
       { text: '' },
       { text: `SpeedBoost: ${this.speedBoostTimer.toFixed(2)} s`, color: '#ffdd00' },
       { text: `Shield:     ${this.shieldTimer.toFixed(2)} s`, color: '#ffdd00' },
+      { text: `Ghost:      ${this.ghostTimer.toFixed(2)} s`, color: '#ffdd00' },
     ];
 
     const lineH  = 14;

@@ -10,14 +10,23 @@ class Fog {
   constructor(marbleStartY) {
     // Start 400 world-units above the marble's start position.
     this.y         = marbleStartY - 400;
-    this.speed     = 400;   // px/s – updated each frame
+    this.speed     = 200;   // px/s – updated each frame
     this.slowTimer = 0;     // remaining seconds of bar-slow pickup effect
   }
 
-  // elapsedSec: seconds the current run has been active
-  update(dt, elapsedSec) {
-    // Speed ramps from 400 px/s up to 900 px/s over the first 100 seconds
-    this.speed = 400 + Math.min(elapsedSec * 5, 500);
+  // distance: metres travelled by the marble this run
+  update(dt, distance) {
+    const d = Math.max(0, distance);
+    if (d <= 10000) {
+      // Gentle ramp: 200 px/s at start → 300 px/s at 10 000 m
+      this.speed = 200 + d * 0.01;
+    } else {
+      // After 10 000 m: base increases by 50 px/s every 5 000 m (capped at 750 px/s),
+      // with a gentle continuous ramp within each band for a smooth feel.
+      const steps = Math.floor((d - 10000) / 5000);
+      const rem   = (d - 10000) % 5000;
+      this.speed  = Math.min(300 + steps * 50 + rem * 0.01, 750);
+    }
 
     const effective = this.slowTimer > 0 ? this.speed * 0.35 : this.speed;
     if (this.slowTimer > 0) this.slowTimer -= dt;
