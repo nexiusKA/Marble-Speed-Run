@@ -23,11 +23,11 @@ class Track {
     this.startX = START_X;
     this.startY = START_Y;
 
-    // Seed knots that match the opening stretch
+    // Seed knots that match the opening stretch (wider starting lane)
     this.knots = [
-      [   0, 160, 320],
-      [ 200, 140, 340],
-      [ 480, 165, 315],
+      [   0, 120, 360],
+      [ 200, 110, 370],
+      [ 480, 125, 355],
     ];
 
     // Drift state for procedural generation
@@ -108,12 +108,12 @@ class Track {
     const drift   = (Math.random() - 0.5) * 64;
     this._centerX = clamp(this._centerX + drift, 155, 325);
 
-    // Track half-width narrows with difficulty (160→95 px half-width → full 320→190 px)
-    const baseHalf = lerp(160, 95, difficulty);
-    const halfW    = Math.max(48, baseHalf + (Math.random() - 0.5) * 40);
+    // Track half-width narrows with difficulty (190→110 px half-width → full 380→220 px)
+    const baseHalf = lerp(190, 110, difficulty);
+    const halfW    = Math.max(55, baseHalf + (Math.random() - 0.5) * 40);
 
-    const leftX  = clamp(this._centerX - halfW, 72, 210);
-    const rightX = clamp(this._centerX + halfW, 270, 408);
+    const leftX  = clamp(this._centerX - halfW, 48, 195);
+    const rightX = clamp(this._centerX + halfW, 285, 432);
 
     this.knots.push([newY, leftX, rightX]);
   }
@@ -178,7 +178,7 @@ class Track {
     // Narrow-section warning tint
     for (let wy = visTop; wy <= visBottom; wy += step * 2) {
       const { left, right } = this.getWallsAtY(wy);
-      if (right - left < 115) {
+      if (right - left < 140) {
         const sy = wy - cameraY;
         ctx.fillStyle = 'rgba(255,80,80,0.05)';
         ctx.fillRect(left, sy, right - left, step * 2);
@@ -188,7 +188,7 @@ class Track {
     // Wide-section (boost zone) tint
     for (let wy = visTop; wy <= visBottom; wy += step * 2) {
       const { left, right } = this.getWallsAtY(wy);
-      if (right - left > 220) {
+      if (right - left > 260) {
         const sy = wy - cameraY;
         ctx.fillStyle = 'rgba(80,255,180,0.04)';
         ctx.fillRect(left, sy, right - left, step * 2);
