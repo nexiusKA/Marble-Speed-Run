@@ -54,9 +54,8 @@ class Fog {
       ctx.fillStyle = 'rgba(0,0,0,0.80)';
       ctx.fillRect(0, 0, CANVAS_W, barBottom);
     } else {
-      // Bar is entirely above the screen
-      ctx.fillStyle = 'rgba(0,0,0,0.80)';
-      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      // Bar is entirely above the screen – the full canvas is below the bar,
+      // so there is nothing to darken.
       return;
     }
 
