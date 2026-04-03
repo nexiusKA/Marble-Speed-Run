@@ -2,42 +2,39 @@
 
 class UI {
   constructor() {
-    this.timerEl     = document.getElementById('timer-display');
+    this.distEl      = document.getElementById('dist-display');
     this.bestEl      = document.getElementById('best-display');
     this.overlay     = document.getElementById('overlay');
-    this.finishOvl   = document.getElementById('finish-overlay');
-    this.finishTime  = document.getElementById('finish-time');
-    this.finishBest  = document.getElementById('finish-best');
+    this.gameOverOvl = document.getElementById('gameover-overlay');
+    this.goDistEl    = document.getElementById('go-dist');
+    this.goBestEl    = document.getElementById('go-best');
     this.startBtn    = document.getElementById('start-btn');
     this.retryBtn    = document.getElementById('retry-btn');
   }
 
   showStart(onStart) {
     this._show(this.overlay);
-    this._hide(this.finishOvl);
+    this._hide(this.gameOverOvl);
     this.startBtn.onclick = () => { this._hide(this.overlay); onStart(); };
   }
 
-  showFinish(timeMs, bestMs, onRetry) {
-    this._show(this.finishOvl);
-    this.finishTime.textContent = `${(timeMs / 1000).toFixed(3)}s`;
-    const isNew = bestMs === timeMs;
-    this.finishBest.textContent = isNew
-      ? '🏆 New Best!'
-      : `Best: ${(bestMs / 1000).toFixed(3)}s`;
-    this.retryBtn.onclick = () => { this._hide(this.finishOvl); onRetry(); };
+  showGameOver(dist, best, isNew, onRetry) {
+    this._show(this.gameOverOvl);
+    this.goDistEl.textContent = `${dist} m`;
+    this.goBestEl.textContent = isNew ? '🏆 New Best!' : `Best: ${best} m`;
+    this.retryBtn.onclick = () => { this._hide(this.gameOverOvl); onRetry(); };
   }
 
-  hideFinish() {
-    this._hide(this.finishOvl);
+  hideGameOver() {
+    this._hide(this.gameOverOvl);
   }
 
-  updateTimer(ms) {
-    this.timerEl.textContent = (ms / 1000).toFixed(3);
+  updateDistance(m) {
+    if (this.distEl) this.distEl.textContent = m;
   }
 
-  updateBest(ms) {
-    this.bestEl.textContent = ms === Infinity ? '--' : `${(ms / 1000).toFixed(3)}s`;
+  updateBestDistance(m) {
+    if (this.bestEl) this.bestEl.textContent = m === 0 ? '--' : `${m} m`;
   }
 
   _show(el) {
