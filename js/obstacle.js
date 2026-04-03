@@ -231,7 +231,7 @@ class ElectricSpinner {
     this.halfLen = halfLen;
     this.speed   = speed;
     this.angle   = Math.random() * Math.PI * 2;
-    this.numArms = numArms || (2 + Math.floor(Math.random() * 3)); // 2–4 arms
+    this.numArms = (numArms && numArms > 0) ? numArms : (2 + Math.floor(Math.random() * 3)); // 2–4 arms
     this.w       = 7;
     this.pulse   = Math.random() * Math.PI * 2;
     this._jitter = Array.from({ length: 14 }, () => Math.random() - 0.5);
