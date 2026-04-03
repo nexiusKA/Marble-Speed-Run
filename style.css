@@ -1,0 +1,170 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0a0a14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow: hidden;
+}
+
+#game-container {
+  position: relative;
+  width: 480px;
+  height: 700px;
+}
+
+#gameCanvas {
+  display: block;
+  width: 480px;
+  height: 700px;
+  border: 2px solid #3a3a6a;
+  border-radius: 4px;
+  background: #11112a;
+}
+
+/* ── HUD ─────────────────────────────────────── */
+#hud {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 14px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#hud-timer,
+#hud-best {
+  background: rgba(0, 0, 0, 0.55);
+  color: #e0e0ff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #3a3a7a;
+}
+
+#hud-timer span,
+#hud-best span {
+  color: #7de8ff;
+}
+
+/* ── Overlays ────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  background: rgba(5, 5, 20, 0.78);
+  transition: opacity 0.25s ease;
+}
+
+.overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-box {
+  background: #12122a;
+  border: 2px solid #4040a0;
+  border-radius: 12px;
+  padding: 36px 44px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(80, 80, 200, 0.4);
+  min-width: 280px;
+}
+
+.game-title {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 0 18px #7070ff, 0 0 40px #4040cc;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  color: #8888cc;
+  font-size: 14px;
+  margin-bottom: 22px;
+  letter-spacing: 0.05em;
+}
+
+.controls-info {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  color: #aaaadd;
+  font-size: 13px;
+  background: rgba(255,255,255,0.04);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.finish-title {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffe066;
+  text-shadow: 0 0 20px #ff8800, 0 0 40px #ff4400;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+}
+
+.finish-time {
+  font-size: 28px;
+  font-weight: 700;
+  color: #7de8ff;
+  margin-bottom: 6px;
+}
+
+.finish-best {
+  font-size: 15px;
+  color: #aaddaa;
+  margin-bottom: 26px;
+  min-height: 20px;
+}
+
+/* ── Button ──────────────────────────────────── */
+.btn {
+  background: linear-gradient(135deg, #3333bb, #5555ff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 12px 36px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(60, 60, 200, 0.5);
+  transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+  outline: none;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #5555dd, #7777ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(80, 80, 220, 0.7);
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(60, 60, 200, 0.4);
+}

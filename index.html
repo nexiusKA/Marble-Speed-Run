@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marble Rush</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="hud">
+      <div id="hud-timer">Time: <span id="timer-display">0.000</span>s</div>
+      <div id="hud-best">Best: <span id="best-display">--</span></div>
+    </div>
+
+    <div id="overlay" class="overlay visible">
+      <div class="overlay-box">
+        <h1 class="game-title">MARBLE RUSH</h1>
+        <p class="subtitle">Roll downhill. Beat the clock.</p>
+        <div class="controls-info">
+          <span>← → &nbsp;Steer</span>
+          <span>R &nbsp;Restart</span>
+        </div>
+        <button id="start-btn" class="btn">START</button>
+      </div>
+    </div>
+
+    <div id="finish-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h2 class="finish-title">FINISH!</h2>
+        <p id="finish-time" class="finish-time"></p>
+        <p id="finish-best" class="finish-best"></p>
+        <button id="retry-btn" class="btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/marble.js"></script>
+  <script src="js/obstacle.js"></script>
+  <script src="js/track.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
