@@ -1,85 +1,143 @@
 // ── Game ─────────────────────────────────────────────────────────────────────
 
-const STATE = { MENU: 'menu', RUNNING: 'running', FINISHED: 'finished' };
+const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead' };
+
+// World-units between successive content-generation passes
+const GEN_SEGMENT = 500;
+
+// Pickup spawn rate: one pickup per this many world-units on average
+const PICKUP_RATE = 900;
+
+// Pickup type weights [speed, dash, fog_slow, shield]
+const PICKUP_WEIGHTS = [0.35, 0.28, 0.25, 0.12];
+const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield'];
 
 class Game {
   constructor(canvas) {
-    this.canvas  = canvas;
-    this.ctx     = canvas.getContext('2d');
+    this.canvas = canvas;
+    this.ctx    = canvas.getContext('2d');
     canvas.width  = CANVAS_W;
     canvas.height = CANVAS_H;
 
-    this.input     = new Input();
-    this.ui        = new UI();
-    this.track     = new Track();
-    this.marble    = new Marble(this.track.startX, this.track.startY);
-    this.obstacles = buildObstacles();
+    this.input = new Input();
+    this.ui    = new UI();
 
-    this.state     = STATE.MENU;
-    this.elapsed   = 0;        // ms
-    this.bestTime  = Infinity; // ms
-    this.cameraY   = 0;        // world Y of top of screen
+    // Persist best distance across sessions; validate to guard against tampered storage
+    const stored = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
+    this.bestDistance = Number.isFinite(stored) && stored >= 0 ? stored : 0;
 
-    // Particle pool
-    this.particles = [];
-
-    // Shake state
-    this.shakeX = 0;
-    this.shakeY = 0;
+    this.state = STATE.MENU;
+    this._init();
 
     this.ui.showStart(() => this.startRun());
-    this.ui.updateBest(this.bestTime);
+    this.ui.updateBestDistance(this.bestDistance);
+  }
+
+  // ── Initialise / reset all run-specific state ─────────────────────────────
+  _init() {
+    this.track     = new Track();
+    this.marble    = new Marble(this.track.startX, this.track.startY);
+    this.fog       = new Fog(this.track.startY);
+    this.obstacles = [];
+    this.pickups   = [];
+    this.particles = [];
+
+    this.elapsed   = 0;   // milliseconds this run
+    this.cameraY   = this.track.startY - CANVAS_H * 0.28;
+    this.shakeX    = 0;
+    this.shakeY    = 0;
+
+    // Pickup effects
+    this.speedBoostTimer = 0;
+    this.shieldTimer     = 0;
+    this.pickupMsg       = null; // { text, timer }
+
+    // Level-generation cursor (last world Y for which content was generated)
+    this.levelGenY = this.track.startY;
+
+    // Pre-populate the first stretch of content
+    this._extendLevel(this.track.startY + 1800);
   }
 
   startRun() {
-    this.marble.reset(this.track.startX, this.track.startY);
-    this.obstacles = buildObstacles();
-    this.elapsed   = 0;
-    this.particles = [];
-    this.cameraY   = this.track.startY - CANVAS_H * 0.28;
-    this.state     = STATE.RUNNING;
-    this.ui.updateTimer(0);
+    this._init();
+    this.state = STATE.RUNNING;
+    this.ui.updateDistance(0);
   }
 
   restart() {
-    this.ui.hideFinish();
+    this.ui.hideGameOver();
     this.startRun();
   }
 
+  // Distance in metres (1 world-unit = 1 m for display purposes)
+  get distance() {
+    return Math.max(0, Math.floor(this.marble.y - this.track.startY));
+  }
+
+  // ── Main update ───────────────────────────────────────────────────────────
   update(dt) {
     if (this.state !== STATE.RUNNING) return;
 
-    // Restart hotkey
-    if (this.input.consumeRestart()) {
-      this.restart();
-      return;
-    }
+    if (this.input.consumeRestart()) { this.restart(); return; }
 
     this.elapsed += dt * 1000;
+    const elapsedSec = this.elapsed / 1000;
 
-    // Update marble
+    // ── Marble physics ──────────────────────────────────────────────────────
     this.marble.update(dt, this.input, this.track);
 
-    // Obstacle updates + collision
+    // Speed-boost pickup: extra downward push
+    if (this.speedBoostTimer > 0) {
+      this.speedBoostTimer -= dt;
+      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y);
+    }
+
+    // ── Fog ─────────────────────────────────────────────────────────────────
+    this.fog.update(dt, elapsedSec);
+
+    if (this.fog.isCatching(this.marble)) {
+      if (this.shieldTimer > 0) {
+        // Consume the shield and push the fog back
+        this.shieldTimer = 0;
+        this.fog.y = this.marble.y - 480;
+        this._showPickupMsg('SHIELD USED!');
+      } else {
+        this._gameOver();
+        return;
+      }
+    }
+    if (this.shieldTimer > 0) this.shieldTimer -= dt;
+
+    // ── Obstacles ───────────────────────────────────────────────────────────
     for (const obs of this.obstacles) {
       obs.update(dt);
       obs.checkCollision(this.marble);
     }
 
-    // Spawn speed particles
-    const speed = this.marble.speed;
-    if (speed > 300 && Math.random() < dt * 12) {
-      this._spawnParticle(this.marble.x, this.marble.y);
+    // ── Pickups ─────────────────────────────────────────────────────────────
+    for (const pu of this.pickups) {
+      pu.update(dt);
+      pu.checkCollision(this.marble, this);
     }
 
-    // Update particles
+    // Pickup message fade
+    if (this.pickupMsg) {
+      this.pickupMsg.timer -= dt;
+      if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
+    }
+
+    // ── Particles ───────────────────────────────────────────────────────────
+    if (this.marble.speed > 300 && Math.random() < dt * 12) {
+      this._spawnParticle(this.marble.x, this.marble.y);
+    }
     this._updateParticles(dt);
 
-    // Camera smoothing: target = marble near top-third of screen
+    // ── Camera ──────────────────────────────────────────────────────────────
     const targetCamY = this.marble.y - CANVAS_H * 0.28;
     this.cameraY     = lerp(this.cameraY, targetCamY, clamp(dt * 7, 0, 1));
 
-    // Screen shake from marble
+    // Screen shake
     if (this.marble.shakeTimer > 0) {
       this.shakeX = (Math.random() - 0.5) * 8;
       this.shakeY = (Math.random() - 0.5) * 8;
@@ -88,80 +146,113 @@ class Game {
       this.shakeY = lerp(this.shakeY, 0, dt * 15);
     }
 
-    // Out of bounds → reset to last checkpoint
-    if (this.track.isOutOfBounds(this.marble)) {
-      this._resetToCheckpoint();
-      return;
-    }
+    // ── Level extension & pruning ───────────────────────────────────────────
+    this._extendLevel(this.marble.y + 2500);
+    this._pruneEntities(this.marble.y - 1200);
 
-    // Finish detection
-    if (this.track.hasFinished(this.marble)) {
-      this._finishRun();
-      return;
-    }
-
-    // Update HUD timer
-    this.ui.updateTimer(this.elapsed);
+    // ── HUD ─────────────────────────────────────────────────────────────────
+    this.ui.updateDistance(this.distance);
   }
 
-  _resetToCheckpoint() {
-    const cpY = this.track.getCheckpointY(this.marble.y);
-    const cpX = this.track.getCheckpointX(cpY);
-    this.marble.reset(cpX, cpY > this.track.startY ? cpY - 20 : cpY);
-  }
-
-  _finishRun() {
-    this.state = STATE.FINISHED;
-    const time = this.elapsed;
-    const isNew = time < this.bestTime;
-    if (isNew) this.bestTime = time;
-    this.ui.updateBest(this.bestTime);
-    this.ui.showFinish(time, this.bestTime, () => this.restart());
-  }
-
-  _spawnParticle(x, y) {
-    this.particles.push({
-      x, y,
-      vx: (Math.random() - 0.5) * 80,
-      vy: (Math.random() - 0.6) * 60,
-      life: 1,
-      size: 2 + Math.random() * 3,
-    });
-  }
-
-  _updateParticles(dt) {
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-      const p = this.particles[i];
-      p.x    += p.vx * dt;
-      p.y    += p.vy * dt;
-      p.life -= dt * 2.5;
-      if (p.life <= 0) this.particles.splice(i, 1);
+  // ── Level content management ──────────────────────────────────────────────
+  _extendLevel(upToY) {
+    this.track.extend(upToY);
+    while (this.levelGenY < upToY) {
+      const nextY = this.levelGenY + GEN_SEGMENT;
+      this._generateContent(this.levelGenY, nextY);
+      this.levelGenY = nextY;
     }
   }
 
+  _generateContent(fromY, toY) {
+    // Leave the very beginning clear so the player can get moving
+    if (fromY < this.track.startY + 300) return;
+
+    const difficulty = Math.min(fromY / 12000, 1);
+
+    // Obstacles
+    const newObs = buildObstaclesForRange(fromY, toY, difficulty, this.track);
+    this.obstacles.push(...newObs);
+
+    // Pickup (probabilistic – roughly one per PICKUP_RATE world-units)
+    const segLen = toY - fromY;
+    if (Math.random() < segLen / PICKUP_RATE) {
+      const y = fromY + Math.random() * segLen;
+      const { left, right } = this.track.getWallsAtY(y);
+      const margin = 22;
+      const x = left + margin + Math.random() * Math.max(0, right - left - margin * 2);
+      const type = _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
+      this.pickups.push(new Pickup(x, y, type));
+    }
+  }
+
+  _pruneEntities(behindY) {
+    this.obstacles = this.obstacles.filter(o => o.worldY > behindY);
+    this.pickups   = this.pickups.filter(p => !p.collected && p.worldY > behindY);
+    this.track.prune(behindY - 400);
+  }
+
+  // ── Pickup effects ────────────────────────────────────────────────────────
+  applyPickup(type) {
+    switch (type) {
+      case 'speed':
+        this.speedBoostTimer = 4;
+        break;
+      case 'dash':
+        this.marble.vy = Math.min(this.marble.vy + 500, MAX_SPEED_Y);
+        break;
+      case 'fog_slow':
+        this.fog.slowDown(6);
+        break;
+      case 'shield':
+        this.shieldTimer = 8;
+        break;
+    }
+    this._showPickupMsg(PICKUP_CONFIG[type].name);
+    // Burst of particles on collection
+    for (let i = 0; i < 14; i++) this._spawnParticle(this.marble.x, this.marble.y);
+  }
+
+  _showPickupMsg(text) {
+    this.pickupMsg = { text, timer: 2.2 };
+  }
+
+  // ── Game over ─────────────────────────────────────────────────────────────
+  _gameOver() {
+    this.state = STATE.DEAD;
+    const dist  = this.distance;
+    const isNew = dist > this.bestDistance;
+    if (isNew) {
+      this.bestDistance = dist;
+      localStorage.setItem('mrBestDist', String(dist));
+    }
+    this.ui.updateBestDistance(this.bestDistance);
+    this.ui.showGameOver(dist, this.bestDistance, isNew, () => this.restart());
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
   render() {
     const ctx = this.ctx;
     ctx.save();
-
-    // Screen shake
     ctx.translate(this.shakeX, this.shakeY);
 
     // Background
     ctx.fillStyle = '#0b0b1e';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-    // Background stars
+    // Stars
     this._renderStars(ctx);
 
     // Track
     this.track.render(ctx, this.cameraY);
 
     // Obstacles
-    for (const obs of this.obstacles) {
-      obs.render(ctx, this.cameraY);
-    }
+    for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
 
-    // Particles
+    // Pickups
+    for (const pu of this.pickups) pu.render(ctx, this.cameraY);
+
+    // Particles (screen space)
     for (const p of this.particles) {
       const sy = p.y - this.cameraY;
       ctx.beginPath();
@@ -170,18 +261,70 @@ class Game {
       ctx.fill();
     }
 
-    // Marble – translate to world space so marble.x/y render correctly
+    // Fog (rendered before marble so marble is always on top)
+    this.fog.render(ctx, this.cameraY);
+
+    // Marble (world space – translate by -cameraY)
     ctx.save();
     ctx.translate(0, -this.cameraY);
-    // Trail and marble positions are in world space; translation converts to screen space
     this._renderMarble(ctx);
     ctx.restore();
+
+    // ── Screen-space overlays ───────────────────────────────────────────────
+
+    // Danger vignette when fog is close
+    if (this.state === STATE.RUNNING) {
+      const danger = this.fog.dangerRatio(this.marble);
+      if (danger > 0.25) {
+        const intensity = (danger - 0.25) / 0.75;
+        const vig = ctx.createRadialGradient(
+          CANVAS_W / 2, CANVAS_H / 2, CANVAS_H * 0.18,
+          CANVAS_W / 2, CANVAS_H / 2, CANVAS_H * 0.75
+        );
+        vig.addColorStop(0, 'rgba(180,0,80,0)');
+        vig.addColorStop(1, `rgba(180,0,80,${intensity * 0.4})`);
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+      }
+    }
+
+    // Shield ring around marble
+    if (this.shieldTimer > 0) {
+      const msy = this.marble.y - this.cameraY;
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 2.2, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(80,200,255,${0.45 + 0.45 * Math.sin(Date.now() / 200)})`;
+      ctx.lineWidth   = 3;
+      ctx.stroke();
+    }
+
+    // Speed-boost aura around marble
+    if (this.speedBoostTimer > 0) {
+      const msy = this.marble.y - this.cameraY;
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 1.9, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255,200,0,${0.4 + 0.35 * Math.sin(Date.now() / 140)})`;
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+    }
+
+    // Pickup message
+    if (this.pickupMsg && this.pickupMsg.timer > 0) {
+      const alpha = Math.min(this.pickupMsg.timer, 1);
+      ctx.save();
+      ctx.font          = 'bold 22px monospace';
+      ctx.textAlign     = 'center';
+      ctx.textBaseline  = 'middle';
+      ctx.fillStyle     = `rgba(255,240,80,${alpha})`;
+      ctx.fillText(this.pickupMsg.text, CANVAS_W / 2, CANVAS_H * 0.33);
+      ctx.restore();
+    }
 
     ctx.restore();
   }
 
+  // ── Marble rendering (called inside world-space translation) ──────────────
   _renderMarble(ctx) {
-    // Trail (world space, already translated by -cameraY via ctx)
     const trail = this.marble.trail;
     for (let i = 0; i < trail.length; i++) {
       const alpha = (i / trail.length) * 0.35;
@@ -208,10 +351,9 @@ class Game {
       this.marble.radius * 0.1,
       this.marble.x, this.marble.y, this.marble.radius
     );
-    grad.addColorStop(0, '#cce8ff');
+    grad.addColorStop(0,    '#cce8ff');
     grad.addColorStop(0.45, '#4488ee');
-    grad.addColorStop(1, '#112266');
-
+    grad.addColorStop(1,    '#112266');
     ctx.beginPath();
     ctx.arc(this.marble.x, this.marble.y, this.marble.radius, 0, Math.PI * 2);
     ctx.fillStyle = grad;
@@ -227,7 +369,7 @@ class Game {
     ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.fill();
 
-    // Speed glow at high speed
+    // Speed glow
     const speed = this.marble.speed;
     if (speed > 250) {
       const intensity = clamp((speed - 250) / 400, 0, 1);
@@ -238,25 +380,58 @@ class Game {
     }
   }
 
+  // ── Background stars (seeded per camera bucket) ───────────────────────────
   _renderStars(ctx) {
-    // Static decorative stars in screen space – seeded by cameraY bucket
     const bucket = Math.floor(this.cameraY / CANVAS_H);
     const seed   = bucket * 1234567;
     for (let i = 0; i < 40; i++) {
-      const sx = pseudoRand(seed + i * 7)      * CANVAS_W;
-      const sy = pseudoRand(seed + i * 7 + 1)  * CANVAS_H;
-      const r  = pseudoRand(seed + i * 7 + 2)  * 1.2 + 0.3;
-      const a  = pseudoRand(seed + i * 7 + 3)  * 0.5 + 0.1;
+      const sx = pseudoRand(seed + i * 7)     * CANVAS_W;
+      const sy = pseudoRand(seed + i * 7 + 1) * CANVAS_H;
+      const r  = pseudoRand(seed + i * 7 + 2) * 1.2 + 0.3;
+      const a  = pseudoRand(seed + i * 7 + 3) * 0.5 + 0.1;
       ctx.beginPath();
       ctx.arc(sx, sy, r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(200,200,255,${a})`;
       ctx.fill();
     }
   }
+
+  _spawnParticle(x, y) {
+    this.particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 80,
+      vy: (Math.random() - 0.6) * 60,
+      life: 1,
+      size: 2 + Math.random() * 3,
+    });
+  }
+
+  _updateParticles(dt) {
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x    += p.vx * dt;
+      p.y    += p.vy * dt;
+      p.life -= dt * 2.5;
+      if (p.life <= 0) this.particles.splice(i, 1);
+    }
+  }
 }
 
-// Simple deterministic pseudo-random from a seed (0..1)
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+// Simple deterministic pseudo-random (0..1) from a seed – used for stars
 function pseudoRand(seed) {
   const s = Math.sin(seed * 127.1 + 311.7) * 43758.5453123;
   return s - Math.floor(s);
+}
+
+// Pick a random item according to a weight array
+function _weightedRandom(items, weights) {
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return items[i];
+  }
+  return items[items.length - 1];
 }

@@ -42,7 +42,7 @@ body {
   z-index: 10;
 }
 
-#hud-timer,
+#hud-dist,
 #hud-best {
   background: rgba(0, 0, 0, 0.55);
   color: #e0e0ff;
@@ -54,7 +54,7 @@ body {
   border: 1px solid #3a3a7a;
 }
 
-#hud-timer span,
+#hud-dist span,
 #hud-best span {
   color: #7de8ff;
 }
@@ -141,6 +141,22 @@ body {
   margin-bottom: 26px;
   min-height: 20px;
 }
+
+.pickup-legend {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.pl-speed  { color: #ffe040; }
+.pl-dash   { color: #40ffff; }
+.pl-fog    { color: #dd88ff; }
+.pl-shield { color: #88ff99; }
 
 /* ── Button ──────────────────────────────────── */
 .btn {

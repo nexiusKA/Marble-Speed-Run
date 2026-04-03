@@ -208,29 +208,41 @@ class BoostPad {
   }
 }
 
-// ── Factory: build the level's obstacle set ───────────────────────────────────
-function buildObstacles() {
-  return [
-    // Rotating bars
-    new RotatingBar(240, 280, 52, 1.8),
-    new RotatingBar(230, 650, 48, -2.2),
-    new RotatingBar(255, 1000, 44, 2.5),
-    new RotatingBar(230, 1300, 50, -1.6),
-    new RotatingBar(245, 1700, 46,  2.0),
-    new RotatingBar(235, 2100, 50, -2.4),
-    new RotatingBar(240, 2350, 44,  1.9),
+// ── Dynamic obstacle generator ────────────────────────────────────────────────
+// Builds a list of obstacles for a given vertical world-space range.
+// difficulty: 0 (easy) → 1 (hard)
+// track: Track instance used to query wall positions
+function buildObstaclesForRange(fromY, toY, difficulty, track) {
+  const obs = [];
 
-    // Moving blockers
-    new MovingBlocker( 460,  155,  325, 140, 54, 14),
-    new MovingBlocker( 760,  115,  365, 110, 54, 14),
-    new MovingBlocker(1150,  155,  275, 160, 50, 14),
-    new MovingBlocker(1600,  115,  365, 130, 54, 14),
-    new MovingBlocker(2050,  120,  360, 150, 50, 14),
-    new MovingBlocker(2300,  145,  335, 170, 48, 14),
+  // Number of obstacles scales with difficulty (1..4 per segment)
+  const count  = 1 + Math.floor(difficulty * 3 + Math.random() * 1.5);
+  const segH   = (toY - fromY) / count;
 
-    // Boost pads
-    new BoostPad(240, 530,  240),
-    new BoostPad(240, 1250, 280),
-    new BoostPad(240, 1900, 200),
-  ];
+  for (let i = 0; i < count; i++) {
+    // Stagger within the sub-segment so obstacles don't cluster
+    const y = fromY + segH * (i + 0.2 + Math.random() * 0.6);
+    const { left, right } = track.getWallsAtY(y);
+    const width = right - left;
+    const cx    = (left + right) / 2;
+
+    const rand = Math.random();
+    if (rand < 0.35) {
+      // Rotating bar – length limited to track width
+      const halfLen = Math.min(38 + Math.random() * 24, width * 0.42);
+      const spd     = (1.4 + difficulty * 1.8) * (Math.random() < 0.5 ? 1 : -1);
+      obs.push(new RotatingBar(cx, y, halfLen, spd));
+    } else if (rand < 0.70) {
+      // Moving blocker
+      const blkW   = 42 + Math.random() * 22;
+      const margin = 10;
+      const spd    = 90 + Math.random() * (80 + difficulty * 80);
+      obs.push(new MovingBlocker(y, left + margin, right - margin, spd, blkW, 14));
+    } else {
+      // Boost pad (reward, not hazard)
+      obs.push(new BoostPad(cx, y, width));
+    }
+  }
+
+  return obs;
 }
