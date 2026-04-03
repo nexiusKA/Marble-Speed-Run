@@ -26,7 +26,7 @@ class Game {
     const stored = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
     this.bestDistance = Number.isFinite(stored) && stored >= 0 ? stored : 0;
 
-    // Debug mode: enable via ?debug in the URL or by pressing ` (backtick) in-game
+    // Debug mode: enable via ?debug in the URL or by pressing # in-game
     this.debugMode = (typeof location !== 'undefined') &&
                      new URLSearchParams(location.search).has('debug');
     this.fps = 0; // updated by the game loop in main.js
@@ -430,7 +430,7 @@ class Game {
       : 'n/a';
 
     const lines = [
-      { text: '[ DEBUG ]  ` to toggle', color: '#00ff88' },
+      { text: '[ DEBUG ]  # to toggle', color: '#00ff88' },
       { text: `FPS: ${this.fps}`, color: '#ffff00' },
       { text: `State: ${this.state}`, color: '#00ffff' },
       { text: `Elapsed: ${(this.elapsed / 1000).toFixed(1)} s`, color: '#aaaacc' },

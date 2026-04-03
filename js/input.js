@@ -6,7 +6,7 @@ class Input {
     this.right  = false;
     this.down   = false;
     this.restart = false;
-    this._debugToggle = false; // fires once per backtick press
+    this._debugToggle = false; // fires once per # press
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp   = this._onKeyUp.bind(this);
@@ -22,8 +22,8 @@ class Input {
       case 'ArrowRight': case 'KeyD': this.right   = true;  break;
       case 'ArrowDown':  case 'KeyS': this.down    = true;  break;
       case 'KeyR': case 'Escape':     this.restart = true;  break;
-      case 'Backquote':               this._debugToggle = true; break;
     }
+    if (e.key === '#') this._debugToggle = true;
   }
 
   _onKeyUp(e) {
@@ -32,8 +32,8 @@ class Input {
       case 'ArrowRight': case 'KeyD': this.right   = false; break;
       case 'ArrowDown':  case 'KeyS': this.down    = false; break;
       case 'KeyR': case 'Escape':     this.restart = false; break;
-      case 'Backquote':               this._debugToggle = false; break;
     }
+    if (e.key === '#') this._debugToggle = false;
   }
 
   _bindMobileButtons() {
