@@ -257,9 +257,8 @@ class Game {
     ctx.save();
     ctx.translate(this.shakeX, this.shakeY);
 
-    // Background
-    ctx.fillStyle = '#060616';
-    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    // Background (synthwave)
+    this._renderSynthwaveBg(ctx);
 
     // Stars
     this._renderStars(ctx);
@@ -562,6 +561,71 @@ class Game {
     ctx.setLineDash([]);
 
     ctx.restore();
+  }
+
+  // ── Synthwave background ──────────────────────────────────────────────────────
+  _renderSynthwaveBg(ctx) {
+    // Deep space → violet → magenta gradient sky
+    const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+    sky.addColorStop(0,    '#06001a');
+    sky.addColorStop(0.42, '#110038');
+    sky.addColorStop(0.70, '#260050');
+    sky.addColorStop(0.88, '#440058');
+    sky.addColorStop(1,    '#2e0040');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // ── Retro sun – centre just below the canvas; top arc peeks up ──────────
+    const sunCX = CANVAS_W / 2;
+    const sunCY = CANVAS_H + 18;
+    const sunR  = 158;
+
+    // Outer atmospheric halo
+    const halo = ctx.createRadialGradient(sunCX, sunCY, sunR * 0.45, sunCX, sunCY, sunR * 1.7);
+    halo.addColorStop(0,   'rgba(255, 80,200,0.30)');
+    halo.addColorStop(0.45,'rgba(200,  0,160,0.14)');
+    halo.addColorStop(1,   'rgba( 80,  0,100,0)');
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(sunCX, sunCY, sunR * 1.7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sun disc (classic yellow → orange → hot-pink → purple)
+    const sunFill = ctx.createLinearGradient(sunCX, sunCY - sunR, sunCX, sunCY + sunR);
+    sunFill.addColorStop(0,    '#ffee55');
+    sunFill.addColorStop(0.22, '#ff9900');
+    sunFill.addColorStop(0.52, '#ff2288');
+    sunFill.addColorStop(1,    '#aa00ee');
+    ctx.beginPath();
+    ctx.arc(sunCX, sunCY, sunR, 0, Math.PI * 2);
+    ctx.fillStyle = sunFill;
+    ctx.fill();
+
+    // Horizontal stripe bands – denser near the horizon (classic retrowave)
+    const bandTop = sunCY - sunR;
+    for (let b = 0; b < 16; b++) {
+      const frac  = b / 16;
+      const bY    = bandTop + frac * sunR * 2;
+      const bH    = Math.max(1.5, sunR * 0.05 * (0.4 + frac * 2.2));
+      ctx.fillStyle = '#06001a';
+      ctx.fillRect(sunCX - sunR, bY + bH * 0.6, sunR * 2, bH);
+    }
+
+    // ── Neon scan-lines (lower half, scroll with camera for motion feel) ────
+    const gridTop  = CANVAS_H * 0.60;
+    const scroll   = (this.cameraY % 52) / 52;
+    const nLines   = 14;
+    for (let i = 0; i < nLines; i++) {
+      const t     = (i + scroll) / nLines;
+      const ly    = gridTop + t * (CANVAS_H - gridTop);
+      const alpha = 0.04 + (1 - t) * 0.22;
+      ctx.beginPath();
+      ctx.moveTo(0,        ly);
+      ctx.lineTo(CANVAS_W, ly);
+      ctx.strokeStyle = `rgba(255,0,200,${alpha.toFixed(3)})`;
+      ctx.lineWidth   = 0.8;
+      ctx.stroke();
+    }
   }
 
   // ── Background stars / pinball light dots (seeded per camera bucket) ─────────
