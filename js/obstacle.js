@@ -212,6 +212,15 @@ class BoostPad {
 // A diagonal bar that juts inward from the left or right track wall, angled
 // 40–80° from horizontal (sloping downward) so the marble rolls off rather
 // than getting stuck on a flat ledge.
+// Colour palettes for wall blockers – each entry: [bodyStart, bodyEnd, tipColor]
+const WALL_BLOCKER_STYLES = [
+  ['#7a8090', '#3a404c', 'rgba(255,80,80,0.85)'],   // stone grey / red tip
+  ['#8b4513', '#4a2008', 'rgba(255,160,40,0.9)'],   // wood brown / orange tip
+  ['#2e6b2e', '#143214', 'rgba(80,255,80,0.85)'],   // dark green / green tip
+  ['#5a3a7a', '#2a1040', 'rgba(200,100,255,0.85)'], // purple / violet tip
+  ['#7a5a10', '#3a2800', 'rgba(255,220,0,0.9)'],    // rusted gold / yellow tip
+];
+
 class WallBlocker {
   constructor(worldY, side, wallX, protrude) {
     this.worldY = worldY;
@@ -229,6 +238,11 @@ class WallBlocker {
     this.ay = worldY;
     this.bx = wallX + dirX * protrude;
     this.by = worldY + dirY * protrude;
+
+    // Pick a random visual style so blockers don't all look the same
+    this.style = WALL_BLOCKER_STYLES[Math.floor(Math.random() * WALL_BLOCKER_STYLES.length)];
+    // Vary thickness slightly for extra variety
+    this.barW = 6 + Math.floor(Math.random() * 5);
   }
 
   update(_dt) {}
@@ -248,6 +262,7 @@ class WallBlocker {
   render(ctx, cameraY) {
     const sax = this.ax, say = this.ay - cameraY;
     const sbx = this.bx, sby = this.by - cameraY;
+    const [bodyStart, bodyEnd, tipColor] = this.style;
 
     // Shadow
     ctx.lineWidth   = this.barW + 4;
@@ -258,10 +273,10 @@ class WallBlocker {
     ctx.lineTo(sbx + 2, sby + 2);
     ctx.stroke();
 
-    // Body gradient (stone-grey)
+    // Body gradient
     const grad = ctx.createLinearGradient(sax, say, sbx, sby);
-    grad.addColorStop(0, '#7a8090');
-    grad.addColorStop(1, '#3a404c');
+    grad.addColorStop(0, bodyStart);
+    grad.addColorStop(1, bodyEnd);
     ctx.lineWidth   = this.barW;
     ctx.strokeStyle = grad;
     ctx.beginPath();
@@ -277,10 +292,10 @@ class WallBlocker {
     ctx.lineTo(sbx, sby);
     ctx.stroke();
 
-    // Red warning tip
+    // Coloured warning tip
     ctx.beginPath();
     ctx.arc(sbx, sby, 4, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,80,80,0.8)';
+    ctx.fillStyle = tipColor;
     ctx.fill();
   }
 }

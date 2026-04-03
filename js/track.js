@@ -237,36 +237,6 @@ class Track {
     ctx.shadowBlur  = 0;
     ctx.shadowColor = 'transparent';
 
-    // ── Pinball lane dot lights along the walls ───────────────────────────────
-    const dotSpacing = 60;
-    const dotOffset  = Math.round(cameraY / dotSpacing) * dotSpacing;
-    for (let wy = visTop - dotSpacing; wy <= visBottom + dotSpacing; wy += dotSpacing) {
-      const { left, right } = this.getWallsAtY(wy);
-      const sy = wy - cameraY;
-      if (sy < -20 || sy > CANVAS_H + 20) continue;
-
-      // Alternate cyan / yellow per dot position
-      const isYellow = (Math.round(wy / dotSpacing) % 2 === 0);
-      const dotColor = isYellow ? '#ffe600' : '#00e5ff';
-      const glowColor = isYellow ? '#ff9900' : '#00aaff';
-
-      ctx.shadowBlur  = 10;
-      ctx.shadowColor = glowColor;
-      ctx.fillStyle   = dotColor;
-
-      // Left wall dot
-      ctx.beginPath();
-      ctx.arc(left + 6, sy, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Right wall dot
-      ctx.beginPath();
-      ctx.arc(right - 6, sy, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.shadowBlur  = 0;
-    ctx.shadowColor = 'transparent';
-
     // ── Start banner ──────────────────────────────────────────────────────────
     const ssY = this.startY - cameraY;
     if (ssY >= -20 && ssY <= CANVAS_H + 20) {
