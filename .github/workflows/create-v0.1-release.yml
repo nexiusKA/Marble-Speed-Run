@@ -1,4 +1,4 @@
-name: Create v0.1 Release
+name: Create Incremental Release
 
 on:
   push:
@@ -16,31 +16,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check if v0.1 release already exists
-        id: check
+      - name: Get next version
+        id: version
         run: |
-          if gh release view v0.1 --repo "${{ github.repository }}" > /dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+          # Get the latest release tag
+          LATEST_TAG=$(gh release list --repo "${{ github.repository }}" --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "v0.0")
+
+          # Extract version numbers
+          if [[ $LATEST_TAG == v0.* ]]; then
+            MINOR=${LATEST_TAG#v0.}
+            NEXT_MINOR=$((MINOR + 1))
+            NEXT_VERSION="v0.$NEXT_MINOR"
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            NEXT_VERSION="v0.1"
           fi
+
+          echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create v0.1 release
-        if: steps.check.outputs.exists == 'false'
+      - name: Create release
         run: |
-          gh release create v0.1 \
-            --title "Marble Speed Run v0.1" \
-            --notes "## Marble Speed Run v0.1 - Initial Release
+          gh release create ${{ steps.version.outputs.next_version }} \
+            --title "Marble Speed Run ${{ steps.version.outputs.next_version }}" \
+            --notes "## Marble Speed Run ${{ steps.version.outputs.next_version }} - Release
 
-This is the first official release of Marble Speed Run!
-
-### Features
-- Engaging marble rolling gameplay
-- Multiple levels with increasing difficulty
-- HTML5-based game engine
-- Support for desktop browsers
+Latest changes pushed to main branch.
 
 ### Assets Included
 - \`game.html\` - Main game
@@ -48,7 +49,7 @@ This is the first official release of Marble Speed Run!
 - \`perk-library.html\` - Perks system
 - \`showcase.html\` - Game showcase
 
-Enjoy the game!" \
+Commit: ${{ github.sha }}" \
             --target main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
