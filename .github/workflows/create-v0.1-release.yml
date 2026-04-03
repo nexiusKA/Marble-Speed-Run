@@ -1,0 +1,54 @@
+name: Create v0.1 Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if v0.1 release already exists
+        id: check
+        run: |
+          if gh release view v0.1 --repo "${{ github.repository }}" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create v0.1 release
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          gh release create v0.1 \
+            --title "Marble Speed Run v0.1" \
+            --notes "## Marble Speed Run v0.1 - Initial Release
+
+This is the first official release of Marble Speed Run!
+
+### Features
+- Engaging marble rolling gameplay
+- Multiple levels with increasing difficulty
+- HTML5-based game engine
+- Support for desktop browsers
+
+### Assets Included
+- \`game.html\` - Main game
+- \`index.html\` - Homepage
+- \`perk-library.html\` - Perks system
+- \`showcase.html\` - Game showcase
+
+Enjoy the game!" \
+            --target main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
