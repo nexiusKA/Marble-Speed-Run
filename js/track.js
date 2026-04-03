@@ -105,12 +105,12 @@ class Track {
     const newY    = lastY + spacing;
 
     // Gently drift the centre X
-    const drift   = (Math.random() - 0.5) * 64;
+    const drift   = (Math.random() - 0.5) * 48;
     this._centerX = clamp(this._centerX + drift, 155, 325);
 
-    // Track half-width narrows with difficulty (190→110 px half-width → full 380→220 px)
-    const baseHalf = lerp(190, 110, difficulty);
-    const halfW    = Math.max(55, baseHalf + (Math.random() - 0.5) * 40);
+    // Track half-width narrows with difficulty (220→145 px half-width → full 440→290 px)
+    const baseHalf = lerp(220, 145, difficulty);
+    const halfW    = Math.max(90, baseHalf + (Math.random() - 0.5) * 40);
 
     const leftX  = clamp(this._centerX - halfW, 48, 195);
     const rightX = clamp(this._centerX + halfW, 285, 432);
