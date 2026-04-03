@@ -1,8 +1,20 @@
 // ── Obstacles ────────────────────────────────────────────────────────────────
-// Three obstacle types:
-//   1. RotatingBar   – a bar that spins around a pivot
-//   2. MovingBlocker – slides left/right across the track
-//   3. BoostPad      – gives the marble a speed boost downward
+// Obstacle types:
+//   1. RotatingBar    – a bar that spins around a pivot (random colour & position)
+//   2. MovingBlocker  – slides left/right across the track
+//   3. BoostPad       – gives the marble a speed boost downward
+//   4. WallBlocker    – diagonal bar from the wall
+//   5. ElectricSpinner– multi-arm spinning obstacle crackling with electricity
+
+// Colour palettes for rotating bars [body, highlight, pivotFill, pivotStroke]
+const BAR_STYLES = [
+  ['#dd4422', '#ff8866', '#ffcc44', '#cc8800'],  // red
+  ['#22aadd', '#66ccff', '#44ccff', '#008899'],  // blue
+  ['#22dd44', '#66ff88', '#44ff88', '#008822'],  // green
+  ['#ddaa22', '#ffcc66', '#ffee44', '#aa7700'],  // gold
+  ['#cc22dd', '#ee66ff', '#dd44ff', '#880088'],  // violet
+  ['#dd6622', '#ffaa55', '#ffcc88', '#aa4400'],  // orange
+];
 
 class RotatingBar {
   constructor(cx, worldY, halfLen, speed) {
@@ -12,6 +24,7 @@ class RotatingBar {
     this.speed   = speed;    // radians per second
     this.angle   = Math.random() * Math.PI * 2;
     this.w       = 8;        // bar width for collision
+    this.style   = BAR_STYLES[Math.floor(Math.random() * BAR_STYLES.length)];
   }
 
   update(dt) {
@@ -49,6 +62,7 @@ class RotatingBar {
     const sx = this.cx, sy = this.worldY - cameraY;
     const sax = ax, say = ay - cameraY;
     const sbx = bx, sby = by - cameraY;
+    const [body, highlight, pivotFill, pivotStroke] = this.style;
 
     // Bar shadow
     ctx.lineWidth   = this.w + 4;
@@ -61,7 +75,7 @@ class RotatingBar {
 
     // Bar body
     ctx.lineWidth   = this.w;
-    ctx.strokeStyle = '#dd4422';
+    ctx.strokeStyle = body;
     ctx.beginPath();
     ctx.moveTo(sax, say);
     ctx.lineTo(sbx, sby);
@@ -69,7 +83,7 @@ class RotatingBar {
 
     // Highlight
     ctx.lineWidth   = 2;
-    ctx.strokeStyle = '#ff8866';
+    ctx.strokeStyle = highlight;
     ctx.beginPath();
     ctx.moveTo(sax, say);
     ctx.lineTo(sbx, sby);
@@ -78,10 +92,10 @@ class RotatingBar {
     // Pivot
     ctx.beginPath();
     ctx.arc(sx, sy, 5, 0, Math.PI * 2);
-    ctx.fillStyle   = '#ffcc44';
+    ctx.fillStyle   = pivotFill;
     ctx.fill();
     ctx.lineWidth   = 1.5;
-    ctx.strokeStyle = '#cc8800';
+    ctx.strokeStyle = pivotStroke;
     ctx.stroke();
   }
 }
@@ -208,6 +222,147 @@ class BoostPad {
   }
 }
 
+// ── ElectricSpinner ───────────────────────────────────────────────────────────
+// A multi-arm spinning obstacle crackling with electricity.
+class ElectricSpinner {
+  constructor(cx, worldY, halfLen, speed, numArms) {
+    this.cx      = cx;
+    this.worldY  = worldY;
+    this.halfLen = halfLen;
+    this.speed   = speed;
+    this.angle   = Math.random() * Math.PI * 2;
+    this.numArms = numArms || (2 + Math.floor(Math.random() * 3)); // 2–4 arms
+    this.w       = 7;
+    this.pulse   = Math.random() * Math.PI * 2;
+    this._jitter = Array.from({ length: 14 }, () => Math.random() - 0.5);
+  }
+
+  update(dt) {
+    this.angle += this.speed * dt;
+    this.pulse  = (this.pulse + dt * 10) % (Math.PI * 2);
+    // Randomly refresh jitter offsets to make electricity crackle
+    if (Math.random() < dt * 14) {
+      this._jitter = Array.from({ length: 14 }, () => Math.random() - 0.5);
+    }
+  }
+
+  _armEndpoints() {
+    const arms = [];
+    const step = (Math.PI * 2) / this.numArms;
+    for (let i = 0; i < this.numArms; i++) {
+      const a   = this.angle + step * i;
+      const cos = Math.cos(a), sin = Math.sin(a);
+      arms.push({
+        ax: this.cx - cos * this.halfLen,
+        ay: this.worldY - sin * this.halfLen,
+        bx: this.cx + cos * this.halfLen,
+        by: this.worldY + sin * this.halfLen,
+      });
+    }
+    return arms;
+  }
+
+  checkCollision(marble) {
+    const arms = this._armEndpoints();
+    for (const arm of arms) {
+      const hit = circleSegmentCollision(marble.x, marble.y, marble.radius,
+                                         arm.ax, arm.ay, arm.bx, arm.by);
+      if (hit) {
+        marble.x += hit.nx * hit.depth;
+        marble.y += hit.ny * hit.depth;
+        const dot = marble.vx * hit.nx + marble.vy * hit.ny;
+        marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.45;
+        marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.45;
+        marble.triggerShake();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Draw a zigzag lightning bolt from (ax,ay) to (bx,by)
+  _drawZigzag(ctx, ax, ay, bx, by, segs, amp) {
+    const dx  = bx - ax, dy = by - ay;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const nx  = -dy / len, ny = dx / len;  // perpendicular unit
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    for (let i = 1; i <= segs; i++) {
+      const t   = i / (segs + 1);
+      const off = this._jitter[i % this._jitter.length] * amp;
+      ctx.lineTo(ax + dx * t + nx * off, ay + dy * t + ny * off);
+    }
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  }
+
+  render(ctx, cameraY) {
+    const arms    = this._armEndpoints();
+    const sx      = this.cx, sy = this.worldY - cameraY;
+    const flicker = 0.55 + 0.45 * Math.sin(this.pulse);
+
+    for (const arm of arms) {
+      const sax = arm.ax, say = arm.ay - cameraY;
+      const sbx = arm.bx, sby = arm.by - cameraY;
+
+      // Outer corona glow
+      ctx.shadowColor = `rgba(80,200,255,${flicker * 0.85})`;
+      ctx.shadowBlur  = 22;
+      ctx.lineWidth   = this.w + 5;
+      ctx.strokeStyle = `rgba(0,80,200,${flicker * 0.45})`;
+      ctx.lineCap     = 'round';
+      ctx.beginPath();
+      ctx.moveTo(sax, say);
+      ctx.lineTo(sbx, sby);
+      ctx.stroke();
+
+      // Core electric arm
+      ctx.shadowBlur  = 10;
+      ctx.lineWidth   = this.w;
+      ctx.strokeStyle = `rgba(30,170,255,${0.75 + flicker * 0.25})`;
+      ctx.beginPath();
+      ctx.moveTo(sax, say);
+      ctx.lineTo(sbx, sby);
+      ctx.stroke();
+
+      // Zigzag lightning overlay
+      ctx.shadowColor = 'rgba(255,255,255,0.9)';
+      ctx.shadowBlur  = 8;
+      ctx.lineWidth   = 1.5;
+      ctx.strokeStyle = `rgba(200,240,255,${flicker})`;
+      this._drawZigzag(ctx, sax, say, sbx, sby, 6, 6);
+
+      // Spark tips
+      ctx.shadowBlur  = 16;
+      ctx.shadowColor = 'rgba(255,255,100,0.95)';
+      for (const [tx, ty] of [[sax, say], [sbx, sby]]) {
+        ctx.beginPath();
+        ctx.arc(tx, ty, 2.5 + flicker * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,160,${flicker * 0.9})`;
+        ctx.fill();
+      }
+    }
+
+    // Central glowing core
+    ctx.shadowColor = 'rgba(180,230,255,1)';
+    ctx.shadowBlur  = 24;
+    const coreGrad  = ctx.createRadialGradient(sx, sy, 1, sx, sy, 7);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.5, '#55ccff');
+    coreGrad.addColorStop(1, '#0055cc');
+    ctx.beginPath();
+    ctx.arc(sx, sy, 7, 0, Math.PI * 2);
+    ctx.fillStyle   = coreGrad;
+    ctx.fill();
+    ctx.lineWidth   = 2;
+    ctx.strokeStyle = `rgba(180,230,255,${0.7 + flicker * 0.3})`;
+    ctx.stroke();
+
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
+  }
+}
+
 // ── WallBlocker ───────────────────────────────────────────────────────────────
 // A diagonal bar that juts inward from the left or right track wall, angled
 // 40–80° from horizontal (sloping downward) so the marble rolls off rather
@@ -319,23 +474,35 @@ function buildObstaclesForRange(fromY, toY, difficulty, track) {
     const cx    = (left + right) / 2;
 
     const rand = Math.random();
-    if (rand < 0.30) {
-      // Rotating bar – length limited to track width
-      const halfLen = Math.min(38 + Math.random() * 24, width * 0.42);
+    if (rand < 0.20) {
+      // Rotating bar – random pivot position, not always centered
+      const margin  = 22;
+      const pivotX  = left + margin + Math.random() * (width - margin * 2);
+      const maxHalf = Math.min(pivotX - left, right - pivotX) * 0.85;
+      const halfLen = Math.min(34 + Math.random() * 26, maxHalf);
       const spd     = (1.4 + difficulty * 1.8) * (Math.random() < 0.5 ? 1 : -1);
-      obs.push(new RotatingBar(cx, y, halfLen, spd));
-    } else if (rand < 0.58) {
+      obs.push(new RotatingBar(pivotX, y, halfLen, spd));
+    } else if (rand < 0.42) {
+      // Electrified spinner – multi-arm, placed anywhere across the track
+      const margin  = 18;
+      const pivotX  = left + margin + Math.random() * (width - margin * 2);
+      const maxHalf = Math.min(pivotX - left, right - pivotX) * 0.88;
+      const halfLen = Math.min(30 + Math.random() * 28, maxHalf);
+      const spd     = (1.6 + difficulty * 2.0) * (Math.random() < 0.5 ? 1 : -1);
+      const arms    = 2 + Math.floor(Math.random() * 3); // 2, 3, or 4 arms
+      obs.push(new ElectricSpinner(pivotX, y, halfLen, spd, arms));
+    } else if (rand < 0.64) {
       // Moving blocker
       const blkW   = 42 + Math.random() * 22;
       const margin = 10;
       const spd    = 90 + Math.random() * (80 + difficulty * 80);
       obs.push(new MovingBlocker(y, left + margin, right - margin, spd, blkW, 14));
-    } else if (rand < 0.83) {
+    } else if (rand < 0.84) {
       // Wall blocker – juts inward from left or right wall
-      const side     = Math.random() < 0.5 ? 'left' : 'right';
+      const side       = Math.random() < 0.5 ? 'left' : 'right';
       const maxProtrude = Math.max(50, width * 0.55);
-      const protrude = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
-      const wallX    = side === 'left' ? left : right;
+      const protrude   = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
+      const wallX      = side === 'left' ? left : right;
       obs.push(new WallBlocker(y, side, wallX, protrude));
     } else {
       // Boost pad (reward, not hazard)

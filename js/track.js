@@ -218,25 +218,6 @@ class Track {
     ctx.shadowBlur  = 0;
     ctx.shadowColor = 'transparent';
 
-    // ── Centre dashed line (neon magenta) ────────────────────────────────────
-    ctx.setLineDash([14, 12]);
-    ctx.lineWidth   = 1.5;
-    ctx.shadowBlur  = 6;
-    ctx.shadowColor = '#ff00ff';
-    ctx.strokeStyle = 'rgba(255,0,255,0.45)';
-    ctx.beginPath();
-    for (let wy = visTop; wy <= visBottom; wy += step) {
-      const { left, right } = this.getWallsAtY(wy);
-      const cx = (left + right) / 2;
-      const sy = wy - cameraY;
-      if (wy === visTop) ctx.moveTo(cx, sy);
-      else               ctx.lineTo(cx, sy);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.shadowBlur  = 0;
-    ctx.shadowColor = 'transparent';
-
     // ── Start banner ──────────────────────────────────────────────────────────
     const ssY = this.startY - cameraY;
     if (ssY >= -20 && ssY <= CANVAS_H + 20) {
