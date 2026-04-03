@@ -5,7 +5,11 @@
 }
 
 body {
-  background: #0a0a14;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(255,80,0,0.14) 0%, transparent 40%),
+    radial-gradient(circle at 82% 65%, rgba(0,100,255,0.14) 0%, transparent 40%),
+    radial-gradient(circle at 50% 88%, rgba(200,0,200,0.12) 0%, transparent 35%),
+    #050510;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,16 +21,24 @@ body {
 #game-container {
   position: relative;
   width: 480px;
-  height: 700px;
+  height: 792px;
+  border-radius: 18px 18px 26px 26px;
+  border: 3px solid #8800ff;
+  box-shadow:
+    0 0 18px #8800ffaa,
+    0 0 55px #5500cc44,
+    0 0 100px #33009922,
+    inset 0 0 24px rgba(130,0,255,0.08);
+  background: #07071a;
 }
 
 #gameCanvas {
   display: block;
   width: 480px;
   height: 700px;
-  border: 2px solid #3a3a6a;
-  border-radius: 4px;
-  background: #11112a;
+  border: none;
+  border-radius: 15px 15px 0 0;
+  background: #07071a;
 }
 
 /* ── HUD ─────────────────────────────────────── */
@@ -183,4 +195,49 @@ body {
 .btn:active {
   transform: translateY(1px);
   box-shadow: 0 2px 8px rgba(60, 60, 200, 0.4);
+}
+
+/* ── Mobile controls ─────────────────────────────────── */
+#mobile-controls {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  z-index: 15;
+  height: 82px;
+}
+
+.ctrl-btn {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 3px solid #ff00ff;
+  background: rgba(18, 0, 36, 0.88);
+  color: #ff00ff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow:
+    0 0 14px #ff00ffaa,
+    0 0 30px #cc00cc55,
+    inset 0 0 10px rgba(255,0,255,0.12);
+  transition: background 0.08s, box-shadow 0.08s, transform 0.08s;
+  outline: none;
+}
+
+.ctrl-btn:active,
+.ctrl-btn.pressed {
+  background: rgba(255, 0, 255, 0.22);
+  box-shadow:
+    0 0 24px #ff00ffdd,
+    0 0 50px #ff00ff88,
+    inset 0 0 16px rgba(255,0,255,0.3);
+  transform: scale(0.93);
 }

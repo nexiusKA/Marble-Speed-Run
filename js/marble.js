@@ -33,6 +33,9 @@ class Marble {
     // Gravity
     this.vy += GRAVITY * dt;
 
+    // Down boost – extra downward acceleration when held
+    if (input.down) this.vy += GRAVITY * 1.5 * dt;
+
     // Horizontal damping for arcade feel
     this.vx *= Math.pow(DAMPING_X, dt * 60);
 

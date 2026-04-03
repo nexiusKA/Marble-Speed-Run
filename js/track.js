@@ -134,7 +134,7 @@ class Track {
       rightPts.push([right, sy]);
     }
 
-    // Track fill
+    // ── Track fill (pinball playfield) ────────────────────────────────────────
     ctx.beginPath();
     ctx.moveTo(leftPts[0][0], leftPts[0][1]);
     for (const [x, y] of leftPts)  ctx.lineTo(x, y);
@@ -142,14 +142,54 @@ class Track {
     ctx.closePath();
 
     const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    grad.addColorStop(0, '#1e2240');
-    grad.addColorStop(1, '#151830');
+    grad.addColorStop(0,   '#0a0024');
+    grad.addColorStop(0.5, '#08001e');
+    grad.addColorStop(1,   '#060016');
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Edge lines
-    ctx.lineWidth   = 3;
-    ctx.strokeStyle = '#5566cc';
+    // Subtle diagonal grid lines inside the track
+    ctx.save();
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(80,0,150,0.18)';
+    ctx.lineWidth   = 0.8;
+    const gridSpacing = 36;
+    const gridOff     = (cameraY % gridSpacing);
+    for (let wy = visTop - gridSpacing; wy <= visBottom + gridSpacing; wy += gridSpacing) {
+      const sy = wy - cameraY + gridOff;
+      ctx.beginPath();
+      ctx.moveTo(0,       sy);
+      ctx.lineTo(CANVAS_W, sy - 80);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Narrow-section warning tint
+    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
+      const { left, right } = this.getWallsAtY(wy);
+      if (right - left < 140) {
+        const sy = wy - cameraY;
+        ctx.fillStyle = 'rgba(255,40,80,0.07)';
+        ctx.fillRect(left, sy, right - left, step * 2);
+      }
+    }
+
+    // Wide-section (boost zone) tint
+    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
+      const { left, right } = this.getWallsAtY(wy);
+      if (right - left > 260) {
+        const sy = wy - cameraY;
+        ctx.fillStyle = 'rgba(0,255,180,0.04)';
+        ctx.fillRect(left, sy, right - left, step * 2);
+      }
+    }
+
+    // ── Neon wall glow (pinball bumper rails) ─────────────────────────────────
+    // Outer glow pass
+    ctx.shadowBlur  = 18;
+    ctx.shadowColor = '#ff00ff';
+    ctx.lineWidth   = 5;
+    ctx.strokeStyle = 'rgba(255,0,255,0.22)';
     ctx.beginPath();
     ctx.moveTo(leftPts[0][0], leftPts[0][1]);
     for (const [x, y] of leftPts) ctx.lineTo(x, y);
@@ -160,10 +200,30 @@ class Track {
     for (const [x, y] of rightPts) ctx.lineTo(x, y);
     ctx.stroke();
 
-    // Centre dashed line (speed feel)
-    ctx.setLineDash([14, 10]);
-    ctx.lineWidth   = 1;
-    ctx.strokeStyle = 'rgba(100,120,220,0.25)';
+    // Inner bright line
+    ctx.shadowBlur  = 8;
+    ctx.shadowColor = '#00e5ff';
+    ctx.lineWidth   = 2.5;
+    ctx.strokeStyle = '#00e5ff';
+    ctx.beginPath();
+    ctx.moveTo(leftPts[0][0], leftPts[0][1]);
+    for (const [x, y] of leftPts) ctx.lineTo(x, y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(rightPts[0][0], rightPts[0][1]);
+    for (const [x, y] of rightPts) ctx.lineTo(x, y);
+    ctx.stroke();
+
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
+
+    // ── Centre dashed line (neon magenta) ────────────────────────────────────
+    ctx.setLineDash([14, 12]);
+    ctx.lineWidth   = 1.5;
+    ctx.shadowBlur  = 6;
+    ctx.shadowColor = '#ff00ff';
+    ctx.strokeStyle = 'rgba(255,0,255,0.45)';
     ctx.beginPath();
     for (let wy = visTop; wy <= visBottom; wy += step) {
       const { left, right } = this.getWallsAtY(wy);
@@ -174,38 +234,53 @@ class Track {
     }
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
 
-    // Narrow-section warning tint
-    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
+    // ── Pinball lane dot lights along the walls ───────────────────────────────
+    const dotSpacing = 60;
+    const dotOffset  = Math.round(cameraY / dotSpacing) * dotSpacing;
+    for (let wy = visTop - dotSpacing; wy <= visBottom + dotSpacing; wy += dotSpacing) {
       const { left, right } = this.getWallsAtY(wy);
-      if (right - left < 140) {
-        const sy = wy - cameraY;
-        ctx.fillStyle = 'rgba(255,80,80,0.05)';
-        ctx.fillRect(left, sy, right - left, step * 2);
-      }
-    }
+      const sy = wy - cameraY;
+      if (sy < -20 || sy > CANVAS_H + 20) continue;
 
-    // Wide-section (boost zone) tint
-    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
-      const { left, right } = this.getWallsAtY(wy);
-      if (right - left > 260) {
-        const sy = wy - cameraY;
-        ctx.fillStyle = 'rgba(80,255,180,0.04)';
-        ctx.fillRect(left, sy, right - left, step * 2);
-      }
-    }
+      // Alternate cyan / yellow per dot position
+      const isYellow = (Math.round(wy / dotSpacing) % 2 === 0);
+      const dotColor = isYellow ? '#ffe600' : '#00e5ff';
+      const glowColor = isYellow ? '#ff9900' : '#00aaff';
 
-    // Start banner
+      ctx.shadowBlur  = 10;
+      ctx.shadowColor = glowColor;
+      ctx.fillStyle   = dotColor;
+
+      // Left wall dot
+      ctx.beginPath();
+      ctx.arc(left + 6, sy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Right wall dot
+      ctx.beginPath();
+      ctx.arc(right - 6, sy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
+
+    // ── Start banner ──────────────────────────────────────────────────────────
     const ssY = this.startY - cameraY;
     if (ssY >= -20 && ssY <= CANVAS_H + 20) {
       const { left: sl, right: sr } = this.getWallsAtY(this.startY);
+      ctx.shadowBlur  = 8;
+      ctx.shadowColor = '#44ffaa';
       ctx.strokeStyle = '#44ffaa';
-      ctx.lineWidth   = 2;
+      ctx.lineWidth   = 2.5;
       ctx.beginPath();
       ctx.moveTo(sl, ssY);
       ctx.lineTo(sr, ssY);
       ctx.stroke();
-      ctx.fillStyle = 'rgba(68,255,170,0.15)';
+      ctx.shadowBlur  = 0;
+      ctx.fillStyle = 'rgba(68,255,170,0.14)';
       ctx.fillRect(sl, ssY, sr - sl, 12);
     }
   }

@@ -26,7 +26,7 @@ class Game {
     const stored = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
     this.bestDistance = Number.isFinite(stored) && stored >= 0 ? stored : 0;
 
-    // Debug mode: enable via ?debug in the URL or by pressing ` (backtick) in-game
+    // Debug mode: enable via ?debug in the URL or by pressing # in-game
     this.debugMode = (typeof location !== 'undefined') &&
                      new URLSearchParams(location.search).has('debug');
     this.fps = 0; // updated by the game loop in main.js
@@ -258,7 +258,7 @@ class Game {
     ctx.translate(this.shakeX, this.shakeY);
 
     // Background
-    ctx.fillStyle = '#0b0b1e';
+    ctx.fillStyle = '#060616';
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     // Stars
@@ -430,7 +430,7 @@ class Game {
       : 'n/a';
 
     const lines = [
-      { text: '[ DEBUG ]  ` to toggle', color: '#00ff88' },
+      { text: '[ DEBUG ]  # to toggle', color: '#00ff88' },
       { text: `FPS: ${this.fps}`, color: '#ffff00' },
       { text: `State: ${this.state}`, color: '#00ffff' },
       { text: `Elapsed: ${(this.elapsed / 1000).toFixed(1)} s`, color: '#aaaacc' },
@@ -564,18 +564,39 @@ class Game {
     ctx.restore();
   }
 
-  // ── Background stars (seeded per camera bucket) ───────────────────────────
+  // ── Background stars / pinball light dots (seeded per camera bucket) ─────────
   _renderStars(ctx) {
     const bucket = Math.floor(this.cameraY / CANVAS_H);
     const seed   = bucket * 1234567;
-    for (let i = 0; i < 40; i++) {
-      const sx = pseudoRand(seed + i * 7)     * CANVAS_W;
-      const sy = pseudoRand(seed + i * 7 + 1) * CANVAS_H;
-      const r  = pseudoRand(seed + i * 7 + 2) * 1.2 + 0.3;
-      const a  = pseudoRand(seed + i * 7 + 3) * 0.5 + 0.1;
+
+    // Pinball neon light colors
+    const colors = [
+      [255, 0,   255],  // magenta
+      [0,   229, 255],  // cyan
+      [255, 230, 0  ],  // yellow
+      [0,   255, 120],  // green
+      [255, 100, 0  ],  // orange
+      [180, 100, 255],  // purple
+    ];
+
+    for (let i = 0; i < 38; i++) {
+      const sx   = pseudoRand(seed + i * 7)     * CANVAS_W;
+      const sy   = pseudoRand(seed + i * 7 + 1) * CANVAS_H;
+      const r    = pseudoRand(seed + i * 7 + 2) * 1.4 + 0.4;
+      const a    = pseudoRand(seed + i * 7 + 3) * 0.55 + 0.1;
+      const ci   = Math.floor(pseudoRand(seed + i * 7 + 4) * colors.length);
+      const [cr, cg, cb] = colors[ci];
+
+      // Glow halo
+      ctx.beginPath();
+      ctx.arc(sx, sy, r * 2.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a * 0.18})`;
+      ctx.fill();
+
+      // Bright core
       ctx.beginPath();
       ctx.arc(sx, sy, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,200,255,${a})`;
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`;
       ctx.fill();
     }
   }
