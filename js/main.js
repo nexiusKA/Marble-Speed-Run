@@ -47,7 +47,7 @@
 
     try {
       if (lastTime === null) lastTime = timestamp;
-      const dt = Math.min((timestamp - lastTime) / 1000, 0.05); // cap at 50 ms
+      const dt = Math.min((timestamp - lastTime) / 1000, 0.05); // cap at 50ms
       lastTime  = timestamp;
 
       // Rolling FPS — update display every 0.5 s
