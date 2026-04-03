@@ -22,8 +22,9 @@ class Game {
     this.input = new Input();
     this.ui    = new UI();
 
-    // Persist best distance across sessions
-    this.bestDistance = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
+    // Persist best distance across sessions; validate to guard against tampered storage
+    const stored = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
+    this.bestDistance = Number.isFinite(stored) && stored >= 0 ? stored : 0;
 
     this.state = STATE.MENU;
     this._init();

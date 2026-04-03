@@ -4,7 +4,9 @@
 
 class Fog {
   constructor(marbleStartY) {
-    // Leading edge starts 400 world-units behind (above) the marble
+    // Start 400 world-units behind the marble's start position.
+    // This gap gives the player a brief moment to accelerate before the fog
+    // becomes visible at the top of the screen (~196 px into the viewport).
     this.y         = marbleStartY - 400;
     this.speed     = 400;   // px/s – updated each frame
     this.slowTimer = 0;     // remaining seconds of fog-slow pickup effect
