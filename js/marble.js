@@ -1,0 +1,65 @@
+// ── Marble ───────────────────────────────────────────────────────────────────
+
+const MARBLE_RADIUS  = 12;
+const GRAVITY        = 520;   // px / s²  downward pull
+const STEER_FORCE    = 480;   // lateral acceleration from input
+const MAX_SPEED_X    = 280;   // horizontal terminal speed
+const MAX_SPEED_Y    = 900;   // vertical terminal speed
+const DAMPING_X      = 0.88;  // per-frame horizontal damping factor (applied each frame)
+const BOUNCE_FACTOR  = 0.35;  // energy kept on wall bounce
+const TRAIL_MAX      = 22;
+
+class Marble {
+  constructor(x, y) {
+    this.radius = MARBLE_RADIUS;
+    this.reset(x, y);
+  }
+
+  reset(x, y) {
+    this.x  = x;
+    this.y  = y;
+    this.vx = 0;
+    this.vy = 0;
+    this.trail = [];
+    this.onGround = false;
+    this.shakeTimer = 0;
+  }
+
+  update(dt, input, track) {
+    // Steering
+    if (input.left)  this.vx -= STEER_FORCE * dt;
+    if (input.right) this.vx += STEER_FORCE * dt;
+
+    // Gravity
+    this.vy += GRAVITY * dt;
+
+    // Horizontal damping for arcade feel
+    this.vx *= Math.pow(DAMPING_X, dt * 60);
+
+    // Clamp speeds
+    this.vx = clamp(this.vx, -MAX_SPEED_X, MAX_SPEED_X);
+    this.vy = clamp(this.vy, -MAX_SPEED_Y, MAX_SPEED_Y);
+
+    // Move
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+
+    // Track collision
+    track.resolveCollision(this);
+
+    // Trail
+    this.trail.push({ x: this.x, y: this.y });
+    if (this.trail.length > TRAIL_MAX) this.trail.shift();
+
+    // Shake timer
+    if (this.shakeTimer > 0) this.shakeTimer -= dt;
+  }
+
+  triggerShake() {
+    this.shakeTimer = 0.18;
+  }
+
+  get speed() {
+    return Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+  }
+}
