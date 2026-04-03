@@ -273,7 +273,7 @@ class WallBlocker {
 
     // Highlight stripe
     ctx.fillStyle = 'rgba(255,255,255,0.18)';
-    ctx.fillRect(sx + 3, sy + 3, this.w - 6, Math.min(5, this.h - 6));
+    ctx.fillRect(sx + 3, sy + 3, this.w - 6, Math.max(1, Math.min(5, this.h - 6)));
 
     // Border
     ctx.strokeStyle = '#9aa0b0';
@@ -389,7 +389,7 @@ class WallBlocker {
 
     // Highlight on step
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
-    ctx.fillRect(stepSx + 3, stepSy + 3, stepW - 6, Math.min(4, stepH - 6));
+    ctx.fillRect(stepSx + 3, stepSy + 3, stepW - 6, Math.max(1, Math.min(4, stepH - 6)));
 
     // Borders
     ctx.strokeStyle = '#9aa0b0';
