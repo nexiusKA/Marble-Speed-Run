@@ -208,6 +208,76 @@ class BoostPad {
   }
 }
 
+// ── WallBlocker ───────────────────────────────────────────────────────────────
+// A solid ledge that juts inward from the left or right track wall, forcing the
+// player to steer away from the edge rather than hugging it the whole way down.
+class WallBlocker {
+  constructor(worldY, side, wallX, protrude) {
+    this.worldY  = worldY;
+    this.side    = side;       // 'left' | 'right'
+    this.h       = 20;
+    this.protrude = protrude;  // how far into the track (px)
+
+    if (side === 'left') {
+      this.rx = wallX;                  // rect left edge  = wall
+      this.w  = protrude;
+    } else {
+      this.rx = wallX - protrude;       // rect left edge  = wall - protrude
+      this.w  = protrude;
+    }
+  }
+
+  update(_dt) {}
+
+  checkCollision(marble) {
+    const ry  = this.worldY - this.h / 2;
+    const hit = circleRectCollision(marble.x, marble.y, marble.radius, this.rx, ry, this.w, this.h);
+    if (!hit) return false;
+    marble.x += hit.nx * hit.depth;
+    marble.y += hit.ny * hit.depth;
+    const dot = marble.vx * hit.nx + marble.vy * hit.ny;
+    marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.45;
+    marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.45;
+    marble.triggerShake();
+    return true;
+  }
+
+  render(ctx, cameraY) {
+    const sx = this.rx;
+    const sy = this.worldY - this.h / 2 - cameraY;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(sx + 3, sy + 4, this.w, this.h);
+
+    // Body gradient (stone-grey)
+    const grad = ctx.createLinearGradient(sx, sy, sx, sy + this.h);
+    grad.addColorStop(0, '#7a8090');
+    grad.addColorStop(1, '#3a404c');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(sx, sy, this.w, this.h, 3);
+    ctx.fill();
+
+    // Highlight stripe
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(sx + 3, sy + 3, this.w - 6, 5);
+
+    // Border
+    ctx.strokeStyle = '#9aa0b0';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(sx, sy, this.w, this.h, 3);
+    ctx.stroke();
+
+    // Warning stripe on the inner tip
+    const tipW = 8;
+    const tipX = this.side === 'left' ? sx + this.w - tipW : sx;
+    ctx.fillStyle = 'rgba(255,80,80,0.55)';
+    ctx.fillRect(tipX, sy, tipW, this.h);
+  }
+}
+
 // ── Dynamic obstacle generator ────────────────────────────────────────────────
 // Builds a list of obstacles for a given vertical world-space range.
 // difficulty: 0 (easy) → 1 (hard)
@@ -227,17 +297,24 @@ function buildObstaclesForRange(fromY, toY, difficulty, track) {
     const cx    = (left + right) / 2;
 
     const rand = Math.random();
-    if (rand < 0.35) {
+    if (rand < 0.30) {
       // Rotating bar – length limited to track width
       const halfLen = Math.min(38 + Math.random() * 24, width * 0.42);
       const spd     = (1.4 + difficulty * 1.8) * (Math.random() < 0.5 ? 1 : -1);
       obs.push(new RotatingBar(cx, y, halfLen, spd));
-    } else if (rand < 0.70) {
+    } else if (rand < 0.58) {
       // Moving blocker
       const blkW   = 42 + Math.random() * 22;
       const margin = 10;
       const spd    = 90 + Math.random() * (80 + difficulty * 80);
       obs.push(new MovingBlocker(y, left + margin, right - margin, spd, blkW, 14));
+    } else if (rand < 0.83) {
+      // Wall blocker – juts inward from left or right wall
+      const side     = Math.random() < 0.5 ? 'left' : 'right';
+      const maxProtrude = Math.max(50, width * 0.55);
+      const protrude = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
+      const wallX    = side === 'left' ? left : right;
+      obs.push(new WallBlocker(y, side, wallX, protrude));
     } else {
       // Boost pad (reward, not hazard)
       obs.push(new BoostPad(cx, y, width));
