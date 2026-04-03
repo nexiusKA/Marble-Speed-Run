@@ -43,14 +43,14 @@ class Fog {
     // fogScreenY < marbleScreenY, approaches from the top of the viewport
     const fogScreenY = this.y - cameraY;
 
-    // ── Always show a faint purple haze at the very top of the screen ──────
+    // ── Always show a faint dark haze at the very top of the screen ────────
     // danger ramps from 0 (fog far off-screen, fogScreenY < -600) to 1 (fog at screen top)
     const danger = clamp((fogScreenY + 600) / 600, 0, 1);
     if (danger > 0) {
       const hazeH = 60 + danger * 80;
       const haze  = ctx.createLinearGradient(0, 0, 0, hazeH);
-      haze.addColorStop(0, `rgba(60,0,100,${0.12 + danger * 0.45})`);
-      haze.addColorStop(1, 'rgba(60,0,100,0)');
+      haze.addColorStop(0, `rgba(10,0,20,${0.10 + danger * 0.30})`);
+      haze.addColorStop(1, 'rgba(10,0,20,0)');
       ctx.fillStyle = haze;
       ctx.fillRect(0, 0, CANVAS_W, hazeH);
     }
@@ -58,16 +58,16 @@ class Fog {
     // ── Fog body fills from screen top down to the leading edge ───────────
     if (fogScreenY <= 0) {
       // Fog covers the entire viewport (or higher)
-      ctx.fillStyle = 'rgba(55,0,90,0.88)';
+      ctx.fillStyle = 'rgba(8,4,18,0.92)';
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       return;
     }
     if (fogScreenY >= CANVAS_H) return; // Leading edge is below screen — not visible
 
     const grad = ctx.createLinearGradient(0, 0, 0, fogScreenY);
-    grad.addColorStop(0,   'rgba(55,0,90,0.88)');
-    grad.addColorStop(0.6, 'rgba(70,0,115,0.50)');
-    grad.addColorStop(1,   'rgba(110,20,170,0.0)');
+    grad.addColorStop(0,   'rgba(8,4,18,0.92)');
+    grad.addColorStop(0.6, 'rgba(15,8,30,0.55)');
+    grad.addColorStop(1,   'rgba(25,12,45,0.0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, CANVAS_W, fogScreenY);
 
@@ -83,7 +83,7 @@ class Fog {
         34 + dip * 0.6, 16 + dip * 0.35,
         0, 0, Math.PI * 2
       );
-      ctx.fillStyle = 'rgba(100,0,160,0.14)';
+      ctx.fillStyle = 'rgba(20,10,35,0.18)';
       ctx.fill();
     }
   }
