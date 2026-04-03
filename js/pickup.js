@@ -4,7 +4,7 @@
 const PICKUP_CONFIG = {
   speed:    { color1: '#ffe040', color2: '#ff8800', label: '⚡', name: 'SPEED BOOST!' },
   dash:     { color1: '#40ffff', color2: '#0077ff', label: '▶▶', name: 'DASH!' },
-  fog_slow: { color1: '#dd88ff', color2: '#7700cc', label: '❄',  name: 'FOG SLOWED!' },
+  fog_slow: { color1: '#dd88ff', color2: '#7700cc', label: '❄',  name: 'BAR SLOWED!' },
   shield:   { color1: '#88ff99', color2: '#008844', label: '◆',  name: 'SHIELD!'     },
 };
 

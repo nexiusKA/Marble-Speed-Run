@@ -1,15 +1,17 @@
-// ── Fog ───────────────────────────────────────────────────────────────────────
-// The fog chases the marble from behind (smaller world Y = above the marble on
-// screen).  If its leading edge reaches the marble the run ends.
+// ── Crusher Bar ──────────────────────────────────────────────────────────────
+// A steel crusher bar that descends from above, chasing the marble.
+// this.y is its leading (bottom) edge in world coordinates.
+// The class is still named Fog so no other file needs changing.
+
+const BAR_H        = 32;  // visible bar thickness in px
+const BAR_STRIPE_W = 22;  // width of each hazard stripe
 
 class Fog {
   constructor(marbleStartY) {
-    // Start 400 world-units behind the marble's start position.
-    // This gap gives the player a brief moment to accelerate before the fog
-    // becomes visible at the top of the screen (~196 px into the viewport).
+    // Start 400 world-units above the marble's start position.
     this.y         = marbleStartY - 400;
     this.speed     = 400;   // px/s – updated each frame
-    this.slowTimer = 0;     // remaining seconds of fog-slow pickup effect
+    this.slowTimer = 0;     // remaining seconds of bar-slow pickup effect
   }
 
   // elapsedSec: seconds the current run has been active
@@ -27,7 +29,7 @@ class Fog {
     this.slowTimer = Math.max(this.slowTimer, duration);
   }
 
-  // True when the fog's leading edge has reached the marble
+  // True when the bar's bottom edge has reached the marble
   isCatching(marble) {
     return this.y >= marble.y - marble.radius;
   }
@@ -39,52 +41,98 @@ class Fog {
   }
 
   render(ctx, cameraY) {
-    // fog.y is the leading edge (lowest world Y = highest on screen)
-    // fogScreenY < marbleScreenY, approaches from the top of the viewport
-    const fogScreenY = this.y - cameraY;
+    // barBottom: screen Y of the bar's leading (bottom) edge
+    const barBottom = this.y - cameraY;
+    const barTop    = barBottom - BAR_H;
 
-    // ── Always show a faint dark haze at the very top of the screen ────────
-    // danger ramps from 0 (fog far off-screen, fogScreenY < -600) to 1 (fog at screen top)
-    const danger = clamp((fogScreenY + 600) / 600, 0, 1);
-    if (danger > 0) {
-      const hazeH = 60 + danger * 80;
-      const haze  = ctx.createLinearGradient(0, 0, 0, hazeH);
-      haze.addColorStop(0, `rgba(10,0,20,${0.10 + danger * 0.30})`);
-      haze.addColorStop(1, 'rgba(10,0,20,0)');
-      ctx.fillStyle = haze;
-      ctx.fillRect(0, 0, CANVAS_W, hazeH);
-    }
-
-    // ── Fog body fills from screen top down to the leading edge ───────────
-    if (fogScreenY <= 0) {
-      // Fog covers the entire viewport (or higher)
-      ctx.fillStyle = 'rgba(8,4,18,0.92)';
+    // ── Dark mass above the bar (the "wall" the player is fleeing) ─────────
+    if (barTop > 0) {
+      ctx.fillStyle = 'rgba(0,0,0,0.80)';
+      ctx.fillRect(0, 0, CANVAS_W, barTop);
+    } else if (barBottom > 0) {
+      // Bar has scrolled partly off the top – fill the whole visible portion
+      ctx.fillStyle = 'rgba(0,0,0,0.80)';
+      ctx.fillRect(0, 0, CANVAS_W, barBottom);
+    } else {
+      // Bar is entirely above the screen
+      ctx.fillStyle = 'rgba(0,0,0,0.80)';
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       return;
     }
-    if (fogScreenY >= CANVAS_H) return; // Leading edge is below screen — not visible
 
-    const grad = ctx.createLinearGradient(0, 0, 0, fogScreenY);
-    grad.addColorStop(0,   'rgba(8,4,18,0.92)');
-    grad.addColorStop(0.6, 'rgba(15,8,30,0.55)');
-    grad.addColorStop(1,   'rgba(25,12,45,0.0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, CANVAS_W, fogScreenY);
+    // Skip drawing the bar body if it is off-screen
+    if (barTop > CANVAS_H) return;
 
-    // ── Animated tendrils at the leading edge ─────────────────────────────
-    const t = Date.now() / 1000;
-    for (let i = 0; i < 7; i++) {
-      const xBase = (i / 6) * CANVAS_W;
-      const sway  = Math.sin(t * 1.1 + i * 0.85) * 22;
-      const dip   = Math.abs(Math.sin(t * 0.75 + i * 1.2)) * 28;
+    const drawTop = Math.max(barTop, 0);
+    const drawH   = Math.min(barBottom, CANVAS_H) - drawTop;
+    if (drawH <= 0) return;
+
+    // ── Steel body ────────────────────────────────────────────────────────
+    // Gradient is anchored to the bar's world position so the metal texture
+    // stays consistent even when the bar is partially clipped by the top edge.
+    const metal = ctx.createLinearGradient(0, barTop, 0, barBottom);
+    metal.addColorStop(0,    '#2a2a3a');
+    metal.addColorStop(0.12, '#72728a');
+    metal.addColorStop(0.38, '#b8b8cc');
+    metal.addColorStop(0.52, '#dcdcec');
+    metal.addColorStop(0.68, '#9494aa');
+    metal.addColorStop(0.86, '#585868');
+    metal.addColorStop(1,    '#1e1e2a');
+    ctx.fillStyle = metal;
+    ctx.fillRect(0, drawTop, CANVAS_W, drawH);
+
+    // ── Hazard stripe band along the bottom edge ──────────────────────────
+    const stripeH  = 7;
+    const stripeY  = barBottom - stripeH;
+    if (stripeY < CANVAS_H && stripeY + stripeH > 0) {
+      ctx.save();
       ctx.beginPath();
-      ctx.ellipse(
-        xBase + sway, fogScreenY + dip * 0.5,
-        34 + dip * 0.6, 16 + dip * 0.35,
-        0, 0, Math.PI * 2
-      );
-      ctx.fillStyle = 'rgba(20,10,35,0.18)';
-      ctx.fill();
+      ctx.rect(0, Math.max(stripeY, 0), CANVAS_W, Math.min(stripeH, CANVAS_H - stripeY));
+      ctx.clip();
+      for (let x = 0; x < CANVAS_W + BAR_STRIPE_W; x += BAR_STRIPE_W * 2) {
+        ctx.fillStyle = 'rgba(255,190,0,0.82)';
+        ctx.fillRect(x,                stripeY, BAR_STRIPE_W, stripeH);
+        ctx.fillStyle = 'rgba(18,18,18,0.82)';
+        ctx.fillRect(x + BAR_STRIPE_W, stripeY, BAR_STRIPE_W, stripeH);
+      }
+      ctx.restore();
+    }
+
+    // ── Danger glow below the bar ─────────────────────────────────────────
+    if (barBottom < CANVAS_H) {
+      const glowH    = 20;
+      const glowGrad = ctx.createLinearGradient(0, barBottom, 0, barBottom + glowH);
+      glowGrad.addColorStop(0, 'rgba(255,100,0,0.55)');
+      glowGrad.addColorStop(1, 'rgba(255,40,0,0)');
+      ctx.fillStyle = glowGrad;
+      ctx.fillRect(0, barBottom, CANVAS_W, Math.min(glowH, CANVAS_H - barBottom));
+    }
+
+    // ── Rivets along the upper third of the bar ───────────────────────────
+    const rivetY = barTop + BAR_H * 0.32;
+    if (rivetY >= 0 && rivetY < CANVAS_H) {
+      const rivetR   = 3.5;
+      const rivetGap = 44;
+      for (let x = rivetGap / 2; x < CANVAS_W; x += rivetGap) {
+        const rg = ctx.createRadialGradient(x - 1, rivetY - 1, 0, x, rivetY, rivetR);
+        rg.addColorStop(0,   '#ffffff');
+        rg.addColorStop(0.4, '#aaaacc');
+        rg.addColorStop(1,   '#2a2a3a');
+        ctx.beginPath();
+        ctx.arc(x, rivetY, rivetR, 0, Math.PI * 2);
+        ctx.fillStyle = rg;
+        ctx.fill();
+      }
+    }
+
+    // ── Top highlight scratch line ────────────────────────────────────────
+    if (barTop >= 0 && barTop < CANVAS_H) {
+      ctx.strokeStyle = 'rgba(220,220,240,0.50)';
+      ctx.lineWidth   = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, barTop + 2);
+      ctx.lineTo(CANVAS_W, barTop + 2);
+      ctx.stroke();
     }
   }
 }
