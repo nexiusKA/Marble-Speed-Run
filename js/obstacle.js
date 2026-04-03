@@ -311,7 +311,8 @@ function buildObstaclesForRange(fromY, toY, difficulty, track) {
     } else if (rand < 0.83) {
       // Wall blocker – juts inward from left or right wall
       const side     = Math.random() < 0.5 ? 'left' : 'right';
-      const protrude = clamp(50 + Math.random() * 55, 50, width * 0.55);
+      const maxProtrude = Math.max(50, width * 0.55);
+      const protrude = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
       const wallX    = side === 'left' ? left : right;
       obs.push(new WallBlocker(y, side, wallX, protrude));
     } else {
