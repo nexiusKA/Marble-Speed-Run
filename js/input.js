@@ -5,6 +5,7 @@ class Input {
     this.left   = false;
     this.right  = false;
     this.restart = false;
+    this._debugToggle = false; // fires once per backtick press
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp   = this._onKeyUp.bind(this);
@@ -17,6 +18,7 @@ class Input {
       case 'ArrowLeft':  case 'KeyA': this.left    = true;  break;
       case 'ArrowRight': case 'KeyD': this.right   = true;  break;
       case 'KeyR': case 'Escape':     this.restart = true;  break;
+      case 'Backquote':               this._debugToggle = true; break;
     }
   }
 
@@ -25,6 +27,7 @@ class Input {
       case 'ArrowLeft':  case 'KeyA': this.left    = false; break;
       case 'ArrowRight': case 'KeyD': this.right   = false; break;
       case 'KeyR': case 'Escape':     this.restart = false; break;
+      case 'Backquote':               this._debugToggle = false; break;
     }
   }
 
@@ -32,6 +35,13 @@ class Input {
   consumeRestart() {
     const v = this.restart;
     this.restart = false;
+    return v;
+  }
+
+  // Consume the debug-toggle flag so it fires once per press
+  consumeDebugToggle() {
+    const v = this._debugToggle;
+    this._debugToggle = false;
     return v;
   }
 

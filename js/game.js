@@ -26,6 +26,11 @@ class Game {
     const stored = parseInt(localStorage.getItem('mrBestDist') || '0', 10);
     this.bestDistance = Number.isFinite(stored) && stored >= 0 ? stored : 0;
 
+    // Debug mode: enable via ?debug in the URL or by pressing ` (backtick) in-game
+    this.debugMode = (typeof location !== 'undefined') &&
+                     new URLSearchParams(location.search).has('debug');
+    this.fps = 0; // updated by the game loop in main.js
+
     this.state = STATE.MENU;
     this._init();
 
@@ -63,6 +68,7 @@ class Game {
     this._init();
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
+    if (this.debugMode) console.log('[DEBUG] Run started');
   }
 
   restart() {
@@ -77,6 +83,12 @@ class Game {
 
   // ── Main update ───────────────────────────────────────────────────────────
   update(dt) {
+    // Debug-mode toggle (works in any state)
+    if (this.input.consumeDebugToggle()) {
+      this.debugMode = !this.debugMode;
+      console.log(`[DEBUG] Debug mode ${this.debugMode ? 'ON' : 'OFF'}`);
+    }
+
     if (this.state !== STATE.RUNNING) return;
 
     if (this.input.consumeRestart()) { this.restart(); return; }
@@ -209,6 +221,7 @@ class Game {
         break;
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
+    if (this.debugMode) console.log(`[DEBUG] Pickup collected: ${type}`);
     // Burst of particles on collection
     for (let i = 0; i < 14; i++) this._spawnParticle(this.marble.x, this.marble.y);
   }
@@ -225,6 +238,9 @@ class Game {
     if (isNew) {
       this.bestDistance = dist;
       localStorage.setItem('mrBestDist', String(dist));
+    }
+    if (this.debugMode) {
+      console.log(`[DEBUG] Game over | dist=${dist}m | best=${this.bestDistance}m | newBest=${isNew}`);
     }
     this.ui.updateBestDistance(this.bestDistance);
     this.ui.showGameOver(dist, this.bestDistance, isNew, () => this.restart());
@@ -320,6 +336,9 @@ class Game {
       ctx.restore();
     }
 
+    // Debug overlay (rendered last so it sits on top of everything)
+    if (this.debugMode) this._renderDebug(ctx);
+
     ctx.restore();
   }
 
@@ -378,6 +397,149 @@ class Game {
       ctx.fillStyle = `rgba(80,160,255,${intensity * 0.25})`;
       ctx.fill();
     }
+  }
+
+  // ── Debug overlay ─────────────────────────────────────────────────────────
+  _renderDebug(ctx) {
+    ctx.save();
+
+    // ── Info panel ──────────────────────────────────────────────────────────
+    const gap = this.marble
+      ? (this.marble.y - (this.marble.radius || 0) - this.fog.y).toFixed(1)
+      : 'n/a';
+
+    const lines = [
+      { text: '[ DEBUG ]  ` to toggle', color: '#00ff88' },
+      { text: `FPS: ${this.fps}`, color: '#ffff00' },
+      { text: `State: ${this.state}`, color: '#00ffff' },
+      { text: `Elapsed: ${(this.elapsed / 1000).toFixed(1)} s`, color: '#aaaacc' },
+      { text: '' },
+      { text: 'MARBLE', color: '#88aaff' },
+      { text: `  x=${this.marble.x.toFixed(1)}  y=${this.marble.y.toFixed(1)}`, color: '#aabbdd' },
+      { text: `  vx=${this.marble.vx.toFixed(1)}  vy=${this.marble.vy.toFixed(1)}`, color: '#aabbdd' },
+      { text: `  speed=${this.marble.speed.toFixed(1)}`, color: '#aabbdd' },
+      { text: '' },
+      { text: 'FOG', color: '#dd88ff' },
+      { text: `  y=${this.fog.y.toFixed(1)}  spd=${this.fog.speed.toFixed(1)}`, color: '#ccaaee' },
+      { text: `  gap=${gap}  slow=${this.fog.slowTimer.toFixed(2)} s`, color: '#ccaaee' },
+      { text: '' },
+      { text: `Camera Y: ${this.cameraY.toFixed(1)}`, color: '#ffaa44' },
+      { text: `Distance: ${this.distance} m`, color: '#ffaa44' },
+      { text: '' },
+      { text: `Obstacles: ${this.obstacles.length}`, color: '#88ff88' },
+      { text: `Pickups:   ${this.pickups.length}`, color: '#88ff88' },
+      { text: `Particles: ${this.particles.length}`, color: '#88ff88' },
+      { text: `Knots:     ${this.track.knots.length}`, color: '#88ff88' },
+      { text: '' },
+      { text: `SpeedBoost: ${this.speedBoostTimer.toFixed(2)} s`, color: '#ffdd00' },
+      { text: `Shield:     ${this.shieldTimer.toFixed(2)} s`, color: '#ffdd00' },
+    ];
+
+    const lineH  = 14;
+    const padX   = 6;
+    const padY   = 6;
+    const panelW = 192;
+    const panelH = lines.length * lineH + padY * 2;
+    const px     = 6;
+    const py     = 36; // below HUD
+
+    // Panel background
+    ctx.globalAlpha = 0.84;
+    ctx.fillStyle   = '#00080f';
+    ctx.fillRect(px, py, panelW, panelH);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth   = 1;
+    ctx.strokeRect(px + 0.5, py + 0.5, panelW - 1, panelH - 1);
+
+    ctx.font         = '11px monospace';
+    ctx.textAlign    = 'left';
+    ctx.textBaseline = 'top';
+    for (let i = 0; i < lines.length; i++) {
+      const { text, color } = lines[i];
+      if (!text) continue;
+      ctx.fillStyle = color || '#cccccc';
+      ctx.fillText(text, px + padX, py + padY + i * lineH);
+    }
+
+    // ── Hitboxes ────────────────────────────────────────────────────────────
+    ctx.lineWidth = 1.5;
+
+    // Marble collision circle
+    const msy = this.marble.y - this.cameraY;
+    ctx.beginPath();
+    ctx.arc(this.marble.x, msy, this.marble.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = '#00ff00';
+    ctx.setLineDash([4, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Fog leading-edge line
+    const fogSY = this.fog.y - this.cameraY;
+    if (fogSY > -4 && fogSY < CANVAS_H + 4) {
+      ctx.beginPath();
+      ctx.moveTo(0, fogSY);
+      ctx.lineTo(CANVAS_W, fogSY);
+      ctx.strokeStyle = '#ff00ff';
+      ctx.lineWidth   = 2;
+      ctx.setLineDash([8, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font      = '10px monospace';
+      ctx.fillStyle = '#ff00ff';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('FOG', CANVAS_W - 4, fogSY - 2);
+    }
+
+    // Obstacle hitboxes
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    for (const obs of this.obstacles) {
+      if (obs instanceof RotatingBar) {
+        const { ax, ay, bx, by } = obs.endpoints();
+        ctx.beginPath();
+        ctx.moveTo(ax, ay - this.cameraY);
+        ctx.lineTo(bx, by - this.cameraY);
+        ctx.strokeStyle = '#ff4400';
+        ctx.stroke();
+      } else if (obs instanceof MovingBlocker) {
+        const rx = obs.x - obs.w / 2;
+        const ry = obs.worldY - obs.h / 2 - this.cameraY;
+        if (ry > -obs.h && ry < CANVAS_H) {
+          ctx.beginPath();
+          ctx.rect(rx, ry, obs.w, obs.h);
+          ctx.strokeStyle = '#ff8800';
+          ctx.stroke();
+        }
+      } else if (obs instanceof BoostPad) {
+        const rx = obs.cx - obs.w / 2;
+        const ry = obs.worldY - obs.h / 2 - this.cameraY;
+        if (ry > -obs.h && ry < CANVAS_H) {
+          ctx.beginPath();
+          ctx.rect(rx, ry, obs.w, obs.h);
+          ctx.strokeStyle = '#00ff88';
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.setLineDash([]);
+
+    // Pickup collection radii
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    for (const pu of this.pickups) {
+      if (pu.collected) continue;
+      const psy = pu.worldY - this.cameraY;
+      if (psy < -60 || psy > CANVAS_H + 60) continue;
+      ctx.beginPath();
+      ctx.arc(pu.x, psy, pu.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = '#ffff00';
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    ctx.restore();
   }
 
   // ── Background stars (seeded per camera bucket) ───────────────────────────
