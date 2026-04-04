@@ -198,6 +198,20 @@ body {
 .pl-fog    { color: #dd88ff; }
 .pl-shield { color: #88ff99; }
 
+/* ── Version tag ─────────────────────────────── */
+#version-tag {
+  position: absolute;
+  top: 6px;
+  right: 48px;
+  color: #5555aa;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  z-index: 11;
+  user-select: none;
+}
+
 /* ── Button ──────────────────────────────────── */
 .btn {
   background: linear-gradient(135deg, #3333bb, #5555ff);
