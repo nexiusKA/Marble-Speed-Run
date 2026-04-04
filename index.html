@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Marble Rush</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -13,6 +13,14 @@
     <div id="hud">
       <div id="hud-dist">Dist: <span id="dist-display">0</span> m</div>
       <div id="hud-best">Best: <span id="best-display">--</span></div>
+      <button id="fullscreen-btn" class="hud-fs-btn" title="Enter fullscreen" aria-label="Enter fullscreen">
+        <svg id="fs-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
+          <polyline points="0,4 0,0 4,0"/>
+          <polyline points="10,0 14,0 14,4"/>
+          <polyline points="14,10 14,14 10,14"/>
+          <polyline points="4,14 0,14 0,10"/>
+        </svg>
+      </button>
     </div>
 
     <div id="mobile-controls">
