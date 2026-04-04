@@ -10,6 +10,9 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 
+const pkg     = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+const version = pkg.version || '0.0.0';
+
 // ── helpers ────────────────────────────────────────────────────────────────
 
 function ensureDir(dir) {
@@ -45,6 +48,8 @@ const buildNumber = process.env.BUILD_NUMBER || '0';
 
 function stampedHtml(srcPath) {
   let html = fs.readFileSync(srcPath, 'utf8');
+  // Replace version placeholder with version from package.json
+  html = html.replace('v__VERSION__', `v${version}`);
   // Inject a hidden build-number meta tag just before </head>
   html = html.replace(
     '</head>',
