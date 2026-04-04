@@ -13,7 +13,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
+  /* Use dvh on browsers that support it so the address bar is excluded */
+  height: 100dvh;
   font-family: 'Segoe UI', Arial, sans-serif;
   overflow: hidden;
 }
@@ -30,6 +32,7 @@ body {
     0 0 100px #33009922,
     inset 0 0 24px rgba(130,0,255,0.08);
   background: #07071a;
+  transform-origin: center center;
 }
 
 #gameCanvas {
@@ -49,6 +52,7 @@ body {
   right: 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0 14px;
   pointer-events: none;
   z-index: 10;
@@ -69,6 +73,30 @@ body {
 #hud-dist span,
 #hud-best span {
   color: #7de8ff;
+}
+
+/* ── Fullscreen button ───────────────────────────────── */
+.hud-fs-btn {
+  background: rgba(0, 0, 0, 0.55);
+  color: #e0e0ff;
+  border: 1px solid #3a3a7a;
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.1s, border-color 0.1s;
+  outline: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.hud-fs-btn:hover {
+  background: rgba(60, 0, 120, 0.7);
+  border-color: #8800ff;
 }
 
 /* ── Overlays ────────────────────────────────── */
