@@ -49,7 +49,7 @@ const buildNumber = process.env.BUILD_NUMBER || '0';
 function stampedHtml(srcPath) {
   let html = fs.readFileSync(srcPath, 'utf8');
   // Replace version placeholder with version from package.json
-  html = html.replace('v0.2', `v${version}`);
+  html = html.replace(/v\d+\.\d+(?:\.\d+)?/, `v${version}`);
   // Inject a hidden build-number meta tag just before </head>
   html = html.replace(
     '</head>',
