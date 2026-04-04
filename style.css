@@ -212,6 +212,48 @@ body {
   user-select: none;
 }
 
+/* ── Git Info collapsible ────────────────────────────────── */
+.git-info {
+  margin-top: 0.9rem;
+  border: 1px solid rgba(100, 100, 200, 0.35);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  color: rgba(170, 170, 220, 0.7);
+  text-align: left;
+  letter-spacing: 0;
+}
+
+.git-info > summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  user-select: none;
+  list-style: none;
+}
+
+.git-info > summary::-webkit-details-marker { display: none; }
+.git-info > summary::before { content: "▶ "; font-size: 0.65rem; }
+.git-info[open] > summary::before { content: "▼ "; }
+
+.git-info-grid {
+  margin-top: 7px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  word-break: break-all;
+}
+
+.git-info-grid dt {
+  color: rgba(125, 125, 200, 0.7);
+  white-space: nowrap;
+}
+
+.git-info-grid dd {
+  margin: 0;
+  color: rgba(170, 170, 255, 0.9);
+}
+
 /* ── Button ──────────────────────────────────── */
 .btn {
   background: linear-gradient(135deg, #3333bb, #5555ff);

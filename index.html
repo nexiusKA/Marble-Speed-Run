@@ -45,6 +45,15 @@
           <span class="pl-shield">◆ Shield</span>
         </div>
         <button id="start-btn" class="btn">START</button>
+        <details class="git-info" id="git-info">
+          <summary>Build Info</summary>
+          <dl class="git-info-grid">
+            <dt>Run</dt><dd id="gi-run">dev</dd>
+            <dt>Commit</dt><dd id="gi-sha">dev</dd>
+            <dt>Branch</dt><dd id="gi-branch">dev</dd>
+            <dt>Date</dt><dd id="gi-date">dev</dd>
+          </dl>
+        </details>
       </div>
     </div>
 
@@ -62,6 +71,7 @@
 
   <audio id="bg-music" src="vacation_synth.mp3" loop></audio>
 
+  <script src="js/version.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/input.js"></script>
   <script src="js/marble.js"></script>
