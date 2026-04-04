@@ -70,6 +70,8 @@ class Game {
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
+    const bgMusic = document.getElementById('bg-music');
+    if (bgMusic && bgMusic.paused) bgMusic.play().catch(() => {});
   }
 
   restart() {
