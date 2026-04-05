@@ -31,8 +31,9 @@ class Game {
                      new URLSearchParams(location.search).has('debug');
     this.fps = 0; // updated by the game loop in main.js
 
-    // Sound settings – persisted across sessions
-    this._soundOn  = localStorage.getItem('mrSoundOn')  !== 'false';
+    // Sound settings – volume is persisted; muted state is session-only so a
+    // stale "off" value from a previous session never silences the game on reload.
+    this._soundOn  = true;
     const volRaw   = parseInt(localStorage.getItem('mrVolume') || '70', 10);
     this._volume   = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
 
@@ -48,7 +49,7 @@ class Game {
     // Surface audio-load failures so they are visible in the console
     const bgMusicEl = document.getElementById('bg-music');
     if (bgMusicEl) {
-      bgMusicEl.volume = this._soundOn ? this._volume / 100 : 0;
+      bgMusicEl.volume = this._volume / 100;
       bgMusicEl.addEventListener('error', () => {
         console.warn('[Audio] Failed to load background music:', bgMusicEl.error);
       });
@@ -67,7 +68,6 @@ class Game {
 
     toggleBtn.addEventListener('click', () => {
       this._soundOn = !this._soundOn;
-      localStorage.setItem('mrSoundOn', String(this._soundOn));
       this._applyAudioSettings();
       this._updateSoundUI(toggleBtn, volSlider);
     });
@@ -78,7 +78,6 @@ class Game {
       // Only re-enable sound if slider was dragged up from zero (explicit "turn on" intent)
       if (prev === 0 && this._volume > 0) this._soundOn = true;
       localStorage.setItem('mrVolume', String(this._volume));
-      localStorage.setItem('mrSoundOn', String(this._soundOn));
       this._applyAudioSettings();
       this._updateSoundUI(toggleBtn, volSlider);
     });
@@ -100,10 +99,26 @@ class Game {
 
   _playMusic() {
     const bgMusic = document.getElementById('bg-music');
-    if (!bgMusic) return;
+    if (!bgMusic || !this._soundOn || this._volume === 0) return;
     this._applyAudioSettings();
     if (bgMusic.paused) {
-      bgMusic.play().catch(e => console.warn('[Audio] play() failed:', e));
+      bgMusic.play().catch(e => {
+        console.warn('[Audio] play() failed:', e);
+        // Retry on the next user gesture in case the browser blocked autoplay
+        let retryPending = false;
+        const retry = () => {
+          document.removeEventListener('click',      retry);
+          document.removeEventListener('keydown',    retry);
+          document.removeEventListener('touchstart', retry);
+          if (retryPending) return;
+          retryPending = true;
+          this._applyAudioSettings();
+          bgMusic.play().catch(e2 => console.debug('[Audio] retry play() failed:', e2));
+        };
+        document.addEventListener('click',      retry, { once: true });
+        document.addEventListener('keydown',    retry, { once: true });
+        document.addEventListener('touchstart', retry, { once: true });
+      });
     }
   }
 
