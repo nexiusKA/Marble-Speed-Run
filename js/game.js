@@ -31,18 +31,79 @@ class Game {
                      new URLSearchParams(location.search).has('debug');
     this.fps = 0; // updated by the game loop in main.js
 
+    // Sound settings – persisted across sessions
+    this._soundOn  = localStorage.getItem('mrSoundOn')  !== 'false';
+    const volRaw   = parseInt(localStorage.getItem('mrVolume') || '70', 10);
+    this._volume   = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
+
     this.state = STATE.MENU;
     this._init();
 
     this.ui.showStart(() => this.startRun());
     this.ui.updateBestDistance(this.bestDistance);
 
+    // Wire up sound controls in the start overlay
+    this._initSoundControls();
+
     // Surface audio-load failures so they are visible in the console
     const bgMusicEl = document.getElementById('bg-music');
     if (bgMusicEl) {
+      bgMusicEl.volume = this._soundOn ? this._volume / 100 : 0;
       bgMusicEl.addEventListener('error', () => {
         console.warn('[Audio] Failed to load background music:', bgMusicEl.error);
       });
+    }
+  }
+
+  // ── Sound control wiring ──────────────────────────────────────────────────
+  _initSoundControls() {
+    const toggleBtn  = document.getElementById('sound-toggle');
+    const volSlider  = document.getElementById('volume-slider');
+    if (!toggleBtn || !volSlider) return;
+
+    // Restore saved values
+    volSlider.value = this._volume;
+    this._updateSoundUI(toggleBtn, volSlider);
+
+    toggleBtn.addEventListener('click', () => {
+      this._soundOn = !this._soundOn;
+      localStorage.setItem('mrSoundOn', String(this._soundOn));
+      this._applyAudioSettings();
+      this._updateSoundUI(toggleBtn, volSlider);
+    });
+
+    volSlider.addEventListener('input', () => {
+      const prev = this._volume;
+      this._volume = parseInt(volSlider.value, 10);
+      // Only re-enable sound if slider was dragged up from zero (explicit "turn on" intent)
+      if (prev === 0 && this._volume > 0) this._soundOn = true;
+      localStorage.setItem('mrVolume', String(this._volume));
+      localStorage.setItem('mrSoundOn', String(this._soundOn));
+      this._applyAudioSettings();
+      this._updateSoundUI(toggleBtn, volSlider);
+    });
+  }
+
+  _updateSoundUI(toggleBtn, volSlider) {
+    if (!toggleBtn || !volSlider) return;
+    toggleBtn.textContent = this._soundOn && this._volume > 0 ? '🔊' : '🔇';
+    toggleBtn.classList.toggle('muted', !this._soundOn || this._volume === 0);
+    // Always reflect the actual volume value on the slider; muted state is shown via icon only
+    volSlider.style.setProperty('--val', `${this._volume}%`);
+  }
+
+  _applyAudioSettings() {
+    const bgMusic = document.getElementById('bg-music');
+    if (!bgMusic) return;
+    bgMusic.volume = (this._soundOn && this._volume > 0) ? this._volume / 100 : 0;
+  }
+
+  _playMusic() {
+    const bgMusic = document.getElementById('bg-music');
+    if (!bgMusic) return;
+    this._applyAudioSettings();
+    if (bgMusic.paused) {
+      bgMusic.play().catch(e => console.warn('[Audio] play() failed:', e));
     }
   }
 
@@ -78,8 +139,7 @@ class Game {
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
-    const bgMusic = document.getElementById('bg-music');
-    if (bgMusic && bgMusic.paused) bgMusic.play().catch(e => console.warn('[Audio] play() failed:', e));
+    this._playMusic();
   }
 
   restart() {
