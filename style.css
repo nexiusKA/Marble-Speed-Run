@@ -328,6 +328,86 @@ body {
   cursor: pointer;
 }
 
+/* ── Steering sensitivity controls ──────────────────────────────── */
+.steer-controls {
+  margin-bottom: 18px;
+}
+
+.steer-label {
+  color: #aaaadd;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.steer-label span {
+  color: #7de8ff;
+  font-weight: 700;
+}
+
+.steer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.steer-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 130px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #6655ff var(--val, 50%), #333366 var(--val, 50%));
+  outline: none;
+  cursor: pointer;
+}
+
+.steer-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8877ff;
+  border: 2px solid #ccbbff;
+  box-shadow: 0 0 6px #8877ffaa;
+  cursor: pointer;
+}
+
+.steer-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8877ff;
+  border: 2px solid #ccbbff;
+  box-shadow: 0 0 6px #8877ffaa;
+  cursor: pointer;
+}
+
+.btn-small {
+  background: rgba(51, 51, 187, 0.5);
+  color: #ccccff;
+  border: 1.5px solid #4040a0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.btn-small:hover {
+  background: rgba(80, 80, 200, 0.7);
+  border-color: #8800ff;
+}
+
+.btn-small:active {
+  background: rgba(40, 40, 160, 0.8);
+}
+
 /* ── Button ──────────────────────────────────── */
 .btn {
   background: linear-gradient(135deg, #3333bb, #5555ff);

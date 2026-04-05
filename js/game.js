@@ -37,6 +37,10 @@ class Game {
     const volRaw   = parseInt(localStorage.getItem('mrVolume') || '70', 10);
     this._volume   = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
 
+    // Steering sensitivity (0–100, default 50). Persisted across sessions.
+    const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '50', 10);
+    this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 0 && steerRaw <= 100 ? steerRaw : 50;
+
     this.state = STATE.MENU;
     this._init();
 
@@ -45,6 +49,9 @@ class Game {
 
     // Wire up sound controls in the start overlay
     this._initSoundControls();
+
+    // Wire up steering sensitivity controls in the start overlay
+    this._initSteerControls();
 
     // Surface audio-load failures so they are visible in the console
     const bgMusicEl = document.getElementById('bg-music');
@@ -95,6 +102,43 @@ class Game {
     const bgMusic = document.getElementById('bg-music');
     if (!bgMusic) return;
     bgMusic.volume = (this._soundOn && this._volume > 0) ? this._volume / 100 : 0;
+  }
+
+  // ── Steering sensitivity control wiring ───────────────────────────────────
+  _initSteerControls() {
+    const slider     = document.getElementById('steer-slider');
+    const valueEl    = document.getElementById('steer-value');
+    const defaultBtn = document.getElementById('steer-default-btn');
+    if (!slider || !valueEl || !defaultBtn) return;
+
+    const STEER_DEFAULT = 50;
+
+    const apply = (v) => {
+      this._steerSensitivity = v;
+      valueEl.textContent = v;
+      slider.style.setProperty('--val', `${v}%`);
+      localStorage.setItem('mrSteerSens', String(v));
+    };
+
+    // Restore saved value
+    slider.value = this._steerSensitivity;
+    apply(this._steerSensitivity);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+
+    defaultBtn.addEventListener('click', () => {
+      slider.value = STEER_DEFAULT;
+      apply(STEER_DEFAULT);
+    });
+  }
+
+  // Maps the 0–100 sensitivity setting to a steer-force multiplier.
+  // At 50 (default) the multiplier is exactly 1.0 (i.e. the built-in STEER_FORCE).
+  // At 0 the marble steers at 20 % of the default; at 100 it steers at 180 %.
+  _steerMult() {
+    return 0.2 + (this._steerSensitivity / 100) * 1.6;
   }
 
   _playMusic() {
@@ -183,7 +227,7 @@ class Game {
     const elapsedSec = this.elapsed / 1000;
 
     // ── Marble physics ──────────────────────────────────────────────────────
-    this.marble.update(dt, this.input, this.track);
+    this.marble.update(dt, this.input, this.track, this._steerMult());
 
     // Speed-boost pickup: extra downward push
     if (this.speedBoostTimer > 0) {
