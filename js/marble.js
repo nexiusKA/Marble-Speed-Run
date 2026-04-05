@@ -2,8 +2,8 @@
 
 const MARBLE_RADIUS  = 12;
 const GRAVITY        = 260;   // px / s²  downward pull (reduced for more controllable feel)
-const STEER_FORCE    = 240;   // lateral acceleration from input (reduced for rolling feel)
-const MAX_SPEED_X    = 160;   // horizontal terminal speed (reduced so marble rolls, not rockets)
+const STEER_FORCE    = 480;   // lateral acceleration from input
+const MAX_SPEED_X    = 320;   // horizontal terminal speed
 const MAX_SPEED_Y    = 480;   // vertical terminal speed (reduced to give player more reaction time)
 const DAMPING_X      = 0.80;  // per-frame horizontal damping (higher damping = marble slows quickly, steering feels crisp)
 const BOUNCE_FACTOR  = 0.35;  // energy kept on wall bounce
