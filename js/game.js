@@ -36,6 +36,14 @@ class Game {
 
     this.ui.showStart(() => this.startRun());
     this.ui.updateBestDistance(this.bestDistance);
+
+    // Surface audio-load failures so they are visible in the console
+    const bgMusicEl = document.getElementById('bg-music');
+    if (bgMusicEl) {
+      bgMusicEl.addEventListener('error', () => {
+        console.warn('[Audio] Failed to load background music:', bgMusicEl.error);
+      });
+    }
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
@@ -71,7 +79,7 @@ class Game {
     this.ui.updateDistance(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
     const bgMusic = document.getElementById('bg-music');
-    if (bgMusic && bgMusic.paused) bgMusic.play().catch(() => {});
+    if (bgMusic && bgMusic.paused) bgMusic.play().catch(e => console.warn('[Audio] play() failed:', e));
   }
 
   restart() {
@@ -251,6 +259,8 @@ class Game {
     }
     this.ui.updateBestDistance(this.bestDistance);
     this.ui.showGameOver(dist, this.bestDistance, isNew, () => this.restart());
+    const bgMusic = document.getElementById('bg-music');
+    if (bgMusic && !bgMusic.paused) bgMusic.pause();
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
