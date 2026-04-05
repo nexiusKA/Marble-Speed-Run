@@ -254,6 +254,80 @@ body {
   color: rgba(170, 170, 255, 0.9);
 }
 
+/* ── Sound controls ──────────────────────────────── */
+.sound-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sound-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid #4040a0;
+  border-radius: 8px;
+  color: #e0e0ff;
+  font-size: 20px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  outline: none;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.sound-btn:hover {
+  background: rgba(60, 0, 120, 0.7);
+  border-color: #8800ff;
+}
+
+.sound-btn:active {
+  transform: scale(0.93);
+}
+
+.sound-btn.muted {
+  color: #555588;
+  border-color: #333366;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 130px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #6655ff var(--val, 70%), #333366 var(--val, 70%));
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8877ff;
+  border: 2px solid #ccbbff;
+  box-shadow: 0 0 6px #8877ffaa;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8877ff;
+  border: 2px solid #ccbbff;
+  box-shadow: 0 0 6px #8877ffaa;
+  cursor: pointer;
+}
+
 /* ── Button ──────────────────────────────────── */
 .btn {
   background: linear-gradient(135deg, #3333bb, #5555ff);
