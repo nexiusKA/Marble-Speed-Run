@@ -1,10 +1,10 @@
 // ── Marble ───────────────────────────────────────────────────────────────────
 
 const MARBLE_RADIUS  = 12;
-const GRAVITY        = 370;   // px / s²  downward pull
-const STEER_FORCE    = 480;   // lateral acceleration from input
-const MAX_SPEED_X    = 280;   // horizontal terminal speed
-const MAX_SPEED_Y    = 680;   // vertical terminal speed
+const GRAVITY        = 260;   // px / s²  downward pull (reduced for more controllable feel)
+const STEER_FORCE    = 400;   // lateral acceleration from input
+const MAX_SPEED_X    = 260;   // horizontal terminal speed
+const MAX_SPEED_Y    = 480;   // vertical terminal speed (reduced to give player more reaction time)
 const DAMPING_X      = 0.88;  // per-frame horizontal damping factor (applied each frame)
 const BOUNCE_FACTOR  = 0.35;  // energy kept on wall bounce
 const TRAIL_MAX      = 22;
