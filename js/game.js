@@ -210,10 +210,10 @@ class Game {
   }
 
   // Maps the 1–100 sensitivity setting to a steer-force multiplier.
-  // At 50 (mid) the multiplier is 1.0 (i.e. the built-in STEER_FORCE / default feel).
-  // At 1 steering is nearly disabled; at 100 it steers at 2× the default.
+  // At 25 the multiplier is 1.0 (original default feel).
+  // At 1 steering is nearly disabled; at 100 it steers at 4× the default.
   _steerMult() {
-    return this._steerSensitivity / 50;
+    return this._steerSensitivity / 25;
   }
 
   // ── Fall speed control wiring ─────────────────────────────────────────────
@@ -352,7 +352,7 @@ class Game {
     // Speed-boost pickup: extra downward push
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y);
+      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y * this._fallMult());
     }
 
     // ── Fog ─────────────────────────────────────────────────────────────────
@@ -433,7 +433,7 @@ class Game {
     // Speed boost still applies inside rush
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y);
+      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y * this._fallMult());
     }
 
     // Update door obstacles and check marble collisions
@@ -640,7 +640,7 @@ class Game {
         this.speedBoostTimer = 4;
         break;
       case 'dash':
-        this.marble.vy = Math.min(this.marble.vy + 500, MAX_SPEED_Y);
+        this.marble.vy = Math.min(this.marble.vy + 500, MAX_SPEED_Y * this._fallMult());
         break;
       case 'fog_slow':
         this.fog.slowDown(6);
