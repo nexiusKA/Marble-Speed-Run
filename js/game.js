@@ -561,7 +561,7 @@ class Game {
     this.powerRushObstacles  = [];
     this.powerRushLasers     = [];   // LaserBeam instances active during rush
     this.powerRushPickups    = [];   // rush-extend pickups inside the corridor
-    this.powerRushPickupCount = 0;  // total rush-extend pickups spawned this rush (capped at 3)
+    this.powerRushPickupCount = 0;  // total rush-extend pickups spawned this rush (max 3 to prevent excessive duration)
     this.powerRushGenY       = 0;   // generation cursor for rush door gates
     this.powerRushLaserGenY  = 0;   // generation cursor for laser beams
     this.powerRushPickupGenY = 0;   // generation cursor for rush-extend pickups

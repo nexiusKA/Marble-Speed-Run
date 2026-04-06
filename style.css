@@ -551,7 +551,7 @@ body {
   transform: translateY(1px);
 }
 
-
+/* ── Mobile controls ─────────────────────────────────── */
 #mobile-controls {
   position: absolute;
   bottom: 10px;
