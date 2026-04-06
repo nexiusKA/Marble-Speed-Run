@@ -25,19 +25,19 @@ class Marble {
     this.shakeTimer = 0;
   }
 
-  update(dt, input, track, steerMult = 1) {
+  update(dt, input, track, steerMult = 1, gravityMult = 1) {
     // Steering
     if (input.left)  this.vx -= STEER_FORCE * steerMult * dt;
     if (input.right) this.vx += STEER_FORCE * steerMult * dt;
 
     // Gravity
-    this.vy += GRAVITY * dt;
+    this.vy += GRAVITY * gravityMult * dt;
 
     // Down boost – extra downward acceleration when held
-    if (input.down) this.vy += GRAVITY * 1.5 * dt;
+    if (input.down) this.vy += GRAVITY * gravityMult * 1.5 * dt;
 
     // Up brake – slow downward velocity when held
-    if (input.up && this.vy > 0) this.vy = Math.max(0, this.vy - GRAVITY * 2 * dt);
+    if (input.up && this.vy > 0) this.vy = Math.max(0, this.vy - GRAVITY * gravityMult * 2 * dt);
 
     // Horizontal damping for arcade feel
     this.vx *= Math.pow(DAMPING_X, dt * 60);
