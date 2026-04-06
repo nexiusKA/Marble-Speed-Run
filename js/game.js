@@ -124,9 +124,9 @@ class Game {
     const vol    = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
     this.sound   = new SoundManager(vol, false);
 
-    // Steering sensitivity (0–100, default 100). Persisted across sessions.
+    // Steering sensitivity (1–100, default 100). Persisted across sessions.
     const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '100', 10);
-    this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 0 && steerRaw <= 100 ? steerRaw : 100;
+    this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 1 && steerRaw <= 100 ? steerRaw : 100;
 
     this.state = STATE.MENU;
     this._init();
@@ -178,9 +178,10 @@ class Game {
     const defaultBtn = document.getElementById('steer-default-btn');
     if (!slider || !valueEl || !defaultBtn) return;
 
-    const STEER_DEFAULT = 50;
+    const STEER_DEFAULT = 100;
 
     const apply = (v) => {
+      v = Math.max(1, v);
       this._steerSensitivity = v;
       valueEl.textContent = v;
       slider.style.setProperty('--val', `${v}%`);
@@ -201,11 +202,11 @@ class Game {
     });
   }
 
-  // Maps the 0–100 sensitivity setting to a steer-force multiplier.
-  // At 50 (default) the multiplier is exactly 1.0 (i.e. the built-in STEER_FORCE).
-  // At 0 steering is fully disabled; at 100 it steers at 200 % of the default.
+  // Maps the 1–100 sensitivity setting to a steer-force multiplier.
+  // At 100 (default) the multiplier is exactly 1.0 (i.e. the built-in STEER_FORCE).
+  // At 1 steering is nearly disabled; at 100 it steers at 100 % of the default.
   _steerMult() {
-    return this._steerSensitivity / 50;
+    return this._steerSensitivity / 100;
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
