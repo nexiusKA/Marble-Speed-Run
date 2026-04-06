@@ -5,6 +5,7 @@ class UI {
     this.distEl      = document.getElementById('dist-display');
     this.bestEl      = document.getElementById('best-display');
     this.voidDistEl  = document.getElementById('void-display');
+    this.timerEl     = document.getElementById('timer-display');
     this.overlay     = document.getElementById('overlay');
     this.gameOverOvl = document.getElementById('gameover-overlay');
     this.goDistEl    = document.getElementById('go-dist');
@@ -40,6 +41,14 @@ class UI {
 
   updateBestDistance(m) {
     if (this.bestEl) this.bestEl.textContent = m === 0 ? '--' : `${m} m`;
+  }
+
+  updateTimer(ms) {
+    if (!this.timerEl) return;
+    const totalS = ms / 1000;
+    const mins   = Math.floor(totalS / 60);
+    const secs   = (totalS % 60).toFixed(1).padStart(4, '0');
+    this.timerEl.textContent = `${mins}:${secs}`;
   }
 
   _show(el) {

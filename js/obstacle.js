@@ -365,94 +365,126 @@ class ElectricSpinner {
 }
 
 // ── WallBlocker ───────────────────────────────────────────────────────────────
-// A diagonal bar that juts inward from the left or right track wall, angled
-// 40–80° from horizontal (sloping downward) so the marble rolls off rather
-// than getting stuck on a flat ledge.
-// Colour palettes for wall blockers – each entry: [bodyStart, bodyEnd, tipColor]
-const WALL_BLOCKER_STYLES = [
-  ['#7a8090', '#3a404c', 'rgba(255,80,80,0.85)'],   // stone grey / red tip
-  ['#8b4513', '#4a2008', 'rgba(255,160,40,0.9)'],   // wood brown / orange tip
-  ['#2e6b2e', '#143214', 'rgba(80,255,80,0.85)'],   // dark green / green tip
-  ['#5a3a7a', '#2a1040', 'rgba(200,100,255,0.85)'], // purple / violet tip
-  ['#7a5a10', '#3a2800', 'rgba(255,220,0,0.9)'],    // rusted gold / yellow tip
-];
-
+// A small electrified blue line that protrudes horizontally inward from the
+// left or right track wall.  Hitting it bounces the marble back with high
+// restitution instead of killing its speed.
 class WallBlocker {
   constructor(worldY, side, wallX, protrude) {
     this.worldY = worldY;
     this.side   = side;   // 'left' | 'right'
-    this.barW   = 8;      // visual / collision bar width
 
-    // Random angle between 40° and 80° from horizontal, sloping downward inward
-    const deg = 40 + Math.random() * 40;
-    const rad = deg * Math.PI / 180;
-    const dirX = (side === 'left' ? 1 : -1) * Math.cos(rad);
-    const dirY = Math.sin(rad);   // positive = downward in canvas space
+    // Horizontal segment anchored to the wall, extending inward
+    if (side === 'left') {
+      this.ax = wallX;
+      this.ay = worldY;
+      this.bx = wallX + protrude;
+      this.by = worldY;
+    } else {
+      this.ax = wallX - protrude;
+      this.ay = worldY;
+      this.bx = wallX;
+      this.by = worldY;
+    }
 
-    // Base is anchored to the wall; tip extends inward and downward
-    this.ax = wallX;
-    this.ay = worldY;
-    this.bx = wallX + dirX * protrude;
-    this.by = worldY + dirY * protrude;
-
-    // Pick a random visual style so blockers don't all look the same
-    this.style = WALL_BLOCKER_STYLES[Math.floor(Math.random() * WALL_BLOCKER_STYLES.length)];
-    // Vary thickness slightly for extra variety
-    this.barW = 6 + Math.floor(Math.random() * 5);
+    this.pulse        = Math.random() * Math.PI * 2;
+    this._jitter      = Array.from({ length: 10 }, () => Math.random() - 0.5);
+    this._jitterTimer = 0;
   }
 
-  update(_dt) {}
+  update(dt) {
+    this.pulse = (this.pulse + dt * 8) % (Math.PI * 2);
+    this._jitterTimer -= dt;
+    if (this._jitterTimer <= 0) {
+      this._jitterTimer = 0.06;
+      this._jitter = Array.from({ length: 10 }, () => Math.random() - 0.5);
+    }
+  }
 
   checkCollision(marble) {
     const hit = circleSegmentCollision(marble.x, marble.y, marble.radius, this.ax, this.ay, this.bx, this.by);
     if (!hit) return false;
     marble.x += hit.nx * hit.depth;
     marble.y += hit.ny * hit.depth;
+    // Energetic bounce-back: keep most speed so the marble bounces away
     const dot = marble.vx * hit.nx + marble.vy * hit.ny;
-    marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.45;
-    marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.45;
+    marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.85;
+    marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.85;
     marble.triggerShake();
     return true;
+  }
+
+  // Zigzag lightning bolt between two points
+  _drawZigzag(ctx, ax, ay, bx, by, segs, amp) {
+    const dx  = bx - ax, dy = by - ay;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const nx  = -dy / len, ny = dx / len;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    for (let i = 1; i <= segs; i++) {
+      const t   = i / (segs + 1);
+      const off = this._jitter[i % this._jitter.length] * amp;
+      ctx.lineTo(ax + dx * t + nx * off, ay + dy * t + ny * off);
+    }
+    ctx.lineTo(bx, by);
+    ctx.stroke();
   }
 
   render(ctx, cameraY) {
     const sax = this.ax, say = this.ay - cameraY;
     const sbx = this.bx, sby = this.by - cameraY;
-    const [bodyStart, bodyEnd, tipColor] = this.style;
+    const flicker = 0.55 + 0.45 * Math.sin(this.pulse);
 
-    // Shadow
-    ctx.lineWidth   = this.barW + 4;
-    ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-    ctx.lineCap     = 'round';
-    ctx.beginPath();
-    ctx.moveTo(sax + 2, say + 2);
-    ctx.lineTo(sbx + 2, sby + 2);
-    ctx.stroke();
+    ctx.lineCap  = 'round';
+    ctx.lineJoin = 'round';
 
-    // Body gradient
-    const grad = ctx.createLinearGradient(sax, say, sbx, sby);
-    grad.addColorStop(0, bodyStart);
-    grad.addColorStop(1, bodyEnd);
-    ctx.lineWidth   = this.barW;
-    ctx.strokeStyle = grad;
+    // Outer corona glow
+    ctx.shadowColor = `rgba(80,200,255,${flicker * 0.9})`;
+    ctx.shadowBlur  = 18;
+    ctx.lineWidth   = 7;
+    ctx.strokeStyle = `rgba(0,100,255,${flicker * 0.5})`;
     ctx.beginPath();
     ctx.moveTo(sax, say);
     ctx.lineTo(sbx, sby);
     ctx.stroke();
 
-    // Highlight
-    ctx.lineWidth   = 2;
-    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    // Core bright blue line
+    ctx.shadowBlur  = 8;
+    ctx.lineWidth   = 2.5;
+    ctx.strokeStyle = `rgba(30,170,255,${0.8 + flicker * 0.2})`;
     ctx.beginPath();
     ctx.moveTo(sax, say);
     ctx.lineTo(sbx, sby);
     ctx.stroke();
 
-    // Coloured warning tip
+    // Electric zigzag overlay
+    ctx.shadowColor = 'rgba(255,255,255,0.9)';
+    ctx.shadowBlur  = 6;
+    ctx.lineWidth   = 1;
+    ctx.strokeStyle = `rgba(180,240,255,${flicker})`;
+    this._drawZigzag(ctx, sax, say, sbx, sby, 5, 4);
+
+    // Wall-anchor node
+    const nodeX = this.side === 'left' ? sax : sbx;
+    const nodeY = this.side === 'left' ? say : sby;
+    ctx.shadowColor = 'rgba(100,200,255,1)';
+    ctx.shadowBlur  = 12;
     ctx.beginPath();
-    ctx.arc(sbx, sby, 4, 0, Math.PI * 2);
-    ctx.fillStyle = tipColor;
+    ctx.arc(nodeX, nodeY, 3 + flicker * 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(150,220,255,${0.7 + flicker * 0.3})`;
     ctx.fill();
+
+    // Tip spark
+    const tipX = this.side === 'left' ? sbx : sax;
+    const tipY = this.side === 'left' ? sby : say;
+    ctx.shadowBlur  = 14;
+    ctx.shadowColor = 'rgba(255,255,100,0.95)';
+    ctx.beginPath();
+    ctx.arc(tipX, tipY, 2 + flicker * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,160,${flicker * 0.9})`;
+    ctx.fill();
+
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
   }
 }
 
@@ -668,11 +700,10 @@ function buildObstaclesForRange(fromY, toY, difficulty, track, allowDoor = true)
       const spd    = 90 + Math.random() * (80 + difficulty * 80);
       obs.push(new MovingBlocker(y, left + margin, right - margin, spd, blkW, 14));
     } else if (rand < 0.84) {
-      // Wall blocker – juts inward from left or right wall
-      const side       = Math.random() < 0.5 ? 'left' : 'right';
-      const maxProtrude = Math.max(50, width * 0.55);
-      const protrude   = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
-      const wallX      = side === 'left' ? left : right;
+      // Wall blocker – small electrified blue line protruding from left or right wall
+      const side    = Math.random() < 0.5 ? 'left' : 'right';
+      const protrude = 28 + Math.random() * 22; // 28–50 px – small but visible
+      const wallX   = side === 'left' ? left : right;
       obs.push(new WallBlocker(y, side, wallX, protrude));
     } else if (rand < 0.90) {
       // Boost pad (reward, not hazard)
@@ -682,10 +713,9 @@ function buildObstaclesForRange(fromY, toY, difficulty, track, allowDoor = true)
       obs.push(new DoorGate(y, left, right));
     } else {
       // Door suppressed (too soon after last door) – use a wall blocker instead
-      const side       = Math.random() < 0.5 ? 'left' : 'right';
-      const maxProtrude = Math.max(50, width * 0.55);
-      const protrude   = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
-      const wallX      = side === 'left' ? left : right;
+      const side    = Math.random() < 0.5 ? 'left' : 'right';
+      const protrude = 28 + Math.random() * 22;
+      const wallX   = side === 'left' ? left : right;
       obs.push(new WallBlocker(y, side, wallX, protrude));
     }
   }
