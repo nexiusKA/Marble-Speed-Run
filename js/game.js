@@ -15,6 +15,11 @@ const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
 const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
+const POWER_RUSH_LASER_SPACING      = 900;   // world-units between successive laser beams
+const POWER_RUSH_PICKUP_SPACING     = 1100;  // world-units between rush-extend pickups
+const POWER_RUSH_LASER_START_OFFSET  = 450;  // world-units ahead before first laser appears
+const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
+const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reserved as safe gap
 const POWER_RUSH_PUSH_PER_DOOR  = 220;   // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
@@ -96,6 +101,213 @@ class PowerRushTrack {
     ctx.stroke();
     ctx.shadowBlur  = 0;
     ctx.shadowColor = 'transparent';
+    ctx.restore();
+  }
+}
+
+// ── LaserBeam ─────────────────────────────────────────────────────────────────
+// A horizontal laser beam that sweeps the Power Rush corridor, leaving one gap
+// that the player must steer into.  Charges for 0.75 s (telegraph), then fires
+// for 1.4 s before expiring.
+class LaserBeam {
+  constructor(worldY) {
+    this.worldY = worldY;
+    this.h      = 14;          // collision height (px)
+
+    // Divide the corridor into 3 equal zones; place the gap in a random zone.
+    const corridorW = POWER_RUSH_CORRIDOR_RIGHT - POWER_RUSH_CORRIDOR_LEFT;
+    this.gapW = Math.round(corridorW * POWER_RUSH_LASER_GAP_RATIO);  // tight but passable gap
+    const slot  = Math.floor(Math.random() * 3); // 0 = left, 1 = centre, 2 = right
+    const zoneW = corridorW / 3;
+    this.gapX   = POWER_RUSH_CORRIDOR_LEFT + slot * zoneW + (zoneW - this.gapW) / 2;
+
+    this.chargeTime   = 0.75;
+    this.activeTime   = 1.4;
+    this._chargeTimer = this.chargeTime;
+    this._activeTimer = 0;
+    this.expired      = false;
+    this.pulse        = Math.random() * Math.PI * 2;
+    this._hitCooldown = 0;   // brief cooldown to prevent multi-hit per pass
+  }
+
+  get state() {
+    if (this.expired)          return 'expired';
+    if (this._chargeTimer > 0) return 'charging';
+    if (this._activeTimer > 0) return 'active';
+    return 'expired';
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 4.5) % (Math.PI * 2);
+    if (this._hitCooldown > 0) this._hitCooldown -= dt;
+
+    if (this._chargeTimer > 0) {
+      this._chargeTimer -= dt;
+      if (this._chargeTimer <= 0) {
+        this._chargeTimer = 0;
+        this._activeTimer = this.activeTime;
+      }
+    } else if (this._activeTimer > 0) {
+      this._activeTimer -= dt;
+      if (this._activeTimer <= 0) this.expired = true;
+    }
+  }
+
+  checkCollision(marble) {
+    if (this.state !== 'active') return false;
+    if (this._hitCooldown > 0)   return false;
+
+    // Test left beam segment
+    const leftW = this.gapX - POWER_RUSH_CORRIDOR_LEFT;
+    if (leftW > 0) {
+      const hit = circleRectCollision(
+        marble.x, marble.y, marble.radius,
+        POWER_RUSH_CORRIDOR_LEFT, this.worldY - this.h / 2, leftW, this.h
+      );
+      if (hit) { this._bounce(marble, hit); return true; }
+    }
+
+    // Test right beam segment
+    const rightX = this.gapX + this.gapW;
+    const rightW = POWER_RUSH_CORRIDOR_RIGHT - rightX;
+    if (rightW > 0) {
+      const hit = circleRectCollision(
+        marble.x, marble.y, marble.radius,
+        rightX, this.worldY - this.h / 2, rightW, this.h
+      );
+      if (hit) { this._bounce(marble, hit); return true; }
+    }
+
+    return false;
+  }
+
+  _bounce(marble, hit) {
+    // Push marble out of beam and reflect off the horizontal surface
+    marble.x += hit.nx * hit.depth;
+    marble.y += hit.ny * hit.depth;
+    const dot = marble.vx * hit.nx + marble.vy * hit.ny;
+    marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.55;
+    marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.55;
+    // Random horizontal kick so the direction noticeably changes
+    marble.vx += (Math.random() - 0.5) * 280;
+    marble.triggerShake();
+    this._hitCooldown = 0.3;
+  }
+
+  render(ctx, cameraY) {
+    const sy = this.worldY - cameraY;
+    if (sy < -30 || sy > CANVAS_H + 30) return;
+    const s = this.state;
+    if (s === 'expired') return;
+
+    const sinP  = Math.sin(this.pulse);
+    const pulse = 0.5 + 0.5 * sinP;
+
+    ctx.save();
+    ctx.lineCap = 'round';
+
+    if (s === 'charging') {
+      const chargeFrac = 1 - this._chargeTimer / this.chargeTime;
+
+      // Dashed preview of blocked segments – grows more urgent as charge builds
+      ctx.shadowColor = '#ff3300';
+      ctx.shadowBlur  = 4 + chargeFrac * 8;
+      ctx.setLineDash([6, 5]);
+      ctx.lineWidth   = 2 + chargeFrac * 1.5;
+      const alpha     = 0.15 + chargeFrac * 0.30 + pulse * 0.05;
+      ctx.strokeStyle = `rgba(255,60,0,${alpha})`;
+
+      const leftW = this.gapX - POWER_RUSH_CORRIDOR_LEFT;
+      if (leftW > 0) {
+        ctx.beginPath();
+        ctx.moveTo(POWER_RUSH_CORRIDOR_LEFT, sy);
+        ctx.lineTo(this.gapX, sy);
+        ctx.stroke();
+      }
+      const rightX = this.gapX + this.gapW;
+      if (rightX < POWER_RUSH_CORRIDOR_RIGHT) {
+        ctx.beginPath();
+        ctx.moveTo(rightX, sy);
+        ctx.lineTo(POWER_RUSH_CORRIDOR_RIGHT, sy);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      // Green dotted safe-gap indicator
+      ctx.shadowColor = '#00ff88';
+      ctx.shadowBlur  = 4 + chargeFrac * 6;
+      ctx.strokeStyle = `rgba(80,255,130,${0.4 + chargeFrac * 0.25})`;
+      ctx.lineWidth   = 1.5;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(this.gapX, sy);
+      ctx.lineTo(this.gapX + this.gapW, sy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Pulsing warning dot on the left wall
+      const dotR = 3 + chargeFrac * 3 + pulse * 1.5;
+      ctx.fillStyle   = `rgba(255,80,0,${0.5 + chargeFrac * 0.4})`;
+      ctx.shadowColor = '#ff4400';
+      ctx.shadowBlur  = 10 + chargeFrac * 8;
+      ctx.beginPath();
+      ctx.arc(POWER_RUSH_CORRIDOR_LEFT, sy, dotR, 0, Math.PI * 2);
+      ctx.fill();
+
+    } else if (s === 'active') {
+      const elapsed = this.activeTime - this._activeTimer;
+      const fadeIn  = Math.min(1, elapsed / 0.12);
+      const baseA   = fadeIn * (0.75 + pulse * 0.25);
+      const glow    = 18 + pulse * 14;
+
+      ctx.lineWidth = 5 + pulse * 2;
+
+      const leftW = this.gapX - POWER_RUSH_CORRIDOR_LEFT;
+      if (leftW > 0) {
+        ctx.shadowColor = '#ff2200';
+        ctx.shadowBlur  = glow;
+        ctx.strokeStyle = `rgba(255,80,0,${baseA})`;
+        ctx.beginPath();
+        ctx.moveTo(POWER_RUSH_CORRIDOR_LEFT, sy);
+        ctx.lineTo(this.gapX, sy);
+        ctx.stroke();
+      }
+
+      const rightX = this.gapX + this.gapW;
+      const rightW = POWER_RUSH_CORRIDOR_RIGHT - rightX;
+      if (rightW > 0) {
+        ctx.shadowColor = '#ff2200';
+        ctx.shadowBlur  = glow;
+        ctx.strokeStyle = `rgba(255,80,0,${baseA})`;
+        ctx.beginPath();
+        ctx.moveTo(rightX, sy);
+        ctx.lineTo(POWER_RUSH_CORRIDOR_RIGHT, sy);
+        ctx.stroke();
+      }
+
+      // Spark endpoint nodes on the corridor walls
+      ctx.shadowColor = '#ff8800';
+      ctx.shadowBlur  = 14;
+      ctx.fillStyle   = `rgba(255,160,0,${0.8 + pulse * 0.2})`;
+      for (const nx of [POWER_RUSH_CORRIDOR_LEFT, POWER_RUSH_CORRIDOR_RIGHT]) {
+        ctx.beginPath();
+        ctx.arc(nx, sy, 4 + pulse * 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Faint safe-gap line
+      ctx.shadowColor = '#00ff88';
+      ctx.shadowBlur  = 3;
+      ctx.strokeStyle = 'rgba(100,255,150,0.28)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(this.gapX, sy);
+      ctx.lineTo(this.gapX + this.gapW, sy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
     ctx.restore();
   }
 }
@@ -330,9 +542,13 @@ class Game {
     this.powerRushFogBonus  = 0;   // accumulated fog pushback (combo-weighted)
     this.doorCombo          = 0;   // consecutive clean green-door passes (resets on red hit)
     this.powerRushTrack     = new PowerRushTrack();
-    this.powerRushObstacles = [];
-    this.powerRushGenY      = 0;   // generation cursor for rush door gates
-    this.nextPowerRushDist  = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
+    this.powerRushObstacles  = [];
+    this.powerRushLasers     = [];   // LaserBeam instances active during rush
+    this.powerRushPickups    = [];   // rush-extend pickups inside the corridor
+    this.powerRushGenY       = 0;   // generation cursor for rush door gates
+    this.powerRushLaserGenY  = 0;   // generation cursor for laser beams
+    this.powerRushPickupGenY = 0;   // generation cursor for rush-extend pickups
+    this.nextPowerRushDist   = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
 
     // Rush-line electric animation state
     this._rushLineFlickerTimer = 0;
@@ -488,6 +704,18 @@ class Game {
       obs.checkCollision(this.marble);
     }
 
+    // Update laser beams and check marble collisions
+    for (const laser of this.powerRushLasers) {
+      laser.update(dt);
+      laser.checkCollision(this.marble);
+    }
+
+    // Update rush-extend pickups and check collection
+    for (const pu of this.powerRushPickups) {
+      pu.update(dt);
+      pu.checkCollision(this.marble, this);
+    }
+
     // Score: award a point for each door gate the marble fully passes through
     for (const obs of this.powerRushObstacles) {
       if (!obs.scoreGiven && this.marble.y > obs.worldY + obs.h / 2) {
@@ -608,18 +836,35 @@ class Game {
 
   // ── Power Rush helpers ────────────────────────────────────────────────────
 
-  // Generate DoorGate obstacles for the power rush corridor up to upToY
+  // Generate DoorGate obstacles, LaserBeams, and rush-extend pickups up to upToY
   _extendPowerRush(upToY) {
     const left  = POWER_RUSH_CORRIDOR_LEFT;
     const right = POWER_RUSH_CORRIDOR_RIGHT;
+
+    // Door gates
     while (this.powerRushGenY < upToY) {
       this.powerRushObstacles.push(new DoorGate(this.powerRushGenY, left, right));
       this.powerRushGenY += POWER_RUSH_DOOR_SPACING;
+    }
+
+    // Laser beams (interleaved between door gates)
+    while (this.powerRushLaserGenY < upToY) {
+      this.powerRushLasers.push(new LaserBeam(this.powerRushLaserGenY));
+      this.powerRushLaserGenY += POWER_RUSH_LASER_SPACING;
+    }
+
+    // Rush-extend pickups
+    while (this.powerRushPickupGenY < upToY) {
+      const x = left + 30 + Math.random() * (right - left - 60);
+      this.powerRushPickups.push(new Pickup(x, this.powerRushPickupGenY, 'rush_extend'));
+      this.powerRushPickupGenY += POWER_RUSH_PICKUP_SPACING;
     }
   }
 
   _prunePowerRushObstacles(behindY) {
     this.powerRushObstacles = this.powerRushObstacles.filter(o => o.worldY > behindY);
+    this.powerRushLasers    = this.powerRushLasers.filter(l => !l.expired && l.worldY > behindY);
+    this.powerRushPickups   = this.powerRushPickups.filter(p => !p.collected && p.worldY > behindY);
   }
 
   _enterPowerRush() {
@@ -636,8 +881,13 @@ class Game {
     this.pickups   = [];
 
     // Start generating door gates 200 units ahead of the marble
-    this.powerRushObstacles = [];
-    this.powerRushGenY      = this.marble.y + 200;
+    this.powerRushObstacles  = [];
+    this.powerRushLasers     = [];
+    this.powerRushPickups    = [];
+    this.powerRushGenY       = this.marble.y + 200;
+    // Lasers and pickups start further ahead so the player can settle into the corridor first
+    this.powerRushLaserGenY  = this.marble.y + POWER_RUSH_LASER_START_OFFSET;
+    this.powerRushPickupGenY = this.marble.y + POWER_RUSH_PICKUP_START_OFFSET;
 
     this._showPickupMsg('⚡ POWER RUSH ⚡');
     this.sound.playPowerRushStart();
@@ -651,6 +901,8 @@ class Game {
 
     this.powerRushActive    = false;
     this.powerRushObstacles = [];
+    this.powerRushLasers    = [];
+    this.powerRushPickups   = [];
 
     // Reset the next rush trigger to POWER_RUSH_INTERVAL metres from the EXIT
     // point so that distance traveled during rush doesn't shorten the gap.
@@ -701,6 +953,14 @@ class Game {
       case 'power_rush':
         this._enterPowerRush();
         break;
+      case 'rush_extend':
+        // Extend power rush timer; also cancel any active countdown
+        this.powerRushTimer = Math.max(0, this.powerRushTimer) + 2;
+        if (this.powerRushCountdown > 0) {
+          this.powerRushCountdown = 0;
+          this.powerRushCdTimer   = 0;
+        }
+        break;
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
     if (this.debugMode) console.log(`[DEBUG] Pickup collected: ${type}`);
@@ -739,6 +999,8 @@ class Game {
       this._renderPowerRushBg(ctx);
       this.powerRushTrack.render(ctx, this.cameraY);
       for (const obs of this.powerRushObstacles) obs.render(ctx, this.cameraY);
+      for (const laser of this.powerRushLasers) laser.render(ctx, this.cameraY);
+      for (const pu of this.powerRushPickups) pu.render(ctx, this.cameraY);
     } else {
       // ── Normal rendering ─────────────────────────────────────────────────
       this._renderSynthwaveBg(ctx);
