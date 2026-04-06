@@ -506,6 +506,51 @@ body {
   box-shadow: 0 6px 24px rgba(220, 50, 50, 0.7);
 }
 
+/* ── Difficulty selected state ───────────────────────── */
+.difficulty-selected {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  filter: brightness(1.25);
+}
+
+/* ── PLAY button with electric rahmen ────────────────── */
+@keyframes electric-flicker {
+  0%   { box-shadow: 0 0 10px 2px #00eeff, 0 0 24px 6px #0066ff, inset 0 0 6px 1px #00eeff88; border-color: #00eeff; }
+  15%  { box-shadow: 0 0 18px 4px #ffffff, 0 0 32px 8px #00aaff, inset 0 0 10px 2px #aaffff88; border-color: #aaffff; }
+  30%  { box-shadow: 0 0 8px 2px #00eeff, 0 0 20px 4px #0044cc, inset 0 0 4px 1px #00eeff66; border-color: #00ccff; }
+  50%  { box-shadow: 0 0 22px 6px #ffffff, 0 0 40px 10px #00aaff, inset 0 0 12px 2px #ffffff66; border-color: #ffffff; }
+  65%  { box-shadow: 0 0 12px 3px #00eeff, 0 0 28px 6px #0066ff, inset 0 0 8px 1px #00eeff88; border-color: #00eeff; }
+  80%  { box-shadow: 0 0 6px 1px #aaffff, 0 0 16px 3px #0033cc, inset 0 0 4px 1px #00ccff44; border-color: #00ccff; }
+  100% { box-shadow: 0 0 10px 2px #00eeff, 0 0 24px 6px #0066ff, inset 0 0 6px 1px #00eeff88; border-color: #00eeff; }
+}
+
+.btn-play {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: #fff;
+  background: linear-gradient(135deg, #003366, #0055aa, #003366);
+  border: 2px solid #00eeff;
+  border-radius: 10px;
+  padding: 14px 0;
+  cursor: pointer;
+  text-shadow: 0 0 10px #00eeff, 0 0 20px #0088ff;
+  animation: electric-flicker 1.6s ease-in-out infinite;
+  position: relative;
+}
+
+.btn-play:hover {
+  background: linear-gradient(135deg, #004488, #0077cc, #004488);
+  filter: brightness(1.15);
+}
+
+.btn-play:active {
+  transform: translateY(1px);
+}
+
 /* ── Mobile controls ─────────────────────────────────── */
 #mobile-controls {
   position: absolute;
