@@ -25,10 +25,10 @@ class Marble {
     this.shakeTimer = 0;
   }
 
-  update(dt, input, track) {
+  update(dt, input, track, steerMult = 1) {
     // Steering
-    if (input.left)  this.vx -= STEER_FORCE * dt;
-    if (input.right) this.vx += STEER_FORCE * dt;
+    if (input.left)  this.vx -= STEER_FORCE * steerMult * dt;
+    if (input.right) this.vx += STEER_FORCE * steerMult * dt;
 
     // Gravity
     this.vy += GRAVITY * dt;
