@@ -22,7 +22,7 @@ const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a b
 const POWER_RUSH_LASER_START_OFFSET  = 450;  // world-units ahead before first laser appears
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
 const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reserved as safe gap
-const POWER_RUSH_PUSH_PER_DOOR  = 220;   // extra world-units of fog pushback per door scored
+const POWER_RUSH_PUSH_PER_DOOR  = 110;   // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
@@ -353,7 +353,7 @@ class Game {
     this.state = STATE.MENU;
     this._init();
 
-    this.ui.showStart(() => this.startRun());
+    this.ui.showStart((voidSpeedPct) => { this._applyVoidRate(voidSpeedPct); this.startRun(); });
     this.ui.updateBestDistance(this.bestDistance);
 
     // Wire up sound controls in the start overlay
@@ -509,6 +509,17 @@ class Game {
   // At 100 (default) the void moves at normal speed.
   _voidRateMult() {
     return this._voidRateSetting / 100;
+  }
+
+  // Applies a void rate value (e.g. from a difficulty button) and syncs the slider UI.
+  _applyVoidRate(voidSpeedPct) {
+    voidSpeedPct = Math.max(10, Math.min(200, voidSpeedPct));
+    this._voidRateSetting = voidSpeedPct;
+    localStorage.setItem('mrVoidRate', String(voidSpeedPct));
+    const slider  = document.getElementById('void-rate-slider');
+    const valueEl = document.getElementById('void-rate-value');
+    if (slider)  { slider.value = voidSpeedPct; slider.style.setProperty('--val', `${(voidSpeedPct - 10) / 190 * 100}%`); }
+    if (valueEl) { valueEl.textContent = voidSpeedPct; }
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
