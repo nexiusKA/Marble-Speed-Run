@@ -5,6 +5,7 @@
 //   3. BoostPad       – gives the marble a speed boost downward
 //   4. WallBlocker    – diagonal bar from the wall
 //   5. ElectricSpinner– multi-arm spinning obstacle crackling with electricity
+//   6. DoorGate       – three doors spanning the track; one open (green), two blocked (red)
 
 // Colour palettes for rotating bars [body, highlight, pivotFill, pivotStroke]
 const BAR_STYLES = [
@@ -455,6 +456,114 @@ class WallBlocker {
   }
 }
 
+// ── DoorGate ──────────────────────────────────────────────────────────────────
+// Three doors spanning the full track width.
+// One randomly-chosen door is open (pulses green) and lets the marble through.
+// The other two are blocked (pulse red) and bounce the marble back.
+class DoorGate {
+  constructor(worldY, leftWall, rightWall) {
+    this.worldY = worldY;
+    this.h      = 22;   // door height in pixels
+    this.pulse  = Math.random() * Math.PI * 2;   // start at random phase
+
+    this.correctDoor = Math.floor(Math.random() * 3);   // 0, 1, or 2
+
+    // Divide the track into 3 equal doors with 3 px gaps between them
+    const gap    = 3;
+    const totalW = rightWall - leftWall - gap * 2;
+    const doorW  = totalW / 3;
+    this.doors = [
+      { x: leftWall,                       w: doorW },
+      { x: leftWall + (doorW + gap),        w: doorW },
+      { x: leftWall + (doorW + gap) * 2,    w: doorW },
+    ];
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 3.5) % (Math.PI * 2);
+  }
+
+  checkCollision(marble) {
+    let blocked = false;
+    for (let i = 0; i < 3; i++) {
+      if (i === this.correctDoor) continue;   // open door – no collision
+      const door = this.doors[i];
+      const hit  = circleRectCollision(
+        marble.x, marble.y, marble.radius,
+        door.x, this.worldY - this.h / 2, door.w, this.h
+      );
+      if (!hit) continue;
+      marble.x += hit.nx * hit.depth;
+      marble.y += hit.ny * hit.depth;
+      const dot = marble.vx * hit.nx + marble.vy * hit.ny;
+      marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.50;
+      marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.50;
+      marble.triggerShake();
+      blocked = true;
+    }
+    return blocked;
+  }
+
+  render(ctx, cameraY) {
+    const centerY = this.worldY - cameraY;
+    if (centerY < -60 || centerY > 760) return;
+
+    const sinP     = Math.sin(this.pulse);
+    const pulse    = 0.55 + 0.45 * sinP;   // 0.10 … 1.00
+    const glowSize = 14 + 8 * sinP;
+
+    for (let i = 0; i < 3; i++) {
+      const door   = this.doors[i];
+      const isOpen = i === this.correctDoor;
+
+      const rx = door.x;
+      const ry = centerY - this.h / 2;
+
+      ctx.save();
+
+      // Neon glow
+      ctx.shadowColor = isOpen ? '#00ff66' : '#ff2244';
+      ctx.shadowBlur  = glowSize;
+
+      // Door body
+      const grad = ctx.createLinearGradient(rx, ry, rx, ry + this.h);
+      if (isOpen) {
+        // Semi-transparent so the player can see it's passable
+        grad.addColorStop(0, `rgba(0,255,100,${0.35 + 0.30 * sinP})`);
+        grad.addColorStop(1, `rgba(0,120,50,${0.25 + 0.20 * sinP})`);
+      } else {
+        grad.addColorStop(0, `rgba(255,40,60,${0.75 + 0.20 * sinP})`);
+        grad.addColorStop(1, `rgba(140,10,20,${0.65 + 0.20 * sinP})`);
+      }
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(rx, ry, door.w, this.h, 3);
+      ctx.fill();
+
+      // Pulsing border
+      ctx.strokeStyle = isOpen
+        ? `rgba(80,255,140,${pulse})`
+        : `rgba(255,80,100,${pulse})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(rx, ry, door.w, this.h, 3);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // Icon centred on the door
+      ctx.save();
+      ctx.globalAlpha    = 0.65 + 0.35 * sinP;
+      ctx.fillStyle      = isOpen ? '#ccffdd' : '#ffcccc';
+      ctx.font           = 'bold 11px monospace';
+      ctx.textAlign      = 'center';
+      ctx.textBaseline   = 'middle';
+      ctx.fillText(isOpen ? '✓' : '✕', rx + door.w / 2, centerY);
+      ctx.restore();
+    }
+  }
+}
+
 // ── Dynamic obstacle generator ────────────────────────────────────────────────
 // Builds a list of obstacles for a given vertical world-space range.
 // difficulty: 0 (easy) → 1 (hard)
@@ -504,9 +613,12 @@ function buildObstaclesForRange(fromY, toY, difficulty, track) {
       const protrude   = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
       const wallX      = side === 'left' ? left : right;
       obs.push(new WallBlocker(y, side, wallX, protrude));
-    } else {
+    } else if (rand < 0.90) {
       // Boost pad (reward, not hazard)
       obs.push(new BoostPad(cx, y, width));
+    } else {
+      // Door gate – three doors spanning the track, only one is passable
+      obs.push(new DoorGate(y, left, right));
     }
   }
 
