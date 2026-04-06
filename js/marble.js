@@ -36,6 +36,9 @@ class Marble {
     // Down boost – extra downward acceleration when held
     if (input.down) this.vy += GRAVITY * 1.5 * dt;
 
+    // Up brake – slow downward velocity when held
+    if (input.up && this.vy > 0) this.vy = Math.max(0, this.vy - GRAVITY * 2 * dt);
+
     // Horizontal damping for arcade feel
     this.vx *= Math.pow(DAMPING_X, dt * 60);
 
