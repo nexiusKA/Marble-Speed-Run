@@ -18,6 +18,88 @@ class SoundManager {
     this._audio.addEventListener('error', () => {
       console.warn('[Audio] Failed to load vacation_synth.mp3:', this._audio.error);
     });
+
+    this._audioCtx = null;
+  }
+
+  // ── Lazy AudioContext (respects browser autoplay rules) ──────────────────
+  _getAudioCtx() {
+    if (!this._audioCtx) {
+      this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this._audioCtx.state === 'suspended') {
+      this._audioCtx.resume().catch(() => {});
+    }
+    return this._audioCtx;
+  }
+
+  // Short electric-zap burst (played on each gate pass)
+  playZap() {
+    if (this._muted || this._volume === 0) return;
+    try {
+      const ac  = this._getAudioCtx();
+      const vol = (this._volume / 100) * 0.35;
+      const len = Math.floor(ac.sampleRate * 0.07); // 70 ms of noise
+
+      const buf  = ac.createBuffer(1, len, ac.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / len); // decaying white noise
+      }
+
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+
+      const bpf = ac.createBiquadFilter();
+      bpf.type            = 'bandpass';
+      bpf.frequency.value = 2400;
+      bpf.Q.value         = 1.2;
+
+      const gain = ac.createGain();
+      gain.gain.setValueAtTime(vol, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.07);
+
+      src.connect(bpf);
+      bpf.connect(gain);
+      gain.connect(ac.destination);
+      src.start();
+    } catch (_) { /* ignore audio errors */ }
+  }
+
+  // Dramatic power-rush start whoosh
+  playPowerRushStart() {
+    if (this._muted || this._volume === 0) return;
+    try {
+      const ac  = this._getAudioCtx();
+      const vol = (this._volume / 100) * 0.5;
+      const len = Math.floor(ac.sampleRate * 0.25); // 250 ms
+
+      const buf  = ac.createBuffer(1, len, ac.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        const t    = i / len;
+        const env  = t < 0.1 ? t / 0.1 : 1 - (t - 0.1) / 0.9; // quick attack, slow decay
+        data[i] = (Math.random() * 2 - 1) * env;
+      }
+
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+
+      const bpf = ac.createBiquadFilter();
+      bpf.type            = 'bandpass';
+      bpf.frequency.value = 1000;
+      bpf.frequency.linearRampToValueAtTime(3000, ac.currentTime + 0.25);
+      bpf.Q.value         = 0.8;
+
+      const gain = ac.createGain();
+      gain.gain.setValueAtTime(vol, ac.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.25);
+
+      src.connect(bpf);
+      bpf.connect(gain);
+      gain.connect(ac.destination);
+      src.start();
+    } catch (_) { /* ignore audio errors */ }
   }
 
   // ── Public API ───────────────────────────────────────────────────────────

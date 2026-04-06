@@ -11,8 +11,6 @@ const PICKUP_RATE = 900;
 // Pickup type weights [speed, dash, fog_slow, shield, ghost]
 const PICKUP_WEIGHTS = [0.28, 0.22, 0.22, 0.10, 0.18];
 const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
-
-// ── Power Rush constants ───────────────────────────────────────────────────────
 const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
@@ -284,6 +282,13 @@ class Game {
     this.elapsed += dt * 1000;
 
     // ── Power Rush Mode – runs its own update branch ────────────────────────
+    // Auto-trigger every POWER_RUSH_INTERVAL metres instead of via a pickup
+    if (!this.powerRushActive && this.distance > 0 && this.distance >= this.nextPowerRushDist) {
+      this.nextPowerRushDist += POWER_RUSH_INTERVAL;
+      this._enterPowerRush();
+      return;
+    }
+
     if (this.powerRushActive) {
       this._updatePowerRush(dt);
       return;
@@ -382,6 +387,7 @@ class Game {
       if (!obs.scoreGiven && this.marble.y > obs.worldY + obs.h / 2) {
         obs.scoreGiven = true;
         this.powerRushDoors++;
+        this.sound.playZap();
         if (!obs.hitRed) {
           this.doorCombo++;
           const multiplier = this.doorCombo;
@@ -484,17 +490,6 @@ class Game {
       const type = _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
       this.pickups.push(new Pickup(x, y, type));
     }
-
-    // Power Rush pickup – spawns once every POWER_RUSH_INTERVAL metres
-    const distFromStart = fromY - this.track.startY;
-    if (distFromStart >= this.nextPowerRushDist) {
-      const py = fromY + segLen * 0.4;
-      const { left, right } = this.track.getWallsAtY(py);
-      const px = (left + right) / 2; // centre of track, hard to miss
-      this.pickups.push(new Pickup(px, py, 'power_rush'));
-      this.nextPowerRushDist += POWER_RUSH_INTERVAL;
-      if (this.debugMode) console.log(`[DEBUG] Power Rush pickup spawned at y=${py.toFixed(0)}`);
-    }
   }
 
   _pruneEntities(behindY) {
@@ -535,6 +530,9 @@ class Game {
     // Start generating door gates 200 units ahead of the marble
     this.powerRushObstacles = [];
     this.powerRushGenY      = this.marble.y + 200;
+
+    this._showPickupMsg('⚡ POWER RUSH ⚡');
+    this.sound.playPowerRushStart();
 
     if (this.debugMode) console.log('[DEBUG] Power Rush entered');
   }
@@ -873,7 +871,7 @@ class Game {
     // Door count (left of bar)
     ctx.textAlign    = 'left';
     ctx.fillStyle    = '#88ffaa';
-    ctx.fillText(`🚪 ${this.powerRushDoors}`, barX, barY + barH + 3);
+    ctx.fillText(`⚡ ${this.powerRushDoors}`, barX, barY + barH + 3);
 
     // Combo multiplier (right of door count, shown when active)
     if (this.doorCombo >= 2) {

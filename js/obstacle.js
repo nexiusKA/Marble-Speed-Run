@@ -479,10 +479,46 @@ class DoorGate {
       { x: leftWall + (doorW + gap),        w: doorW },
       { x: leftWall + (doorW + gap) * 2,    w: doorW },
     ];
+
+    // Pre-computed lightning bolt paths (2 bolts × 3 doors)
+    // Refreshed in update() every ~80 ms to create a controlled crackle
+    this._boltTimer = 0;
+    this._bolts = []; // array of { points: [{x,y},...] }
+    this._rebuildBolts();
+  }
+
+  // Regenerate all bolt point arrays
+  _rebuildBolts() {
+    this._bolts = [];
+    for (let i = 0; i < 3; i++) {
+      const door    = this.doors[i];
+      const isOpen  = i === this.correctDoor;
+      const x1 = door.x, x2 = door.x + door.w;
+      for (let b = 0; b < 2; b++) {
+        const yBase = b === 0 ? -3 : 3;
+        const segs  = b === 0 ? 8 : 6;
+        const amp   = isOpen ? 5 : 9;
+        const pts   = [{ x: x1, y: yBase }];
+        for (let j = 1; j < segs; j++) {
+          pts.push({
+            x: x1 + (j / segs) * (x2 - x1),
+            y: yBase + (Math.random() - 0.5) * amp * 2,
+          });
+        }
+        pts.push({ x: x2, y: yBase });
+        this._bolts.push({ door: i, bolt: b, pts });
+      }
+    }
   }
 
   update(dt) {
     this.pulse = (this.pulse + dt * 3.5) % (Math.PI * 2);
+    // Refresh bolt shapes ~every 80 ms for a controlled crackle effect
+    this._boltTimer -= dt;
+    if (this._boltTimer <= 0) {
+      this._boltTimer = 0.08;
+      this._rebuildBolts();
+    }
   }
 
   checkCollision(marble) {
@@ -512,56 +548,77 @@ class DoorGate {
     if (centerY < -60 || centerY > 760) return;
 
     const sinP     = Math.sin(this.pulse);
-    const pulse    = 0.55 + 0.45 * sinP;   // 0.10 … 1.00
-    const glowSize = 14 + 8 * sinP;
+    const pulse    = 0.55 + 0.45 * sinP;
+    const glowSize = 16 + 10 * sinP;
 
     for (let i = 0; i < 3; i++) {
       const door   = this.doors[i];
       const isOpen = i === this.correctDoor;
 
-      const rx = door.x;
-      const ry = centerY - this.h / 2;
+      const x1 = door.x;
+      const x2 = door.x + door.w;
+
+      const baseR  = isOpen ?   0 : 255;
+      const baseG  = isOpen ? 255 :  40;
+      const baseB  = isOpen ? 100 :  60;
+      const glowC  = isOpen ? '#00ff66' : '#ff2244';
 
       ctx.save();
 
-      // Neon glow
-      ctx.shadowColor = isOpen ? '#00ff66' : '#ff2244';
-      ctx.shadowBlur  = glowSize;
+      // Soft electric field glow between endpoints
+      const fieldGrad = ctx.createLinearGradient(x1, centerY - 16, x1, centerY + 16);
+      const fa = (isOpen ? 0.10 : 0.18) + 0.08 * sinP;
+      fieldGrad.addColorStop(0,   `rgba(${baseR},${baseG},${baseB},0)`);
+      fieldGrad.addColorStop(0.5, `rgba(${baseR},${baseG},${baseB},${fa})`);
+      fieldGrad.addColorStop(1,   `rgba(${baseR},${baseG},${baseB},0)`);
+      ctx.fillStyle = fieldGrad;
+      ctx.fillRect(x1, centerY - 16, door.w, 32);
 
-      // Door body
-      const grad = ctx.createLinearGradient(rx, ry, rx, ry + this.h);
-      if (isOpen) {
-        // Semi-transparent so the player can see it's passable
-        grad.addColorStop(0, `rgba(0,255,100,${0.35 + 0.30 * sinP})`);
-        grad.addColorStop(1, `rgba(0,120,50,${0.25 + 0.20 * sinP})`);
-      } else {
-        grad.addColorStop(0, `rgba(255,40,60,${0.75 + 0.20 * sinP})`);
-        grad.addColorStop(1, `rgba(140,10,20,${0.65 + 0.20 * sinP})`);
+      // Draw pre-computed lightning-bolt lines (refreshed ~every 80 ms)
+      for (const boltData of this._bolts) {
+        if (boltData.door !== i) continue;
+        const b    = boltData.bolt;
+        const pts  = boltData.pts;
+        const alpha = (isOpen ? 0.65 : 0.90) - b * 0.15 + 0.15 * sinP;
+
+        ctx.shadowColor = glowC;
+        ctx.shadowBlur  = glowSize * (b === 0 ? 1 : 0.55);
+        ctx.strokeStyle = `rgba(${baseR},${baseG},${baseB},${alpha})`;
+        ctx.lineWidth   = b === 0 ? 2 : 1.2;
+        ctx.lineCap     = 'round';
+        ctx.lineJoin    = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, centerY + pts[0].y);
+        for (let k = 1; k < pts.length; k++) {
+          ctx.lineTo(pts[k].x, centerY + pts[k].y);
+        }
+        ctx.stroke();
       }
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.roundRect(rx, ry, door.w, this.h, 3);
-      ctx.fill();
 
-      // Pulsing border
-      ctx.strokeStyle = isOpen
-        ? `rgba(80,255,140,${pulse})`
-        : `rgba(255,80,100,${pulse})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.roundRect(rx, ry, door.w, this.h, 3);
-      ctx.stroke();
+      // Endpoint spark nodes
+      const nodeAlpha = 0.7 + 0.3 * pulse;
+      ctx.shadowColor = glowC;
+      ctx.shadowBlur  = 10;
+      ctx.fillStyle   = `rgba(${baseR},${baseG},${baseB},${nodeAlpha})`;
+      for (const nx of [x1, x2]) {
+        ctx.beginPath();
+        ctx.arc(nx, centerY, 3 + sinP, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
       ctx.restore();
 
-      // Icon centred on the door
+      // Pass/block icon centred on the door segment
       ctx.save();
-      ctx.globalAlpha    = 0.65 + 0.35 * sinP;
-      ctx.fillStyle      = isOpen ? '#ccffdd' : '#ffcccc';
-      ctx.font           = 'bold 11px monospace';
-      ctx.textAlign      = 'center';
-      ctx.textBaseline   = 'middle';
-      ctx.fillText(isOpen ? '✓' : '✕', rx + door.w / 2, centerY);
+      ctx.globalAlpha   = 0.65 + 0.35 * sinP;
+      ctx.fillStyle     = isOpen ? '#ccffdd' : '#ffcccc';
+      ctx.shadowColor   = glowC;
+      ctx.shadowBlur    = 6;
+      ctx.font          = 'bold 11px monospace';
+      ctx.textAlign     = 'center';
+      ctx.textBaseline  = 'middle';
+      ctx.fillText(isOpen ? '✓' : '✕', (x1 + x2) / 2, centerY);
       ctx.restore();
     }
   }
