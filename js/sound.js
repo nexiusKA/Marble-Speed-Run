@@ -147,8 +147,8 @@ class SoundManager {
       for (let i = 0; i < len; i++) {
         const t   = i / len;
         // Three overlapping crackle bursts for a "sustained electric shock" feel
-        const env = Math.exp(-t * 5) + 0.4 * Math.exp(-((t - 0.12) / 0.08) ** 2)
-                                     + 0.25 * Math.exp(-((t - 0.28) / 0.06) ** 2);
+        const env = Math.exp(-t * 5) + 0.4 * Math.exp(-(((t - 0.12) / 0.08) ** 2))
+                                     + 0.25 * Math.exp(-(((t - 0.28) / 0.06) ** 2));
         data[i] = (Math.random() * 2 - 1) * env;
       }
 
