@@ -5,7 +5,7 @@ const GRAVITY        = 260;   // px / s²  downward pull (reduced for more contr
 const STEER_FORCE    = 800;   // lateral acceleration from input
 const MAX_SPEED_X    = 500;   // horizontal terminal speed
 const MAX_SPEED_Y    = 480;   // vertical terminal speed (reduced to give player more reaction time)
-const DAMPING_X      = 0.88;  // per-frame horizontal damping (lower = less resistance, steering has more impact)
+const DAMPING_X      = 0.88;  // per-frame velocity retention (closer to 1.0 = less resistance, steering has more impact)
 const BOUNCE_FACTOR  = 0.35;  // energy kept on wall bounce
 const TRAIL_MAX      = 22;
 
