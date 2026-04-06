@@ -906,6 +906,7 @@ class Game {
     this.blitzTimer         = 0;
 
     // Clear normal obstacles/pickups so they don't interfere on return
+    this.obstacles = [];
     this.pickups   = [];
 
     // Start generating door gates 200 units ahead of the marble
