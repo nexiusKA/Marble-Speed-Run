@@ -15,14 +15,10 @@ const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 15;    // seconds the rush phase lasts
 const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
-const POWER_RUSH_LASER_SPACING      = 300;   // world-units between successive laser beams
-const POWER_RUSH_LASER_TRIGGER_DIST = 550;   // world-units ahead of marble at which a dormant laser starts charging
 const POWER_RUSH_PICKUP_SPACING     = 1100;  // world-units between rush-extend pickups
 const POWER_RUSH_EXTEND_MAX         = 10;    // max total seconds that rush_extend pickups can add
 const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a blitz strike
-const POWER_RUSH_LASER_START_OFFSET  = 450;  // world-units ahead before first laser appears
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
-const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reserved as safe gap
 const POWER_RUSH_PUSH_PER_DOOR  = 55;    // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
@@ -584,11 +580,9 @@ class Game {
     this._blitzBolts        = [];  // pre-generated lightning bolt points for blitz animation
     this.powerRushTrack     = new PowerRushTrack();
     this.powerRushObstacles  = [];
-    this.powerRushLasers     = [];   // LaserBeam instances active during rush
     this.powerRushPickups    = [];   // rush-extend pickups inside the corridor
     this.powerRushPickupCount = 0;  // total rush-extend pickups spawned this rush (max 3 to prevent excessive duration)
     this.powerRushGenY       = 0;   // generation cursor for rush door gates
-    this.powerRushLaserGenY  = 0;   // generation cursor for laser beams
     this.powerRushPickupGenY = 0;   // generation cursor for rush-extend pickups
     this.nextPowerRushDist   = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
 
@@ -941,7 +935,6 @@ class Game {
 
   _prunePowerRushObstacles(behindY) {
     this.powerRushObstacles = this.powerRushObstacles.filter(o => o.worldY > behindY);
-    this.powerRushLasers    = this.powerRushLasers.filter(l => !l.expired && l.worldY > behindY);
     this.powerRushPickups   = this.powerRushPickups.filter(p => !p.collected && p.worldY > behindY);
   }
 
@@ -962,12 +955,10 @@ class Game {
 
     // Start generating door gates 200 units ahead of the marble
     this.powerRushObstacles  = [];
-    this.powerRushLasers     = [];
     this.powerRushPickups    = [];
     this.powerRushPickupCount = 0;
     this.powerRushGenY       = this.marble.y + 200;
-    // Lasers and pickups start further ahead so the player can settle into the corridor first
-    this.powerRushLaserGenY  = this.marble.y + POWER_RUSH_LASER_START_OFFSET;
+    // Pickups start further ahead so the player can settle into the corridor first
     this.powerRushPickupGenY = this.marble.y + POWER_RUSH_PICKUP_START_OFFSET;
 
     this._showPickupMsg('⚡ POWER RUSH ⚡');
@@ -983,7 +974,6 @@ class Game {
     this.powerRushActive    = false;
     this.blitzTimer         = 0;
     this.powerRushObstacles = [];
-    this.powerRushLasers    = [];
     this.powerRushPickups   = [];
 
     // Reset the next rush trigger to POWER_RUSH_INTERVAL metres from the EXIT
