@@ -467,6 +467,7 @@ class DoorGate {
     this.pulse  = Math.random() * Math.PI * 2;   // start at random phase
 
     this.correctDoor = Math.floor(Math.random() * 3);   // 0, 1, or 2
+    this.scoreGiven  = false;   // true once marble has passed through
 
     // Divide the track into 3 equal doors with 3 px gaps between them
     const gap    = 3;

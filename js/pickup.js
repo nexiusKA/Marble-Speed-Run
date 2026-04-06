@@ -2,11 +2,12 @@
 // Collectible items that give the player an edge over the chasing fog.
 
 const PICKUP_CONFIG = {
-  speed:    { color1: '#ffe040', color2: '#ff8800', label: '⚡', name: 'SPEED BOOST!' },
-  dash:     { color1: '#40ffff', color2: '#0077ff', label: '▶▶', name: 'DASH!'        },
-  fog_slow: { color1: '#dd88ff', color2: '#7700cc', label: '❄',  name: 'BAR SLOWED!' },
-  shield:   { color1: '#88ff99', color2: '#008844', label: '◆',  name: 'SHIELD!'     },
-  ghost:    { color1: '#ee88ff', color2: '#6600cc', label: '◈',  name: 'GHOST MODE!' },
+  speed:      { color1: '#ffe040', color2: '#ff8800', label: '⚡',  name: 'SPEED BOOST!'  },
+  dash:       { color1: '#40ffff', color2: '#0077ff', label: '▶▶', name: 'DASH!'          },
+  fog_slow:   { color1: '#dd88ff', color2: '#7700cc', label: '❄',  name: 'BAR SLOWED!'   },
+  shield:     { color1: '#88ff99', color2: '#008844', label: '◆',  name: 'SHIELD!'        },
+  ghost:      { color1: '#ee88ff', color2: '#6600cc', label: '◈',  name: 'GHOST MODE!'   },
+  power_rush: { color1: '#ffdd00', color2: '#ff4400', label: '⚡⚡', name: 'POWER RUSH!'  },
 };
 
 class Pickup {
