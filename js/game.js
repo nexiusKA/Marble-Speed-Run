@@ -14,7 +14,7 @@ const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
 const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
-const POWER_RUSH_DOOR_SPACING   = 320;   // world-units between successive door gates
+const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
 const POWER_RUSH_PUSH_PER_DOOR  = 220;   // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
@@ -556,6 +556,11 @@ class Game {
 
     this.powerRushActive    = false;
     this.powerRushObstacles = [];
+
+    // Reset the next rush trigger to POWER_RUSH_INTERVAL metres from the EXIT
+    // point so that distance traveled during rush doesn't shorten the gap.
+    this.nextPowerRushDist = this.distance + POWER_RUSH_INTERVAL;
+    this._rushLineWorldY   = this.track.startY + this.nextPowerRushDist;
 
     // Clear any stale normal obstacles/pickups from before the rush started
     this.obstacles = [];
