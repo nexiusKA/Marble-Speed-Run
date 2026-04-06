@@ -136,9 +136,9 @@ class Game {
 
   // Maps the 0–100 sensitivity setting to a steer-force multiplier.
   // At 50 (default) the multiplier is exactly 1.0 (i.e. the built-in STEER_FORCE).
-  // At 0 the marble steers at 20 % of the default; at 100 it steers at 180 %.
+  // At 0 steering is fully disabled; at 100 it steers at 200 % of the default.
   _steerMult() {
-    return 0.2 + (this._steerSensitivity / 100) * 1.6;
+    return this._steerSensitivity / 50;
   }
 
   _playMusic() {
