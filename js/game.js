@@ -15,8 +15,10 @@ const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
 const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
-const POWER_RUSH_LASER_SPACING      = 900;   // world-units between successive laser beams
+const POWER_RUSH_LASER_SPACING      = 600;   // world-units between successive laser beams
 const POWER_RUSH_PICKUP_SPACING     = 1100;  // world-units between rush-extend pickups
+const POWER_RUSH_EXTEND_MAX         = 10;    // max total seconds that rush_extend pickups can add
+const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a blitz strike
 const POWER_RUSH_LASER_START_OFFSET  = 450;  // world-units ahead before first laser appears
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
 const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reserved as safe gap
@@ -541,6 +543,9 @@ class Game {
     this.powerRushDoors     = 0;   // doors scored during the current rush
     this.powerRushFogBonus  = 0;   // accumulated fog pushback (combo-weighted)
     this.doorCombo          = 0;   // consecutive clean green-door passes (resets on red hit)
+    this.powerRushExtended  = 0;   // total seconds added via rush_extend pickups (capped at POWER_RUSH_EXTEND_MAX)
+    this.blitzTimer         = 0;   // >0 while the marble is frozen by a blitz strike
+    this._blitzBolts        = [];  // pre-generated lightning bolt points for blitz animation
     this.powerRushTrack     = new PowerRushTrack();
     this.powerRushObstacles  = [];
     this.powerRushLasers     = [];   // LaserBeam instances active during rush
@@ -689,6 +694,23 @@ class Game {
 
   // ── Power Rush update (replaces the main update while rush is active) ─────
   _updatePowerRush(dt) {
+    // ── Blitz (electrified freeze) ──────────────────────────────────────────
+    if (this.blitzTimer > 0) {
+      this.blitzTimer -= dt;
+      if (this.blitzTimer < 0) this.blitzTimer = 0;
+      // Marble is frozen – rebuild bolt animation but skip physics
+      if (Math.random() < dt * 20) this._rebuildBlitzBolts();
+      // Camera still follows marble position (no movement so it stays stable)
+      const targetCamY = this.marble.y - CANVAS_H * 0.28;
+      this.cameraY = lerp(this.cameraY, targetCamY, clamp(dt * 7, 0, 1));
+      this._updateParticles(dt);
+      if (this.pickupMsg) {
+        this.pickupMsg.timer -= dt;
+        if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
+      }
+      return; // skip everything else while frozen
+    }
+
     // Marble physics – use the fixed-width power rush corridor
     this.marble.update(dt, this.input, this.powerRushTrack, this._steerMult(), this._fallMult());
 
@@ -732,6 +754,11 @@ class Game {
         } else {
           this.doorCombo = 0;
           this.powerRushFogBonus += POWER_RUSH_PUSH_PER_DOOR;
+          // Blitz: electrify and freeze the marble for a short time
+          this.blitzTimer = POWER_RUSH_BLITZ_DURATION;
+          this._rebuildBlitzBolts();
+          this.marble.triggerShake();
+          this._showPickupMsg('⚡ BLITZ! ⚡');
         }
       }
     }
@@ -875,6 +902,8 @@ class Game {
     this.powerRushDoors     = 0;
     this.powerRushFogBonus  = 0;
     this.doorCombo          = 0;
+    this.powerRushExtended  = 0;
+    this.blitzTimer         = 0;
 
     // Clear normal obstacles/pickups so they don't interfere on return
     this.obstacles = [];
@@ -900,6 +929,7 @@ class Game {
     const fogPushback = this.powerRushFogBonus;
 
     this.powerRushActive    = false;
+    this.blitzTimer         = 0;
     this.powerRushObstacles = [];
     this.powerRushLasers    = [];
     this.powerRushPickups   = [];
@@ -953,14 +983,19 @@ class Game {
       case 'power_rush':
         this._enterPowerRush();
         break;
-      case 'rush_extend':
-        // Extend power rush timer; also cancel any active countdown
-        this.powerRushTimer = Math.max(0, this.powerRushTimer) + 2;
+      case 'rush_extend': {
+        // Extend power rush timer up to the global cap
+        const remaining = POWER_RUSH_EXTEND_MAX - this.powerRushExtended;
+        if (remaining <= 0) break; // already at cap – pickup has no effect
+        const gain = Math.min(2, remaining);
+        this.powerRushExtended += gain;
+        this.powerRushTimer = Math.max(0, this.powerRushTimer) + gain;
         if (this.powerRushCountdown > 0) {
           this.powerRushCountdown = 0;
           this.powerRushCdTimer   = 0;
         }
         break;
+      }
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
     if (this.debugMode) console.log(`[DEBUG] Pickup collected: ${type}`);
@@ -1160,6 +1195,43 @@ class Game {
       ctx.arc(this.marble.x, this.marble.y, this.marble.radius * 1.6, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(80,160,255,${intensity * 0.25})`;
       ctx.fill();
+    }
+
+    // Blitz electric freeze effect
+    if (this.blitzTimer > 0) {
+      const frac  = this.blitzTimer / POWER_RUSH_BLITZ_DURATION;
+      const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 40);
+      // Yellow-white glow around marble
+      ctx.beginPath();
+      ctx.arc(this.marble.x, this.marble.y, this.marble.radius * 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,240,60,${frac * 0.35 * pulse})`;
+      ctx.fill();
+      // Lightning bolts radiating outward
+      ctx.save();
+      ctx.translate(this.marble.x, this.marble.y);
+      ctx.shadowColor = '#ffe060';
+      ctx.shadowBlur  = 14;
+      ctx.strokeStyle = `rgba(255,240,80,${frac * pulse})`;
+      ctx.lineWidth   = 1.8;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      for (const pts of this._blitzBolts) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k].x, pts[k].y);
+        ctx.stroke();
+      }
+      // Inner bright core
+      ctx.shadowBlur  = 0;
+      ctx.strokeStyle = `rgba(255,255,200,${frac * 0.9})`;
+      ctx.lineWidth   = 0.8;
+      for (const pts of this._blitzBolts) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k].x, pts[k].y);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
   }
 
@@ -1543,6 +1615,28 @@ class Game {
       }
       pts.push({ x: right, y: yBase });
       this._rushLineBolts.push({ bolt: b, pts });
+    }
+  }
+
+  // Generate random zigzag lightning bolts radiating from the marble's centre.
+  _rebuildBlitzBolts() {
+    this._blitzBolts = [];
+    const numBolts = 6 + Math.floor(Math.random() * 4);
+    const r = this.marble.radius;
+    for (let i = 0; i < numBolts; i++) {
+      const angle  = (i / numBolts) * Math.PI * 2 + Math.random() * 0.5;
+      const length = r * 2.2 + Math.random() * r * 2.5;
+      const segs   = 4 + Math.floor(Math.random() * 3);
+      const pts    = [];
+      for (let s = 0; s <= segs; s++) {
+        const t   = s / segs;
+        const jit = s > 0 && s < segs ? (Math.random() - 0.5) * r * 1.1 : 0;
+        pts.push({
+          x: Math.cos(angle) * length * t + Math.sin(angle) * jit,
+          y: Math.sin(angle) * length * t - Math.cos(angle) * jit,
+        });
+      }
+      this._blitzBolts.push(pts);
     }
   }
 
