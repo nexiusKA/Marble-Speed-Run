@@ -259,6 +259,7 @@ class Game {
     this._init();
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
+    this.ui.updateVoidDistance('--');
     if (this.debugMode) console.log('[DEBUG] Run started');
     this.sound.start();
   }
@@ -370,6 +371,7 @@ class Game {
 
     // ── HUD ─────────────────────────────────────────────────────────────────
     this.ui.updateDistance(this.distance);
+    this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
 
     // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
     this._rushLineFlickerTimer -= dt;
@@ -467,6 +469,7 @@ class Game {
 
     // HUD – distance is still measured normally (marble.y keeps advancing)
     this.ui.updateDistance(this.distance);
+    this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
   }
 
   // ── Level content management ──────────────────────────────────────────────

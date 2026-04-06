@@ -4,6 +4,7 @@ class UI {
   constructor() {
     this.distEl      = document.getElementById('dist-display');
     this.bestEl      = document.getElementById('best-display');
+    this.voidDistEl  = document.getElementById('void-display');
     this.overlay     = document.getElementById('overlay');
     this.gameOverOvl = document.getElementById('gameover-overlay');
     this.goDistEl    = document.getElementById('go-dist');
@@ -31,6 +32,10 @@ class UI {
 
   updateDistance(m) {
     if (this.distEl) this.distEl.textContent = m;
+  }
+
+  updateVoidDistance(m) {
+    if (this.voidDistEl) this.voidDistEl.textContent = m;
   }
 
   updateBestDistance(m) {

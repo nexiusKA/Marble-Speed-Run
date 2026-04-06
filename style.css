@@ -75,6 +75,27 @@ body {
   color: #7de8ff;
 }
 
+#hud-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#hud-void {
+  background: rgba(0, 0, 0, 0.55);
+  color: #e0e0ff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid #5a1a7a;
+}
+
+#hud-void span {
+  color: #dd88ff;
+}
+
 /* ── Fullscreen button ───────────────────────────────── */
 .hud-fs-btn {
   background: rgba(0, 0, 0, 0.55);
