@@ -378,8 +378,6 @@ class Game {
     }
     this.ui.updateBestDistance(this.bestDistance);
     this.ui.showGameOver(dist, this.bestDistance, isNew, () => this.restart());
-    const bgMusic = document.getElementById('bg-music');
-    if (bgMusic && !bgMusic.paused) bgMusic.pause();
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
