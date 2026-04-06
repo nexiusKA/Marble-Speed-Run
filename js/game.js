@@ -31,11 +31,10 @@ class Game {
                      new URLSearchParams(location.search).has('debug');
     this.fps = 0; // updated by the game loop in main.js
 
-    // Sound settings – volume is persisted; muted state is session-only so a
-    // stale "off" value from a previous session never silences the game on reload.
-    this._soundOn  = true;
-    const volRaw   = parseInt(localStorage.getItem('mrVolume') || '70', 10);
-    this._volume   = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
+    // Sound – volume is persisted; muted state resets each session.
+    const volRaw = parseInt(localStorage.getItem('mrVolume') || '70', 10);
+    const vol    = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
+    this.sound   = new SoundManager(vol, false);
 
     // Steering sensitivity (0–100, default 50). Persisted across sessions.
     const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '50', 10);
@@ -52,56 +51,36 @@ class Game {
 
     // Wire up steering sensitivity controls in the start overlay
     this._initSteerControls();
-
-    // Surface audio-load failures so they are visible in the console
-    const bgMusicEl = document.getElementById('bg-music');
-    if (bgMusicEl) {
-      bgMusicEl.volume = this._volume / 100;
-      bgMusicEl.addEventListener('error', () => {
-        console.warn('[Audio] Failed to load background music:', bgMusicEl.error);
-      });
-    }
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
   _initSoundControls() {
-    const toggleBtn  = document.getElementById('sound-toggle');
-    const volSlider  = document.getElementById('volume-slider');
+    const toggleBtn = document.getElementById('sound-toggle');
+    const volSlider = document.getElementById('volume-slider');
     if (!toggleBtn || !volSlider) return;
 
-    // Restore saved values
-    volSlider.value = this._volume;
+    volSlider.value = this.sound.volume;
     this._updateSoundUI(toggleBtn, volSlider);
 
     toggleBtn.addEventListener('click', () => {
-      this._soundOn = !this._soundOn;
-      this._applyAudioSettings();
+      this.sound.setMuted(!this.sound.muted);
       this._updateSoundUI(toggleBtn, volSlider);
     });
 
     volSlider.addEventListener('input', () => {
-      const prev = this._volume;
-      this._volume = parseInt(volSlider.value, 10);
-      // Only re-enable sound if slider was dragged up from zero (explicit "turn on" intent)
-      if (prev === 0 && this._volume > 0) this._soundOn = true;
-      localStorage.setItem('mrVolume', String(this._volume));
-      this._applyAudioSettings();
+      const v = parseInt(volSlider.value, 10);
+      this.sound.setVolume(v);
+      localStorage.setItem('mrVolume', String(v));
       this._updateSoundUI(toggleBtn, volSlider);
     });
   }
 
   _updateSoundUI(toggleBtn, volSlider) {
     if (!toggleBtn || !volSlider) return;
-    toggleBtn.textContent = this._soundOn && this._volume > 0 ? '🔊' : '🔇';
-    toggleBtn.classList.toggle('muted', !this._soundOn || this._volume === 0);
-    // Always reflect the actual volume value on the slider; muted state is shown via icon only
-    volSlider.style.setProperty('--val', `${this._volume}%`);
-  }
-
-  _applyAudioSettings() {
-    const bgMusic = document.getElementById('bg-music');
-    if (!bgMusic) return;
-    bgMusic.volume = (this._soundOn && this._volume > 0) ? this._volume / 100 : 0;
+    const active = !this.sound.muted && this.sound.volume > 0;
+    toggleBtn.textContent = active ? '🔊' : '🔇';
+    toggleBtn.classList.toggle('muted', !active);
+    volSlider.style.setProperty('--val', `${this.sound.volume}%`);
   }
 
   // ── Steering sensitivity control wiring ───────────────────────────────────
@@ -141,31 +120,6 @@ class Game {
     return this._steerSensitivity / 50;
   }
 
-  _playMusic() {
-    const bgMusic = document.getElementById('bg-music');
-    if (!bgMusic || !this._soundOn || this._volume === 0) return;
-    this._applyAudioSettings();
-    if (bgMusic.paused) {
-      bgMusic.play().catch(e => {
-        console.warn('[Audio] play() failed:', e);
-        // Retry on the next user gesture in case the browser blocked autoplay
-        let retryPending = false;
-        const retry = () => {
-          document.removeEventListener('click',      retry);
-          document.removeEventListener('keydown',    retry);
-          document.removeEventListener('touchstart', retry);
-          if (retryPending) return;
-          retryPending = true;
-          this._applyAudioSettings();
-          bgMusic.play().catch(e2 => console.debug('[Audio] retry play() failed:', e2));
-        };
-        document.addEventListener('click',      retry, { once: true });
-        document.addEventListener('keydown',    retry, { once: true });
-        document.addEventListener('touchstart', retry, { once: true });
-      });
-    }
-  }
-
   // ── Initialise / reset all run-specific state ─────────────────────────────
   _init() {
     this.track     = new Track();
@@ -198,7 +152,7 @@ class Game {
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
-    this._playMusic();
+    this.sound.start();
   }
 
   restart() {
