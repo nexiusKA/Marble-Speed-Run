@@ -16,9 +16,10 @@ const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
 const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
-const POWER_RUSH_DOOR_SPACING   = 170;   // world-units between successive door gates
+const POWER_RUSH_DOOR_SPACING   = 320;   // world-units between successive door gates
 const POWER_RUSH_PUSH_PER_DOOR  = 220;   // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
+const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // ── PowerRushTrack ────────────────────────────────────────────────────────────
 // A simple fixed-width straight corridor used during Power Rush mode.
@@ -230,7 +231,8 @@ class Game {
     this.pickupMsg       = null; // { text, timer }
 
     // Level-generation cursor (last world Y for which content was generated)
-    this.levelGenY = this.track.startY;
+    this.levelGenY       = this.track.startY;
+    this.lastNormalDoorY = this.track.startY - NORMAL_DOOR_INTERVAL; // allow a door immediately at run start
 
     // ── Power Rush state ───────────────────────────────────────────────────
     this.powerRushActive    = false;
@@ -238,6 +240,8 @@ class Game {
     this.powerRushCountdown = 0;   // 3-2-1 value shown after rush ends
     this.powerRushCdTimer   = 0;   // sub-timer for each countdown beat
     this.powerRushDoors     = 0;   // doors scored during the current rush
+    this.powerRushFogBonus  = 0;   // accumulated fog pushback (combo-weighted)
+    this.doorCombo          = 0;   // consecutive clean green-door passes (resets on red hit)
     this.powerRushTrack     = new PowerRushTrack();
     this.powerRushObstacles = [];
     this.powerRushGenY      = 0;   // generation cursor for rush door gates
@@ -378,6 +382,17 @@ class Game {
       if (!obs.scoreGiven && this.marble.y > obs.worldY + obs.h / 2) {
         obs.scoreGiven = true;
         this.powerRushDoors++;
+        if (!obs.hitRed) {
+          this.doorCombo++;
+          const multiplier = this.doorCombo;
+          this.powerRushFogBonus += POWER_RUSH_PUSH_PER_DOOR * multiplier;
+          if (this.doorCombo >= 2) {
+            this._showPickupMsg(`COMBO x${this.doorCombo}! 🎯`);
+          }
+        } else {
+          this.doorCombo = 0;
+          this.powerRushFogBonus += POWER_RUSH_PUSH_PER_DOOR;
+        }
       }
     }
 
@@ -451,7 +466,12 @@ class Game {
     const difficulty = Math.min(fromY / 12000, 1);
 
     // Obstacles
-    const newObs = buildObstaclesForRange(fromY, toY, difficulty, this.track);
+    const allowDoor = (fromY - this.lastNormalDoorY) >= NORMAL_DOOR_INTERVAL;
+    const newObs = buildObstaclesForRange(fromY, toY, difficulty, this.track, allowDoor);
+    const spawnedDoor = allowDoor && newObs.find(o => o instanceof DoorGate);
+    if (spawnedDoor) {
+      this.lastNormalDoorY = spawnedDoor.worldY;
+    }
     this.obstacles.push(...newObs);
 
     // Pickup (probabilistic – roughly one per PICKUP_RATE world-units)
@@ -505,6 +525,8 @@ class Game {
     this.powerRushCountdown = 0;
     this.powerRushCdTimer   = 0;
     this.powerRushDoors     = 0;
+    this.powerRushFogBonus  = 0;
+    this.doorCombo          = 0;
 
     // Clear normal obstacles/pickups so they don't interfere on return
     this.obstacles = [];
@@ -519,7 +541,7 @@ class Game {
 
   _exitPowerRush() {
     const doorsScored = this.powerRushDoors;
-    const fogPushback = doorsScored * POWER_RUSH_PUSH_PER_DOOR;
+    const fogPushback = this.powerRushFogBonus;
 
     this.powerRushActive    = false;
     this.powerRushObstacles = [];
@@ -852,6 +874,13 @@ class Game {
     ctx.textAlign    = 'left';
     ctx.fillStyle    = '#88ffaa';
     ctx.fillText(`🚪 ${this.powerRushDoors}`, barX, barY + barH + 3);
+
+    // Combo multiplier (right of door count, shown when active)
+    if (this.doorCombo >= 2) {
+      const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 120);
+      ctx.fillStyle = `rgba(255,220,0,${pulse})`;
+      ctx.fillText(`  x${this.doorCombo} COMBO`, barX + 60, barY + barH + 3);
+    }
 
     // 3-2-1 countdown (big centred)
     if (this.powerRushCountdown > 0) {
