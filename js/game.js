@@ -128,6 +128,10 @@ class Game {
     const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '100', 10);
     this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 1 && steerRaw <= 100 ? steerRaw : 100;
 
+    // Fall speed (1–100, default 100). Persisted across sessions.
+    const fallRaw         = parseInt(localStorage.getItem('mrFallSpeed') || '100', 10);
+    this._fallSpeedSetting = Number.isFinite(fallRaw) && fallRaw >= 1 && fallRaw <= 100 ? fallRaw : 100;
+
     this.state = STATE.MENU;
     this._init();
 
@@ -139,6 +143,9 @@ class Game {
 
     // Wire up steering sensitivity controls in the start overlay
     this._initSteerControls();
+
+    // Wire up fall speed controls in the start overlay
+    this._initFallSpeedControls();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -203,10 +210,47 @@ class Game {
   }
 
   // Maps the 1–100 sensitivity setting to a steer-force multiplier.
-  // At 100 (default) the multiplier is exactly 1.0 (i.e. the built-in STEER_FORCE).
-  // At 1 steering is nearly disabled; at 100 it steers at 100 % of the default.
+  // At 50 (mid) the multiplier is 1.0 (i.e. the built-in STEER_FORCE / default feel).
+  // At 1 steering is nearly disabled; at 100 it steers at 2× the default.
   _steerMult() {
-    return this._steerSensitivity / 100;
+    return this._steerSensitivity / 50;
+  }
+
+  // ── Fall speed control wiring ─────────────────────────────────────────────
+  _initFallSpeedControls() {
+    const slider     = document.getElementById('fall-slider');
+    const valueEl    = document.getElementById('fall-value');
+    const defaultBtn = document.getElementById('fall-default-btn');
+    if (!slider || !valueEl || !defaultBtn) return;
+
+    const FALL_DEFAULT = 100;
+
+    const apply = (v) => {
+      v = Math.max(1, v);
+      this._fallSpeedSetting = v;
+      valueEl.textContent = v;
+      slider.style.setProperty('--val', `${v}%`);
+      localStorage.setItem('mrFallSpeed', String(v));
+    };
+
+    // Restore saved value
+    slider.value = this._fallSpeedSetting;
+    apply(this._fallSpeedSetting);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+
+    defaultBtn.addEventListener('click', () => {
+      slider.value = FALL_DEFAULT;
+      apply(FALL_DEFAULT);
+    });
+  }
+
+  // Maps the 1–100 fall-speed setting to a gravity multiplier.
+  // At 100 (default) gravity is full; at 1 the marble falls very slowly.
+  _fallMult() {
+    return this._fallSpeedSetting / 100;
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
@@ -303,7 +347,7 @@ class Game {
     }
 
     // ── Marble physics ──────────────────────────────────────────────────────
-    this.marble.update(dt, this.input, this.track, this._steerMult());
+    this.marble.update(dt, this.input, this.track, this._steerMult(), this._fallMult());
 
     // Speed-boost pickup: extra downward push
     if (this.speedBoostTimer > 0) {
@@ -384,7 +428,7 @@ class Game {
   // ── Power Rush update (replaces the main update while rush is active) ─────
   _updatePowerRush(dt) {
     // Marble physics – use the fixed-width power rush corridor
-    this.marble.update(dt, this.input, this.powerRushTrack, this._steerMult());
+    this.marble.update(dt, this.input, this.powerRushTrack, this._steerMult(), this._fallMult());
 
     // Speed boost still applies inside rush
     if (this.speedBoostTimer > 0) {
