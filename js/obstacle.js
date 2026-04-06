@@ -468,6 +468,7 @@ class DoorGate {
 
     this.correctDoor = Math.floor(Math.random() * 3);   // 0, 1, or 2
     this.scoreGiven  = false;   // true once marble has passed through
+    this.hitRed      = false;   // true if marble bounced off a red door before passing
 
     // Divide the track into 3 equal doors with 3 px gaps between them
     const gap    = 3;
@@ -500,6 +501,7 @@ class DoorGate {
       marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.50;
       marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.50;
       marble.triggerShake();
+      this.hitRed = true;
       blocked = true;
     }
     return blocked;
@@ -569,7 +571,8 @@ class DoorGate {
 // Builds a list of obstacles for a given vertical world-space range.
 // difficulty: 0 (easy) → 1 (hard)
 // track: Track instance used to query wall positions
-function buildObstaclesForRange(fromY, toY, difficulty, track) {
+// allowDoor: when false the door-gate case falls back to a wall blocker
+function buildObstaclesForRange(fromY, toY, difficulty, track, allowDoor = true) {
   const obs = [];
 
   // Number of obstacles scales with difficulty (1..4 per segment)
@@ -617,9 +620,16 @@ function buildObstaclesForRange(fromY, toY, difficulty, track) {
     } else if (rand < 0.90) {
       // Boost pad (reward, not hazard)
       obs.push(new BoostPad(cx, y, width));
-    } else {
+    } else if (allowDoor) {
       // Door gate – three doors spanning the track, only one is passable
       obs.push(new DoorGate(y, left, right));
+    } else {
+      // Door suppressed (too soon after last door) – use a wall blocker instead
+      const side       = Math.random() < 0.5 ? 'left' : 'right';
+      const maxProtrude = Math.max(50, width * 0.55);
+      const protrude   = 50 + Math.random() * Math.max(0, Math.min(55, maxProtrude - 50));
+      const wallX      = side === 'left' ? left : right;
+      obs.push(new WallBlocker(y, side, wallX, protrude));
     }
   }
 
