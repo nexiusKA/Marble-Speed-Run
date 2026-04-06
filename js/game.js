@@ -8,12 +8,12 @@ const GEN_SEGMENT = 500;
 // Pickup spawn rate: one pickup per this many world-units on average
 const PICKUP_RATE = 900;
 
-// Pickup type weights [speed, dash, fog_slow, shield, ghost]
+// Pickup type weights [speed, magnet, fog_slow, shield, ghost]
 const PICKUP_WEIGHTS = [0.28, 0.22, 0.22, 0.10, 0.18];
-const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
+const PICKUP_TYPES   = ['speed', 'magnet', 'fog_slow', 'shield', 'ghost'];
 const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
-const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
+const POWER_RUSH_DURATION       = 15;    // seconds the rush phase lasts
 const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
 const POWER_RUSH_LASER_SPACING      = 300;   // world-units between successive laser beams
 const POWER_RUSH_LASER_TRIGGER_DIST = 550;   // world-units ahead of marble at which a dormant laser starts charging
@@ -487,11 +487,10 @@ class Game {
 
   // Maps the 1–100 fall-speed setting to a gravity multiplier.
   // At 100 (default) gravity is full; at 1 the marble falls very slowly.
-  // Speed-boost and dash-boost pickups temporarily raise the multiplier.
+  // Speed-boost pickup temporarily raises the multiplier.
   _fallMult() {
     let m = this._fallSpeedSetting / 100;
     if (this.speedBoostTimer > 0) m *= 1.5;   // 50% speed boost
-    if (this.dashBoostTimer  > 0) m *= 1.8;   // 80% dash burst
     return m;
   }
 
@@ -559,7 +558,7 @@ class Game {
 
     // Pickup effects
     this.speedBoostTimer = 0;
-    this.dashBoostTimer  = 0;
+    this.magnetTimer     = 0;
     this.shieldTimer     = 0;
     this.ghostTimer      = 0;
     this.pickupMsg       = null; // { text, timer }
@@ -659,8 +658,8 @@ class Game {
       this.marble.vy = Math.min(this.marble.vy + SPEED_BOOST_ACCELERATION * dt, MAX_SPEED_Y * this._fallMult());
     }
 
-    // Dash boost timer
-    if (this.dashBoostTimer > 0) this.dashBoostTimer -= dt;
+    // Magnet timer
+    if (this.magnetTimer > 0) this.magnetTimer -= dt;
 
     // ── Fog ─────────────────────────────────────────────────────────────────
     this.fog.update(dt, this.distance, this._voidRateMult());
@@ -694,7 +693,7 @@ class Game {
     // ── Coins ────────────────────────────────────────────────────────────────
     for (const coin of this.coins) {
       coin.update(dt);
-      coin.checkCollision(this.marble, this);
+      coin.checkCollision(this.marble, this, dt);
     }
 
     // Pickup message fade
@@ -767,22 +766,13 @@ class Game {
       this.marble.vy = Math.min(this.marble.vy + SPEED_BOOST_ACCELERATION * dt, MAX_SPEED_Y * this._fallMult());
     }
 
-    // Dash boost timer
-    if (this.dashBoostTimer > 0) this.dashBoostTimer -= dt;
+    // Magnet timer
+    if (this.magnetTimer > 0) this.magnetTimer -= dt;
 
     // Update door obstacles and check marble collisions
     for (const obs of this.powerRushObstacles) {
       obs.update(dt);
       obs.checkCollision(this.marble);
-    }
-
-    // Trigger dormant lasers that are now within range, then update all
-    for (const laser of this.powerRushLasers) {
-      if (!laser.triggered && laser.worldY - this.marble.y <= POWER_RUSH_LASER_TRIGGER_DIST) {
-        laser.trigger();
-      }
-      laser.update(dt);
-      laser.checkCollision(this.marble);
     }
 
     // Update rush-extend pickups and check collection
@@ -940,12 +930,6 @@ class Game {
       this.powerRushGenY += POWER_RUSH_DOOR_SPACING;
     }
 
-    // Laser beams (interleaved between door gates)
-    while (this.powerRushLaserGenY < upToY) {
-      this.powerRushLasers.push(new LaserBeam(this.powerRushLaserGenY));
-      this.powerRushLaserGenY += POWER_RUSH_LASER_SPACING;
-    }
-
     // Rush-extend pickups (max 3 per rush, regardless of timer length)
     while (this.powerRushPickupGenY < upToY && this.powerRushPickupCount < 3) {
       const x = left + 30 + Math.random() * (right - left - 60);
@@ -1036,10 +1020,8 @@ class Game {
       case 'speed':
         this.speedBoostTimer = 4;
         break;
-      case 'dash':
-        this.dashBoostTimer = 0.8;  // 0.8 s burst at boosted fallMult
-        // Immediately kick the marble to the new boosted max speed
-        this.marble.vy = MAX_SPEED_Y * this._fallMult();
+      case 'magnet':
+        this.magnetTimer = 6;  // 6 s of coin attraction
         break;
       case 'fog_slow':
         this.fog.slowDown(6);
@@ -1113,7 +1095,6 @@ class Game {
       this._renderPowerRushBg(ctx);
       this.powerRushTrack.render(ctx, this.cameraY);
       for (const obs of this.powerRushObstacles) obs.render(ctx, this.cameraY);
-      for (const laser of this.powerRushLasers) laser.render(ctx, this.cameraY);
       for (const pu of this.powerRushPickups) pu.render(ctx, this.cameraY);
     } else {
       // ── Normal rendering ─────────────────────────────────────────────────
@@ -1189,18 +1170,18 @@ class Game {
       ctx.stroke();
     }
 
-    // Dash-boost aura – bright cyan streak while burst is active
-    if (this.dashBoostTimer > 0) {
+    // Magnet aura – pulsing pink/purple ring while magnet is active
+    if (this.magnetTimer > 0) {
       const msy = this.marble.y - this.cameraY;
       ctx.beginPath();
-      ctx.arc(this.marble.x, msy, this.marble.radius * 2.3, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(0,230,255,${0.55 + 0.4 * Math.sin(Date.now() / 70)})`;
-      ctx.lineWidth   = 3;
+      ctx.arc(this.marble.x, msy, 160, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255,100,255,${0.15 + 0.1 * Math.sin(Date.now() / 200)})`;
+      ctx.lineWidth   = 1.5;
       ctx.stroke();
       ctx.beginPath();
-      ctx.arc(this.marble.x, msy, this.marble.radius * 1.5, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(160,255,255,${0.3 + 0.3 * Math.sin(Date.now() / 50)})`;
-      ctx.lineWidth   = 1.5;
+      ctx.arc(this.marble.x, msy, this.marble.radius * 2.3, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255,80,255,${0.5 + 0.4 * Math.sin(Date.now() / 120)})`;
+      ctx.lineWidth   = 3;
       ctx.stroke();
     }
 
@@ -1474,6 +1455,7 @@ class Game {
       { text: `Knots:     ${this.track.knots.length}`, color: '#88ff88' },
       { text: '' },
       { text: `SpeedBoost: ${this.speedBoostTimer.toFixed(2)} s`, color: '#ffdd00' },
+      { text: `Magnet:     ${this.magnetTimer.toFixed(2)} s`, color: '#ff88ff' },
       { text: `Shield:     ${this.shieldTimer.toFixed(2)} s`, color: '#ffdd00' },
       { text: `Ghost:      ${this.ghostTimer.toFixed(2)} s`, color: '#ffdd00' },
       { text: '' },
