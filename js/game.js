@@ -15,7 +15,8 @@ const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
 const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
 const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
 const POWER_RUSH_DOOR_SPACING   = 600;   // world-units between successive door gates
-const POWER_RUSH_LASER_SPACING      = 600;   // world-units between successive laser beams
+const POWER_RUSH_LASER_SPACING      = 300;   // world-units between successive laser beams
+const POWER_RUSH_LASER_TRIGGER_DIST = 550;   // world-units ahead of marble at which a dormant laser starts charging
 const POWER_RUSH_PICKUP_SPACING     = 1100;  // world-units between rush-extend pickups
 const POWER_RUSH_EXTEND_MAX         = 10;    // max total seconds that rush_extend pickups can add
 const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a blitz strike
@@ -25,6 +26,10 @@ const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reser
 const POWER_RUSH_PUSH_PER_DOOR  = 55;    // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
+
+// Coin system
+const COIN_SPACING = 300;  // average world-units between coin spawns
+const COIN_VALUE   = 50;   // metres bonus per collected coin
 
 // ── PowerRushTrack ────────────────────────────────────────────────────────────
 // A simple fixed-width straight corridor used during Power Rush mode.
@@ -125,23 +130,34 @@ class LaserBeam {
 
     this.chargeTime   = 0.75;
     this.activeTime   = 1.4;
-    this._chargeTimer = this.chargeTime;
+    this._chargeTimer = 0;    // dormant until triggered
     this._activeTimer = 0;
+    this.triggered    = false; // starts dormant; activated by proximity
     this.expired      = false;
     this.pulse        = Math.random() * Math.PI * 2;
     this._hitCooldown = 0;   // brief cooldown to prevent multi-hit per pass
   }
 
+  /** Called once when the marble comes within POWER_RUSH_LASER_TRIGGER_DIST. */
+  trigger() {
+    if (this.triggered) return;
+    this.triggered    = true;
+    this._chargeTimer = this.chargeTime;
+  }
+
   get state() {
-    if (this.expired)          return 'expired';
-    if (this._chargeTimer > 0) return 'charging';
-    if (this._activeTimer > 0) return 'active';
+    if (this.expired)           return 'expired';
+    if (!this.triggered)        return 'dormant';
+    if (this._chargeTimer > 0)  return 'charging';
+    if (this._activeTimer > 0)  return 'active';
     return 'expired';
   }
 
   update(dt) {
     this.pulse = (this.pulse + dt * 4.5) % (Math.PI * 2);
     if (this._hitCooldown > 0) this._hitCooldown -= dt;
+
+    if (!this.triggered) return; // dormant – wait for proximity trigger
 
     if (this._chargeTimer > 0) {
       this._chargeTimer -= dt;
@@ -200,7 +216,7 @@ class LaserBeam {
     const sy = this.worldY - cameraY;
     if (sy < -30 || sy > CANVAS_H + 30) return;
     const s = this.state;
-    if (s === 'expired') return;
+    if (s === 'expired' || s === 'dormant') return;
 
     const sinP  = Math.sin(this.pulse);
     const pulse = 0.5 + 0.5 * sinP;
@@ -470,8 +486,12 @@ class Game {
 
   // Maps the 1–100 fall-speed setting to a gravity multiplier.
   // At 100 (default) gravity is full; at 1 the marble falls very slowly.
+  // Speed-boost and dash-boost pickups temporarily raise the multiplier.
   _fallMult() {
-    return this._fallSpeedSetting / 100;
+    let m = this._fallSpeedSetting / 100;
+    if (this.speedBoostTimer > 0) m *= 1.5;   // 50% speed boost
+    if (this.dashBoostTimer  > 0) m *= 1.8;   // 80% dash burst
+    return m;
   }
 
   // ── Void speed control wiring ─────────────────────────────────────────────
@@ -538,9 +558,14 @@ class Game {
 
     // Pickup effects
     this.speedBoostTimer = 0;
+    this.dashBoostTimer  = 0;
     this.shieldTimer     = 0;
     this.ghostTimer      = 0;
     this.pickupMsg       = null; // { text, timer }
+
+    // Coin system
+    this.coins          = [];
+    this.coinsCollected = 0;
 
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY       = this.track.startY;
@@ -627,11 +652,14 @@ class Game {
     // ── Marble physics ──────────────────────────────────────────────────────
     this.marble.update(dt, this.input, this.track, this._steerMult(), this._fallMult());
 
-    // Speed-boost pickup: extra downward push
+    // Speed-boost pickup: extra downward push (cap uses boosted _fallMult)
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y * this._fallMult());
+      this.marble.vy = Math.min(this.marble.vy + 220 * dt, MAX_SPEED_Y * this._fallMult());
     }
+
+    // Dash boost timer
+    if (this.dashBoostTimer > 0) this.dashBoostTimer -= dt;
 
     // ── Fog ─────────────────────────────────────────────────────────────────
     this.fog.update(dt, this.distance, this._voidRateMult());
@@ -660,6 +688,12 @@ class Game {
     for (const pu of this.pickups) {
       pu.update(dt);
       pu.checkCollision(this.marble, this);
+    }
+
+    // ── Coins ────────────────────────────────────────────────────────────────
+    for (const coin of this.coins) {
+      coin.update(dt);
+      coin.checkCollision(this.marble, this);
     }
 
     // Pickup message fade
@@ -726,11 +760,14 @@ class Game {
     // Marble physics – use the fixed-width power rush corridor
     this.marble.update(dt, this.input, this.powerRushTrack, this._steerMult(), this._fallMult());
 
-    // Speed boost still applies inside rush
+    // Speed boost still applies inside rush (cap uses boosted _fallMult)
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y * this._fallMult());
+      this.marble.vy = Math.min(this.marble.vy + 220 * dt, MAX_SPEED_Y * this._fallMult());
     }
+
+    // Dash boost timer
+    if (this.dashBoostTimer > 0) this.dashBoostTimer -= dt;
 
     // Update door obstacles and check marble collisions
     for (const obs of this.powerRushObstacles) {
@@ -738,8 +775,11 @@ class Game {
       obs.checkCollision(this.marble);
     }
 
-    // Update laser beams and check marble collisions
+    // Trigger dormant lasers that are now within range, then update all
     for (const laser of this.powerRushLasers) {
+      if (!laser.triggered && laser.worldY - this.marble.y <= POWER_RUSH_LASER_TRIGGER_DIST) {
+        laser.trigger();
+      }
       laser.update(dt);
       laser.checkCollision(this.marble);
     }
@@ -866,11 +906,23 @@ class Game {
       const type = _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
       this.pickups.push(new Pickup(x, y, type));
     }
+
+    // Coins (one per ~COIN_SPACING world-units on average)
+    const numCoins = Math.floor(segLen / COIN_SPACING) +
+                     (Math.random() < (segLen % COIN_SPACING) / COIN_SPACING ? 1 : 0);
+    for (let i = 0; i < numCoins; i++) {
+      const cy = fromY + Math.random() * segLen;
+      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+      const margin = 14;
+      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+      this.coins.push(new Coin(cx, cy));
+    }
   }
 
   _pruneEntities(behindY) {
     this.obstacles = this.obstacles.filter(o => o.worldY > behindY);
     this.pickups   = this.pickups.filter(p => !p.collected && p.worldY > behindY);
+    this.coins     = this.coins.filter(c => !c.collected && c.worldY > behindY);
     this.track.prune(behindY - 400);
   }
 
@@ -984,7 +1036,9 @@ class Game {
         this.speedBoostTimer = 4;
         break;
       case 'dash':
-        this.marble.vy = Math.min(this.marble.vy + 500, MAX_SPEED_Y * this._fallMult());
+        this.dashBoostTimer = 0.8;  // 0.8 s burst at boosted fallMult
+        // Immediately kick the marble to the new boosted max speed
+        this.marble.vy = MAX_SPEED_Y * this._fallMult();
         break;
       case 'fog_slow':
         this.fog.slowDown(6);
@@ -1022,20 +1076,29 @@ class Game {
     this.pickupMsg = { text, timer: 2.2 };
   }
 
+  collectCoin() {
+    this.coinsCollected++;
+    this.ui.updateCoinCount(this.coinsCollected);
+    // Small golden particle burst
+    for (let i = 0; i < 8; i++) this._spawnParticle(this.marble.x, this.marble.y, '255,215,0');
+  }
+
   // ── Game over ─────────────────────────────────────────────────────────────
   _gameOver() {
     this.state = STATE.DEAD;
-    const dist  = this.distance;
-    const isNew = dist > this.bestDistance;
+    const dist      = this.distance;
+    const coinBonus = this.coinsCollected * COIN_VALUE;
+    const totalDist = dist + coinBonus;
+    const isNew     = totalDist > this.bestDistance;
     if (isNew) {
-      this.bestDistance = dist;
-      localStorage.setItem('mrBestDist', String(dist));
+      this.bestDistance = totalDist;
+      localStorage.setItem('mrBestDist', String(totalDist));
     }
     if (this.debugMode) {
-      console.log(`[DEBUG] Game over | dist=${dist}m | best=${this.bestDistance}m | newBest=${isNew}`);
+      console.log(`[DEBUG] Game over | dist=${dist}m | coins=${this.coinsCollected} | bonus=${coinBonus}m | total=${totalDist}m | best=${this.bestDistance}m | newBest=${isNew}`);
     }
     this.ui.updateBestDistance(this.bestDistance);
-    this.ui.showGameOver(dist, this.bestDistance, isNew, () => this.restart());
+    this.ui.showGameOver(dist, totalDist, this.bestDistance, isNew, this.coinsCollected, coinBonus, () => this.restart());
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -1058,6 +1121,7 @@ class Game {
       this.track.render(ctx, this.cameraY);
       for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.pickups) pu.render(ctx, this.cameraY);
+      for (const coin of this.coins) coin.render(ctx, this.cameraY);
       this._renderRushLine(ctx);
     }
 
@@ -1066,7 +1130,9 @@ class Game {
       const sy = p.y - this.cameraY;
       ctx.beginPath();
       ctx.arc(p.x, sy, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(100,200,255,${p.life * 0.8})`;
+      ctx.fillStyle = p.color
+        ? `rgba(${p.color},${p.life * 0.85})`
+        : `rgba(100,200,255,${p.life * 0.8})`;
       ctx.fill();
     }
 
@@ -1119,6 +1185,21 @@ class Game {
       ctx.arc(this.marble.x, msy, this.marble.radius * 1.9, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(255,200,0,${0.4 + 0.35 * Math.sin(Date.now() / 140)})`;
       ctx.lineWidth   = 2;
+      ctx.stroke();
+    }
+
+    // Dash-boost aura – bright cyan streak while burst is active
+    if (this.dashBoostTimer > 0) {
+      const msy = this.marble.y - this.cameraY;
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 2.3, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(0,230,255,${0.55 + 0.4 * Math.sin(Date.now() / 70)})`;
+      ctx.lineWidth   = 3;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(this.marble.x, msy, this.marble.radius * 1.5, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(160,255,255,${0.3 + 0.3 * Math.sin(Date.now() / 50)})`;
+      ctx.lineWidth   = 1.5;
       ctx.stroke();
     }
 
@@ -1722,13 +1803,14 @@ class Game {
     ctx.restore();
   }
 
-  _spawnParticle(x, y) {
+  _spawnParticle(x, y, color = null) {
     this.particles.push({
       x, y,
       vx: (Math.random() - 0.5) * 80,
       vy: (Math.random() - 0.6) * 60,
       life: 1,
       size: 2 + Math.random() * 3,
+      color,   // if set, used as an RGB string like '255,215,0'
     });
   }
 
