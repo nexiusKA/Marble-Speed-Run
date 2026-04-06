@@ -472,6 +472,40 @@ body {
   box-shadow: 0 2px 8px rgba(60, 60, 200, 0.4);
 }
 
+.difficulty-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-easy {
+  background: linear-gradient(135deg, #1a7a2e, #2ecc52);
+  box-shadow: 0 4px 16px rgba(46, 204, 82, 0.5);
+}
+.btn-easy:hover {
+  background: linear-gradient(135deg, #229939, #3dde63);
+  box-shadow: 0 6px 24px rgba(46, 204, 82, 0.7);
+}
+
+.btn-normal {
+  background: linear-gradient(135deg, #7a6a00, #f0c800);
+  box-shadow: 0 4px 16px rgba(240, 200, 0, 0.5);
+}
+.btn-normal:hover {
+  background: linear-gradient(135deg, #998500, #ffd700);
+  box-shadow: 0 6px 24px rgba(240, 200, 0, 0.7);
+}
+
+.btn-hard {
+  background: linear-gradient(135deg, #8b0000, #e03030);
+  box-shadow: 0 4px 16px rgba(220, 50, 50, 0.5);
+}
+.btn-hard:hover {
+  background: linear-gradient(135deg, #aa1010, #f04040);
+  box-shadow: 0 6px 24px rgba(220, 50, 50, 0.7);
+}
+
 /* ── Mobile controls ─────────────────────────────────── */
 #mobile-controls {
   position: absolute;

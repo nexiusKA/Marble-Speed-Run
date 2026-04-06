@@ -10,14 +10,18 @@ class UI {
     this.gameOverOvl = document.getElementById('gameover-overlay');
     this.goDistEl    = document.getElementById('go-dist');
     this.goBestEl    = document.getElementById('go-best');
-    this.startBtn    = document.getElementById('start-btn');
+    this.easyBtn     = document.getElementById('easy-btn');
+    this.normalBtn   = document.getElementById('normal-btn');
+    this.hardBtn     = document.getElementById('hard-btn');
     this.retryBtn    = document.getElementById('retry-btn');
   }
 
   showStart(onStart) {
     this._show(this.overlay);
     this._hide(this.gameOverOvl);
-    this.startBtn.onclick = () => { this._hide(this.overlay); onStart(); };
+    this.easyBtn.onclick   = () => { this._hide(this.overlay); onStart(125); };
+    this.normalBtn.onclick = () => { this._hide(this.overlay); onStart(150); };
+    this.hardBtn.onclick   = () => { this._hide(this.overlay); onStart(175); };
   }
 
   showGameOver(dist, best, isNew, onRetry) {
