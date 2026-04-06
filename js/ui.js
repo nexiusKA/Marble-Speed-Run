@@ -13,15 +13,23 @@ class UI {
     this.easyBtn     = document.getElementById('easy-btn');
     this.normalBtn   = document.getElementById('normal-btn');
     this.hardBtn     = document.getElementById('hard-btn');
+    this.playBtn     = document.getElementById('play-btn');
     this.retryBtn    = document.getElementById('retry-btn');
   }
 
-  showStart(onStart) {
+  showStart(onDifficulty, onPlay) {
     this._show(this.overlay);
     this._hide(this.gameOverOvl);
-    this.easyBtn.onclick   = () => { this._hide(this.overlay); onStart(125); };
-    this.normalBtn.onclick = () => { this._hide(this.overlay); onStart(150); };
-    this.hardBtn.onclick   = () => { this._hide(this.overlay); onStart(175); };
+    const diffBtns = [this.easyBtn, this.normalBtn, this.hardBtn];
+    const selectDiff = (btn, pct) => {
+      diffBtns.forEach(b => b.classList.remove('difficulty-selected'));
+      btn.classList.add('difficulty-selected');
+      onDifficulty(pct);
+    };
+    this.easyBtn.onclick   = () => selectDiff(this.easyBtn,   125);
+    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 150);
+    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   175);
+    this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
   }
 
   showGameOver(dist, best, isNew, onRetry) {

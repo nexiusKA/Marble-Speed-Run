@@ -22,7 +22,7 @@ const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a b
 const POWER_RUSH_LASER_START_OFFSET  = 450;  // world-units ahead before first laser appears
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
 const POWER_RUSH_LASER_GAP_RATIO     = 0.26; // fraction of corridor width reserved as safe gap
-const POWER_RUSH_PUSH_PER_DOOR  = 110;   // extra world-units of fog pushback per door scored
+const POWER_RUSH_PUSH_PER_DOOR  = 55;    // extra world-units of fog pushback per door scored
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
@@ -353,7 +353,7 @@ class Game {
     this.state = STATE.MENU;
     this._init();
 
-    this.ui.showStart((voidSpeedPct) => { this._applyVoidRate(voidSpeedPct); this.startRun(); });
+    this.ui.showStart((voidSpeedPct) => { this._applyVoidRate(voidSpeedPct); }, () => { this.startRun(); });
     this.ui.updateBestDistance(this.bestDistance);
 
     // Wire up sound controls in the start overlay
@@ -561,6 +561,7 @@ class Game {
     this.powerRushObstacles  = [];
     this.powerRushLasers     = [];   // LaserBeam instances active during rush
     this.powerRushPickups    = [];   // rush-extend pickups inside the corridor
+    this.powerRushPickupCount = 0;  // total rush-extend pickups spawned this rush (capped at 3)
     this.powerRushGenY       = 0;   // generation cursor for rush door gates
     this.powerRushLaserGenY  = 0;   // generation cursor for laser beams
     this.powerRushPickupGenY = 0;   // generation cursor for rush-extend pickups
@@ -891,10 +892,11 @@ class Game {
       this.powerRushLaserGenY += POWER_RUSH_LASER_SPACING;
     }
 
-    // Rush-extend pickups
-    while (this.powerRushPickupGenY < upToY) {
+    // Rush-extend pickups (max 3 per rush, regardless of timer length)
+    while (this.powerRushPickupGenY < upToY && this.powerRushPickupCount < 3) {
       const x = left + 30 + Math.random() * (right - left - 60);
       this.powerRushPickups.push(new Pickup(x, this.powerRushPickupGenY, 'rush_extend'));
+      this.powerRushPickupCount++;
       this.powerRushPickupGenY += POWER_RUSH_PICKUP_SPACING;
     }
   }
@@ -924,6 +926,7 @@ class Game {
     this.powerRushObstacles  = [];
     this.powerRushLasers     = [];
     this.powerRushPickups    = [];
+    this.powerRushPickupCount = 0;
     this.powerRushGenY       = this.marble.y + 200;
     // Lasers and pickups start further ahead so the player can settle into the corridor first
     this.powerRushLaserGenY  = this.marble.y + POWER_RUSH_LASER_START_OFFSET;
