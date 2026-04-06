@@ -193,10 +193,11 @@ body {
   letter-spacing: 0.04em;
 }
 
-.pl-speed  { color: #ffe040; }
-.pl-dash   { color: #40ffff; }
-.pl-fog    { color: #dd88ff; }
-.pl-shield { color: #88ff99; }
+.pl-speed      { color: #ffe040; }
+.pl-dash       { color: #40ffff; }
+.pl-fog        { color: #dd88ff; }
+.pl-shield     { color: #88ff99; }
+.pl-powerrush  { color: #ffdd00; }
 
 /* ── Version tag ─────────────────────────────── */
 #version-tag {

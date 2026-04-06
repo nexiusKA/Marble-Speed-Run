@@ -12,6 +12,95 @@ const PICKUP_RATE = 900;
 const PICKUP_WEIGHTS = [0.28, 0.22, 0.22, 0.10, 0.18];
 const PICKUP_TYPES   = ['speed', 'dash', 'fog_slow', 'shield', 'ghost'];
 
+// ── Power Rush constants ───────────────────────────────────────────────────────
+const POWER_RUSH_CORRIDOR_LEFT  = 100;   // fixed left wall X during rush
+const POWER_RUSH_CORRIDOR_RIGHT = 380;   // fixed right wall X during rush
+const POWER_RUSH_DURATION       = 20;    // seconds the rush phase lasts
+const POWER_RUSH_DOOR_SPACING   = 170;   // world-units between successive door gates
+const POWER_RUSH_PUSH_PER_DOOR  = 220;   // extra world-units of fog pushback per door scored
+const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
+
+// ── PowerRushTrack ────────────────────────────────────────────────────────────
+// A simple fixed-width straight corridor used during Power Rush mode.
+// Provides the same interface as Track so marble.update() can use it directly.
+class PowerRushTrack {
+  getWallsAtY(_y) {
+    return { left: POWER_RUSH_CORRIDOR_LEFT, right: POWER_RUSH_CORRIDOR_RIGHT };
+  }
+
+  resolveCollision(marble) {
+    const innerLeft  = POWER_RUSH_CORRIDOR_LEFT  + marble.radius;
+    const innerRight = POWER_RUSH_CORRIDOR_RIGHT - marble.radius;
+    if (marble.x < innerLeft) {
+      marble.x  = innerLeft;
+      marble.vx = Math.abs(marble.vx) * BOUNCE_FACTOR;
+      marble.triggerShake();
+    } else if (marble.x > innerRight) {
+      marble.x  = innerRight;
+      marble.vx = -Math.abs(marble.vx) * BOUNCE_FACTOR;
+      marble.triggerShake();
+    }
+  }
+
+  extend() {}
+  prune()  {}
+  isOutOfBounds() { return false; }
+  hasFinished()   { return false; }
+
+  render(ctx, cameraY) {
+    // Dark areas flanking the corridor
+    ctx.fillStyle = 'rgba(0,0,0,0.92)';
+    ctx.fillRect(0, 0, POWER_RUSH_CORRIDOR_LEFT, CANVAS_H);
+    ctx.fillRect(POWER_RUSH_CORRIDOR_RIGHT, 0, CANVAS_W - POWER_RUSH_CORRIDOR_RIGHT, CANVAS_H);
+
+    // Corridor floor
+    const grad = ctx.createLinearGradient(POWER_RUSH_CORRIDOR_LEFT, 0, POWER_RUSH_CORRIDOR_RIGHT, 0);
+    grad.addColorStop(0,   '#0c0800');
+    grad.addColorStop(0.5, '#1a1000');
+    grad.addColorStop(1,   '#0c0800');
+    ctx.fillStyle = grad;
+    ctx.fillRect(POWER_RUSH_CORRIDOR_LEFT, 0,
+                 POWER_RUSH_CORRIDOR_RIGHT - POWER_RUSH_CORRIDOR_LEFT, CANVAS_H);
+
+    // Subtle diagonal grid inside corridor
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(POWER_RUSH_CORRIDOR_LEFT, 0,
+             POWER_RUSH_CORRIDOR_RIGHT - POWER_RUSH_CORRIDOR_LEFT, CANVAS_H);
+    ctx.clip();
+    ctx.strokeStyle = 'rgba(255,160,0,0.10)';
+    ctx.lineWidth   = 0.8;
+    const gridSpacing = 36;
+    const gridOff     = (cameraY % gridSpacing);
+    for (let wy = -gridSpacing; wy <= CANVAS_H + gridSpacing; wy += gridSpacing) {
+      const sy = wy + gridOff;
+      ctx.beginPath();
+      ctx.moveTo(POWER_RUSH_CORRIDOR_LEFT,  sy);
+      ctx.lineTo(POWER_RUSH_CORRIDOR_RIGHT, sy - 80);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Gold neon walls
+    ctx.save();
+    ctx.shadowBlur  = 22;
+    ctx.shadowColor = '#ffcc00';
+    ctx.lineWidth   = 3;
+    ctx.strokeStyle = '#ffcc00';
+    ctx.beginPath();
+    ctx.moveTo(POWER_RUSH_CORRIDOR_LEFT, 0);
+    ctx.lineTo(POWER_RUSH_CORRIDOR_LEFT, CANVAS_H);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(POWER_RUSH_CORRIDOR_RIGHT, 0);
+    ctx.lineTo(POWER_RUSH_CORRIDOR_RIGHT, CANVAS_H);
+    ctx.stroke();
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
+    ctx.restore();
+  }
+}
+
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
@@ -143,6 +232,17 @@ class Game {
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY = this.track.startY;
 
+    // ── Power Rush state ───────────────────────────────────────────────────
+    this.powerRushActive    = false;
+    this.powerRushTimer     = 0;   // seconds remaining in the rush phase
+    this.powerRushCountdown = 0;   // 3-2-1 value shown after rush ends
+    this.powerRushCdTimer   = 0;   // sub-timer for each countdown beat
+    this.powerRushDoors     = 0;   // doors scored during the current rush
+    this.powerRushTrack     = new PowerRushTrack();
+    this.powerRushObstacles = [];
+    this.powerRushGenY      = 0;   // generation cursor for rush door gates
+    this.nextPowerRushDist  = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
+
     // Pre-populate the first stretch of content
     this._extendLevel(this.track.startY + 1800);
   }
@@ -178,7 +278,12 @@ class Game {
     if (this.input.consumeRestart()) { this.restart(); return; }
 
     this.elapsed += dt * 1000;
-    const elapsedSec = this.elapsed / 1000;
+
+    // ── Power Rush Mode – runs its own update branch ────────────────────────
+    if (this.powerRushActive) {
+      this._updatePowerRush(dt);
+      return;
+    }
 
     // ── Marble physics ──────────────────────────────────────────────────────
     this.marble.update(dt, this.input, this.track, this._steerMult());
@@ -251,6 +356,84 @@ class Game {
     this.ui.updateDistance(this.distance);
   }
 
+  // ── Power Rush update (replaces the main update while rush is active) ─────
+  _updatePowerRush(dt) {
+    // Marble physics – use the fixed-width power rush corridor
+    this.marble.update(dt, this.input, this.powerRushTrack, this._steerMult());
+
+    // Speed boost still applies inside rush
+    if (this.speedBoostTimer > 0) {
+      this.speedBoostTimer -= dt;
+      this.marble.vy = Math.min(this.marble.vy + 180 * dt, MAX_SPEED_Y);
+    }
+
+    // Update door obstacles and check marble collisions
+    for (const obs of this.powerRushObstacles) {
+      obs.update(dt);
+      obs.checkCollision(this.marble);
+    }
+
+    // Score: award a point for each door gate the marble fully passes through
+    for (const obs of this.powerRushObstacles) {
+      if (!obs.scoreGiven && this.marble.y > obs.worldY + obs.h / 2) {
+        obs.scoreGiven = true;
+        this.powerRushDoors++;
+      }
+    }
+
+    // Particles
+    if (this.marble.speed > 300 && Math.random() < dt * 12) {
+      this._spawnParticle(this.marble.x, this.marble.y);
+    }
+    this._updateParticles(dt);
+
+    // Pickup message fade
+    if (this.pickupMsg) {
+      this.pickupMsg.timer -= dt;
+      if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
+    }
+
+    // Camera
+    const targetCamY = this.marble.y - CANVAS_H * 0.28;
+    this.cameraY = lerp(this.cameraY, targetCamY, clamp(dt * 7, 0, 1));
+
+    // Screen shake
+    if (this.marble.shakeTimer > 0) {
+      this.shakeX = (Math.random() - 0.5) * 8;
+      this.shakeY = (Math.random() - 0.5) * 8;
+    } else {
+      this.shakeX = lerp(this.shakeX, 0, dt * 15);
+      this.shakeY = lerp(this.shakeY, 0, dt * 15);
+    }
+
+    // Extend / prune power rush door gates
+    this._extendPowerRush(this.marble.y + 1800);
+    this._prunePowerRushObstacles(this.marble.y - 1200);
+
+    // ── Rush timer / countdown ─────────────────────────────────────────────
+    if (this.powerRushTimer > 0) {
+      this.powerRushTimer -= dt;
+      if (this.powerRushTimer <= 0) {
+        this.powerRushTimer     = 0;
+        this.powerRushCountdown = 3;
+        this.powerRushCdTimer   = 1; // 1 second per beat
+      }
+    } else if (this.powerRushCountdown > 0) {
+      this.powerRushCdTimer -= dt;
+      if (this.powerRushCdTimer <= 0) {
+        this.powerRushCountdown--;
+        if (this.powerRushCountdown > 0) {
+          this.powerRushCdTimer = 1;
+        } else {
+          this._exitPowerRush();
+        }
+      }
+    }
+
+    // HUD – distance is still measured normally (marble.y keeps advancing)
+    this.ui.updateDistance(this.distance);
+  }
+
   // ── Level content management ──────────────────────────────────────────────
   _extendLevel(upToY) {
     this.track.extend(upToY);
@@ -281,12 +464,87 @@ class Game {
       const type = _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
       this.pickups.push(new Pickup(x, y, type));
     }
+
+    // Power Rush pickup – spawns once every POWER_RUSH_INTERVAL metres
+    const distFromStart = fromY - this.track.startY;
+    if (distFromStart >= this.nextPowerRushDist) {
+      const py = fromY + segLen * 0.4;
+      const { left, right } = this.track.getWallsAtY(py);
+      const px = (left + right) / 2; // centre of track, hard to miss
+      this.pickups.push(new Pickup(px, py, 'power_rush'));
+      this.nextPowerRushDist += POWER_RUSH_INTERVAL;
+      if (this.debugMode) console.log(`[DEBUG] Power Rush pickup spawned at y=${py.toFixed(0)}`);
+    }
   }
 
   _pruneEntities(behindY) {
     this.obstacles = this.obstacles.filter(o => o.worldY > behindY);
     this.pickups   = this.pickups.filter(p => !p.collected && p.worldY > behindY);
     this.track.prune(behindY - 400);
+  }
+
+  // ── Power Rush helpers ────────────────────────────────────────────────────
+
+  // Generate DoorGate obstacles for the power rush corridor up to upToY
+  _extendPowerRush(upToY) {
+    const left  = POWER_RUSH_CORRIDOR_LEFT;
+    const right = POWER_RUSH_CORRIDOR_RIGHT;
+    while (this.powerRushGenY < upToY) {
+      this.powerRushObstacles.push(new DoorGate(this.powerRushGenY, left, right));
+      this.powerRushGenY += POWER_RUSH_DOOR_SPACING;
+    }
+  }
+
+  _prunePowerRushObstacles(behindY) {
+    this.powerRushObstacles = this.powerRushObstacles.filter(o => o.worldY > behindY);
+  }
+
+  _enterPowerRush() {
+    this.powerRushActive    = true;
+    this.powerRushTimer     = POWER_RUSH_DURATION;
+    this.powerRushCountdown = 0;
+    this.powerRushCdTimer   = 0;
+    this.powerRushDoors     = 0;
+
+    // Clear normal obstacles/pickups so they don't interfere on return
+    this.obstacles = [];
+    this.pickups   = [];
+
+    // Start generating door gates 200 units ahead of the marble
+    this.powerRushObstacles = [];
+    this.powerRushGenY      = this.marble.y + 200;
+
+    if (this.debugMode) console.log('[DEBUG] Power Rush entered');
+  }
+
+  _exitPowerRush() {
+    const doorsScored = this.powerRushDoors;
+    const fogPushback = doorsScored * POWER_RUSH_PUSH_PER_DOOR;
+
+    this.powerRushActive    = false;
+    this.powerRushObstacles = [];
+
+    // Clear any stale normal obstacles/pickups from before the rush started
+    this.obstacles = [];
+    this.pickups   = [];
+
+    // Push the fog back proportional to doors scored (reward for good performance)
+    this.fog.y -= fogPushback;
+
+    // Resume normal level generation from the current marble position
+    this.levelGenY = this.marble.y;
+    this._extendLevel(this.marble.y + 2500);
+
+    // Show result
+    if (doorsScored > 0) {
+      this._showPickupMsg(`RUSH BONUS: ${doorsScored} DOORS! +${Math.floor(fogPushback)}m LEAD`);
+    } else {
+      this._showPickupMsg('RUSH OVER!');
+    }
+
+    if (this.debugMode) {
+      console.log(`[DEBUG] Power Rush exited | doors=${doorsScored} | fogPushback=${fogPushback}`);
+    }
   }
 
   // ── Pickup effects ────────────────────────────────────────────────────────
@@ -306,6 +564,9 @@ class Game {
         break;
       case 'ghost':
         this.ghostTimer = 5;
+        break;
+      case 'power_rush':
+        this._enterPowerRush();
         break;
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
@@ -340,22 +601,21 @@ class Game {
     ctx.save();
     ctx.translate(this.shakeX, this.shakeY);
 
-    // Background (synthwave)
-    this._renderSynthwaveBg(ctx);
+    if (this.powerRushActive) {
+      // ── Power Rush rendering ─────────────────────────────────────────────
+      this._renderPowerRushBg(ctx);
+      this.powerRushTrack.render(ctx, this.cameraY);
+      for (const obs of this.powerRushObstacles) obs.render(ctx, this.cameraY);
+    } else {
+      // ── Normal rendering ─────────────────────────────────────────────────
+      this._renderSynthwaveBg(ctx);
+      this._renderStars(ctx);
+      this.track.render(ctx, this.cameraY);
+      for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
+      for (const pu of this.pickups) pu.render(ctx, this.cameraY);
+    }
 
-    // Stars
-    this._renderStars(ctx);
-
-    // Track
-    this.track.render(ctx, this.cameraY);
-
-    // Obstacles
-    for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
-
-    // Pickups
-    for (const pu of this.pickups) pu.render(ctx, this.cameraY);
-
-    // Particles (screen space)
+    // Particles (screen space – always rendered)
     for (const p of this.particles) {
       const sy = p.y - this.cameraY;
       ctx.beginPath();
@@ -364,8 +624,10 @@ class Game {
       ctx.fill();
     }
 
-    // Fog (rendered before marble so marble is always on top)
-    this.fog.render(ctx, this.cameraY);
+    // Fog – hidden during Power Rush (it's paused; don't distract the player)
+    if (!this.powerRushActive) {
+      this.fog.render(ctx, this.cameraY);
+    }
 
     // Marble (world space – translate by -cameraY)
     ctx.save();
@@ -375,8 +637,11 @@ class Game {
 
     // ── Screen-space overlays ───────────────────────────────────────────────
 
-    // Danger vignette when fog is close
-    if (this.state === STATE.RUNNING) {
+    if (this.powerRushActive) {
+      // Power Rush HUD (timer bar, door count, 3-2-1 countdown)
+      this._renderPowerRushOverlay(ctx);
+    } else if (this.state === STATE.RUNNING) {
+      // Danger vignette when fog is close
       const danger = this.fog.dangerRatio(this.marble);
       if (danger > 0.25) {
         const intensity = (danger - 0.25) / 0.75;
@@ -502,6 +767,108 @@ class Game {
     }
   }
 
+  // ── Power Rush background ─────────────────────────────────────────────────
+  _renderPowerRushBg(ctx) {
+    // Deep electric-gold sky
+    const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+    sky.addColorStop(0,    '#060400');
+    sky.addColorStop(0.35, '#120900');
+    sky.addColorStop(0.65, '#1a0e00');
+    sky.addColorStop(1,    '#0e0700');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // Scrolling horizontal scan-lines in gold
+    const scroll = (this.cameraY % 44) / 44;
+    for (let i = 0; i < 14; i++) {
+      const t     = (i + scroll) / 14;
+      const ly    = t * CANVAS_H;
+      const alpha = 0.04 + (1 - t) * 0.18;
+      ctx.beginPath();
+      ctx.moveTo(0, ly);
+      ctx.lineTo(CANVAS_W, ly);
+      ctx.strokeStyle = `rgba(255,180,0,${alpha.toFixed(3)})`;
+      ctx.lineWidth   = 0.8;
+      ctx.stroke();
+    }
+
+    // Stars – seeded per camera bucket, golden palette
+    const bucket = Math.floor(this.cameraY / CANVAS_H);
+    const seed   = bucket * 9876543;
+    const colors = [
+      [255, 200,  0],
+      [255, 140,  0],
+      [255, 240, 80],
+      [255, 255, 160],
+    ];
+    for (let i = 0; i < 28; i++) {
+      const sx   = pseudoRand(seed + i * 7)     * CANVAS_W;
+      const sy   = pseudoRand(seed + i * 7 + 1) * CANVAS_H;
+      const r    = pseudoRand(seed + i * 7 + 2) * 1.2 + 0.4;
+      const a    = pseudoRand(seed + i * 7 + 3) * 0.5 + 0.1;
+      const ci   = Math.floor(pseudoRand(seed + i * 7 + 4) * colors.length);
+      const [cr, cg, cb] = colors[ci];
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`;
+      ctx.fill();
+    }
+  }
+
+  // ── Power Rush HUD overlay ────────────────────────────────────────────────
+  _renderPowerRushOverlay(ctx) {
+    ctx.save();
+
+    // Title banner
+    ctx.font         = 'bold 16px monospace';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'top';
+    ctx.shadowColor  = '#ff8800';
+    ctx.shadowBlur   = 14;
+    ctx.fillStyle    = '#ffcc00';
+    ctx.fillText('⚡ POWER RUSH ⚡', CANVAS_W / 2, 8);
+    ctx.shadowBlur   = 0;
+
+    // Timer bar
+    const timeLeft = Math.max(0, this.powerRushTimer);
+    const timeFrac = timeLeft / POWER_RUSH_DURATION;
+    const barX = 20, barY = 30, barW = CANVAS_W - 40, barH = 8;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillStyle = timeFrac > 0.3 ? '#ffcc00' : '#ff4400';
+    ctx.fillRect(barX, barY, barW * timeFrac, barH);
+    ctx.strokeStyle = '#ffaa00';
+    ctx.lineWidth   = 1;
+    ctx.strokeRect(barX, barY, barW, barH);
+
+    // Timer label (right of bar)
+    ctx.font         = 'bold 12px monospace';
+    ctx.textAlign    = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle    = '#ffdd88';
+    ctx.fillText(`${timeLeft.toFixed(1)}s`, barX + barW, barY + barH + 3);
+
+    // Door count (left of bar)
+    ctx.textAlign    = 'left';
+    ctx.fillStyle    = '#88ffaa';
+    ctx.fillText(`🚪 ${this.powerRushDoors}`, barX, barY + barH + 3);
+
+    // 3-2-1 countdown (big centred)
+    if (this.powerRushCountdown > 0) {
+      const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 150);
+      ctx.font         = `bold ${Math.floor(90 + pulse * 14)}px monospace`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor  = '#ff8800';
+      ctx.shadowBlur   = 30 + pulse * 20;
+      ctx.fillStyle    = `rgba(255,220,0,${0.7 + pulse * 0.3})`;
+      ctx.fillText(String(this.powerRushCountdown), CANVAS_W / 2, CANVAS_H / 2);
+      ctx.shadowBlur   = 0;
+    }
+
+    ctx.restore();
+  }
+
   // ── Debug overlay ─────────────────────────────────────────────────────────
   _renderDebug(ctx) {
     ctx.save();
@@ -537,6 +904,11 @@ class Game {
       { text: `SpeedBoost: ${this.speedBoostTimer.toFixed(2)} s`, color: '#ffdd00' },
       { text: `Shield:     ${this.shieldTimer.toFixed(2)} s`, color: '#ffdd00' },
       { text: `Ghost:      ${this.ghostTimer.toFixed(2)} s`, color: '#ffdd00' },
+      { text: '' },
+      { text: 'POWER RUSH', color: '#ffcc00' },
+      { text: `  active=${this.powerRushActive}`, color: '#ffeeaa' },
+      { text: `  timer=${this.powerRushTimer.toFixed(2)} s  cd=${this.powerRushCountdown}`, color: '#ffeeaa' },
+      { text: `  doors=${this.powerRushDoors}  nextAt=${this.nextPowerRushDist}m`, color: '#ffeeaa' },
     ];
 
     const lineH  = 14;
