@@ -36,9 +36,9 @@ class Game {
     const vol    = Number.isFinite(volRaw) && volRaw >= 0 && volRaw <= 100 ? volRaw : 70;
     this.sound   = new SoundManager(vol, false);
 
-    // Steering sensitivity (0–100, default 50). Persisted across sessions.
-    const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '50', 10);
-    this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 0 && steerRaw <= 100 ? steerRaw : 50;
+    // Steering sensitivity (0–100, default 100). Persisted across sessions.
+    const steerRaw        = parseInt(localStorage.getItem('mrSteerSens') || '100', 10);
+    this._steerSensitivity = Number.isFinite(steerRaw) && steerRaw >= 0 && steerRaw <= 100 ? steerRaw : 100;
 
     this.state = STATE.MENU;
     this._init();
