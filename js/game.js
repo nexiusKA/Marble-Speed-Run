@@ -28,6 +28,7 @@ const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spa
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // Coin system
+const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
 const COIN_SPACING = 300;  // average world-units between coin spawns
 const COIN_VALUE   = 50;   // metres bonus per collected coin
 
@@ -655,7 +656,7 @@ class Game {
     // Speed-boost pickup: extra downward push (cap uses boosted _fallMult)
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 220 * dt, MAX_SPEED_Y * this._fallMult());
+      this.marble.vy = Math.min(this.marble.vy + SPEED_BOOST_ACCELERATION * dt, MAX_SPEED_Y * this._fallMult());
     }
 
     // Dash boost timer
@@ -763,7 +764,7 @@ class Game {
     // Speed boost still applies inside rush (cap uses boosted _fallMult)
     if (this.speedBoostTimer > 0) {
       this.speedBoostTimer -= dt;
-      this.marble.vy = Math.min(this.marble.vy + 220 * dt, MAX_SPEED_Y * this._fallMult());
+      this.marble.vy = Math.min(this.marble.vy + SPEED_BOOST_ACCELERATION * dt, MAX_SPEED_Y * this._fallMult());
     }
 
     // Dash boost timer

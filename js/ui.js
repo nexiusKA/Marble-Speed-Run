@@ -49,7 +49,7 @@ class UI {
         coinsEl.style.opacity = '0';
         bonusEl.style.opacity = '0';
         totalEl.style.opacity = '0';
-        coinsEl.textContent = `💰 ${coins} coin${coins > 1 ? 's' : ''} × ${COIN_VALUE} m`;
+        coinsEl.textContent = `💰 ${coins} coin${coins !== 1 ? 's' : ''} × ${COIN_VALUE} m`;
         bonusEl.textContent = `= +${coinBonus} m bonus`;
         totalEl.textContent = `TOTAL: ${totalDist} m`;
         breakdownEl.classList.remove('hidden');
