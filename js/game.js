@@ -770,6 +770,7 @@ class Game {
           this.blitzTimer = POWER_RUSH_BLITZ_DURATION;
           this._rebuildBlitzBolts();
           this.marble.triggerShake();
+          this.sound.playBlitz();
           this._showPickupMsg('⚡ BLITZ! ⚡');
         }
       }
