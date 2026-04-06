@@ -232,7 +232,7 @@ class Game {
 
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY       = this.track.startY;
-    this.lastNormalDoorY = this.track.startY - NORMAL_DOOR_INTERVAL; // allow door from the start
+    this.lastNormalDoorY = this.track.startY - NORMAL_DOOR_INTERVAL; // allow a door immediately at run start
 
     // ── Power Rush state ───────────────────────────────────────────────────
     this.powerRushActive    = false;
@@ -468,8 +468,9 @@ class Game {
     // Obstacles
     const allowDoor = (fromY - this.lastNormalDoorY) >= NORMAL_DOOR_INTERVAL;
     const newObs = buildObstaclesForRange(fromY, toY, difficulty, this.track, allowDoor);
-    if (allowDoor && newObs.some(o => o instanceof DoorGate)) {
-      this.lastNormalDoorY = fromY;
+    const spawnedDoor = allowDoor && newObs.find(o => o instanceof DoorGate);
+    if (spawnedDoor) {
+      this.lastNormalDoorY = spawnedDoor.worldY;
     }
     this.obstacles.push(...newObs);
 
