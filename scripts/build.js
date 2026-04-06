@@ -67,7 +67,8 @@ ensureDir(DIST);
 
 // ── copy static assets ─────────────────────────────────────────────────────
 
-copy(path.join(ROOT, 'style.css'), path.join(DIST, 'style.css'));
+copy(path.join(ROOT, 'style.css'),            path.join(DIST, 'style.css'));
+copy(path.join(ROOT, 'vacation_synth.mp3'),   path.join(DIST, 'vacation_synth.mp3'));
 copyDir(path.join(ROOT, 'js'), path.join(DIST, 'js'));
 
 // ── index.html ─────────────────────────────────────────────────────────────
@@ -161,6 +162,7 @@ console.log('  dist/game.html');
 console.log('  dist/perk-library.html');
 console.log('  dist/showcase.html');
 console.log('  dist/style.css');
+console.log('  dist/vacation_synth.mp3');
 const jsDir = path.join(DIST, 'js');
 const jsCount = fs.existsSync(jsDir) ? fs.readdirSync(jsDir).length : 0;
 console.log('  dist/js/  (' + jsCount + ' files)');
