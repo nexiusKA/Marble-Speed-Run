@@ -273,7 +273,7 @@ class Game {
       v = Math.max(10, Math.min(200, v));
       this._voidRateSetting = v;
       valueEl.textContent = v;
-      slider.style.setProperty('--val', `${v / 2}%`);
+      slider.style.setProperty('--val', `${(v - 10) / 190 * 100}%`);
       localStorage.setItem('mrVoidRate', String(v));
     };
 
