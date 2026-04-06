@@ -16,7 +16,7 @@ class Fog {
   }
 
   // distance: metres travelled by the marble this run
-  update(dt, distance) {
+  update(dt, distance, voidRateMult = 1) {
     this.time += dt;
     const d = Math.max(0, distance);
     if (d <= 10000) {
@@ -30,7 +30,7 @@ class Fog {
       this.speed  = Math.min(300 + steps * 50 + rem * 0.01, 750);
     }
 
-    const effective = this.slowTimer > 0 ? this.speed * 0.35 : this.speed;
+    const effective = (this.slowTimer > 0 ? this.speed * 0.35 : this.speed) * voidRateMult;
     if (this.slowTimer > 0) this.slowTimer -= dt;
 
     this.y += effective * dt;

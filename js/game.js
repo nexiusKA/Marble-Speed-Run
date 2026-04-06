@@ -132,6 +132,10 @@ class Game {
     const fallRaw         = parseInt(localStorage.getItem('mrFallSpeed') || '100', 10);
     this._fallSpeedSetting = Number.isFinite(fallRaw) && fallRaw >= 1 && fallRaw <= 100 ? fallRaw : 100;
 
+    // Void speed (10–200, default 100). Persisted across sessions.
+    const voidRateRaw      = parseInt(localStorage.getItem('mrVoidRate') || '100', 10);
+    this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= 200 ? voidRateRaw : 100;
+
     this.state = STATE.MENU;
     this._init();
 
@@ -146,6 +150,9 @@ class Game {
 
     // Wire up fall speed controls in the start overlay
     this._initFallSpeedControls();
+
+    // Wire up void speed controls in the start overlay
+    this._initVoidRateControls();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -253,6 +260,43 @@ class Game {
     return this._fallSpeedSetting / 100;
   }
 
+  // ── Void speed control wiring ─────────────────────────────────────────────
+  _initVoidRateControls() {
+    const slider     = document.getElementById('void-rate-slider');
+    const valueEl    = document.getElementById('void-rate-value');
+    const defaultBtn = document.getElementById('void-rate-default-btn');
+    if (!slider || !valueEl || !defaultBtn) return;
+
+    const VOID_RATE_DEFAULT = 100;
+
+    const apply = (v) => {
+      v = Math.max(10, Math.min(200, v));
+      this._voidRateSetting = v;
+      valueEl.textContent = v;
+      slider.style.setProperty('--val', `${(v - 10) / 190 * 100}%`);
+      localStorage.setItem('mrVoidRate', String(v));
+    };
+
+    // Restore saved value
+    slider.value = this._voidRateSetting;
+    apply(this._voidRateSetting);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+
+    defaultBtn.addEventListener('click', () => {
+      slider.value = VOID_RATE_DEFAULT;
+      apply(VOID_RATE_DEFAULT);
+    });
+  }
+
+  // Maps the 10–200 void-rate setting to a speed multiplier.
+  // At 100 (default) the void moves at normal speed.
+  _voidRateMult() {
+    return this._voidRateSetting / 100;
+  }
+
   // ── Initialise / reset all run-specific state ─────────────────────────────
   _init() {
     this.track     = new Track();
@@ -356,7 +400,7 @@ class Game {
     }
 
     // ── Fog ─────────────────────────────────────────────────────────────────
-    this.fog.update(dt, this.distance);
+    this.fog.update(dt, this.distance, this._voidRateMult());
 
     if (this.fog.isCatching(this.marble)) {
       if (this.shieldTimer > 0) {
