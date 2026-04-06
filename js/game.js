@@ -245,6 +245,10 @@ class Game {
     this.powerRushGenY      = 0;   // generation cursor for rush door gates
     this.nextPowerRushDist  = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
 
+    // Rush-line electric animation state
+    this._rushLineFlickerTimer = 0;
+    this._rushLineBolts        = [];
+
     // Pre-populate the first stretch of content
     this._extendLevel(this.track.startY + 1800);
   }
@@ -363,6 +367,13 @@ class Game {
 
     // ── HUD ─────────────────────────────────────────────────────────────────
     this.ui.updateDistance(this.distance);
+
+    // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
+    this._rushLineFlickerTimer -= dt;
+    if (this._rushLineFlickerTimer <= 0) {
+      this._rushLineFlickerTimer = 0.08;
+      this._rebuildRushLineBolts();
+    }
   }
 
   // ── Power Rush update (replaces the main update while rush is active) ─────
@@ -633,6 +644,7 @@ class Game {
       this.track.render(ctx, this.cameraY);
       for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.pickups) pu.render(ctx, this.cameraY);
+      this._renderRushLine(ctx);
     }
 
     // Particles (screen space – always rendered)
@@ -1145,6 +1157,96 @@ class Game {
       ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`;
       ctx.fill();
     }
+  }
+
+  // ── Rush-line bolt helpers ────────────────────────────────────────────────
+  // Rebuild pre-computed zigzag bolt paths for the orange electric rush line.
+  _rebuildRushLineBolts() {
+    const worldY       = this.track.startY + this.nextPowerRushDist;
+    const { left, right } = this.track.getWallsAtY(worldY);
+    this._rushLineBolts = [];
+    // 3 bolt layers: main bolt + 2 thinner harmonics
+    for (let b = 0; b < 3; b++) {
+      const yBase = (b - 1) * 4;
+      const segs  = 10 + b * 2;
+      const amp   = 10 - b * 2;
+      const pts   = [{ x: left, y: yBase }];
+      for (let j = 1; j < segs; j++) {
+        pts.push({
+          x: left + (j / segs) * (right - left),
+          y: yBase + (Math.random() - 0.5) * amp * 2,
+        });
+      }
+      pts.push({ x: right, y: yBase });
+      this._rushLineBolts.push({ bolt: b, pts });
+    }
+  }
+
+  // Draw the orange electric trigger line at the next power-rush world-Y.
+  _renderRushLine(ctx) {
+    const worldY  = this.track.startY + this.nextPowerRushDist;
+    const screenY = worldY - this.cameraY;
+
+    // Only draw when within the visible viewport (with some lead-in margin)
+    if (screenY < -120 || screenY > CANVAS_H + 40) return;
+
+    const { left, right } = this.track.getWallsAtY(worldY);
+    const t     = Date.now();
+    const sinP  = Math.sin(t / 220);
+    const pulse = 0.55 + 0.45 * sinP;
+    const glow  = 22 + 14 * sinP;
+
+    ctx.save();
+
+    // Soft orange electric-field fill behind the line
+    const fieldGrad = ctx.createLinearGradient(left, screenY - 22, left, screenY + 22);
+    const fa = 0.10 + 0.08 * sinP;
+    fieldGrad.addColorStop(0,   'rgba(255,100,0,0)');
+    fieldGrad.addColorStop(0.5, `rgba(255,130,0,${fa})`);
+    fieldGrad.addColorStop(1,   'rgba(255,100,0,0)');
+    ctx.fillStyle = fieldGrad;
+    ctx.fillRect(left, screenY - 22, right - left, 44);
+
+    // Electric zigzag bolt layers
+    for (const { bolt: b, pts } of this._rushLineBolts) {
+      const alpha = 0.85 - b * 0.18 + 0.15 * sinP;
+      ctx.shadowColor = '#ff8800';
+      ctx.shadowBlur  = glow * (b === 0 ? 1 : 0.5);
+      ctx.strokeStyle = b === 0
+        ? `rgba(255,180,0,${alpha})`
+        : `rgba(255,${120 + b * 30},0,${alpha * 0.75})`;
+      ctx.lineWidth   = b === 0 ? 3 : 1.4;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, screenY + pts[0].y);
+      for (let k = 1; k < pts.length; k++) {
+        ctx.lineTo(pts[k].x, screenY + pts[k].y);
+      }
+      ctx.stroke();
+    }
+
+    // Endpoint spark nodes
+    ctx.shadowColor = '#ff8800';
+    ctx.shadowBlur  = 14;
+    ctx.fillStyle   = `rgba(255,180,0,${0.7 + 0.3 * pulse})`;
+    for (const nx of [left, right]) {
+      ctx.beginPath();
+      ctx.arc(nx, screenY, 4 + sinP * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // "⚡ RUSH ⚡" label above the line
+    ctx.font         = 'bold 11px monospace';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle    = `rgba(255,210,80,${0.6 + 0.4 * pulse})`;
+    ctx.shadowColor  = '#ff8800';
+    ctx.shadowBlur   = 10;
+    ctx.fillText('⚡ RUSH ⚡', (left + right) / 2, screenY - 10);
+
+    ctx.restore();
   }
 
   _spawnParticle(x, y) {
