@@ -42,9 +42,10 @@ class Marble {
     // Horizontal damping for arcade feel
     this.vx *= Math.pow(DAMPING_X, dt * 60);
 
-    // Clamp speeds
-    this.vx = clamp(this.vx, -MAX_SPEED_X, MAX_SPEED_X);
-    this.vy = clamp(this.vy, -MAX_SPEED_Y, MAX_SPEED_Y);
+    // Clamp speeds – vertical cap scales with gravityMult so the top gathered
+    // falling speed is proportional to the fall-speed slider setting.
+    this.vx = clamp(this.vx, -MAX_SPEED_X * steerMult, MAX_SPEED_X * steerMult);
+    this.vy = clamp(this.vy, -MAX_SPEED_Y * gravityMult, MAX_SPEED_Y * gravityMult);
 
     // Move
     this.x += this.vx * dt;
