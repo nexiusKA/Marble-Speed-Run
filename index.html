@@ -11,7 +11,10 @@
     <canvas id="gameCanvas"></canvas>
 
     <div id="hud">
-      <div id="hud-dist">Dist: <span id="dist-display">0</span> m</div>
+      <div id="hud-left">
+        <div id="hud-dist">Dist: <span id="dist-display">0</span> m</div>
+        <div id="hud-void">Void: <span id="void-display">--</span> m</div>
+      </div>
       <div id="hud-best">Best: <span id="best-display">--</span></div>
       <button id="fullscreen-btn" class="hud-fs-btn" title="Enter fullscreen" aria-label="Enter fullscreen">
         <svg id="fs-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
@@ -33,7 +36,7 @@
     <div id="overlay" class="overlay visible">
       <div class="overlay-box">
         <h1 class="game-title">MARBLE RUSH</h1>
-        <p class="subtitle">Outrun the fog. Survive forever.</p>
+        <p class="subtitle">Outrun the void. Survive forever.</p>
         <div class="controls-info">
           <span>← → &nbsp;Steer</span>
           <span>↑ &nbsp;Slow</span>

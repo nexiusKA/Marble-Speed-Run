@@ -1,10 +1,10 @@
-// ── Crusher Bar ──────────────────────────────────────────────────────────────
-// A steel crusher bar that descends from above, chasing the marble.
+// ── Void Entity ───────────────────────────────────────────────────────────────
+// A dark void creature made of shadowy clouds that chases the marble.
 // this.y is its leading (bottom) edge in world coordinates.
 // The class is still named Fog so no other file needs changing.
 
-const BAR_H        = 32;  // visible bar thickness in px
-const BAR_STRIPE_W = 22;  // width of each hazard stripe
+const VOID_CLOUD_H  = 60;  // depth of the cloud fringe below the leading edge
+const VOID_EYE_GLOW = 18;  // radius of each eye glow
 
 class Fog {
   constructor(marbleStartY) {
@@ -12,10 +12,12 @@ class Fog {
     this.y         = marbleStartY - 400;
     this.speed     = 200;   // px/s – updated each frame
     this.slowTimer = 0;     // remaining seconds of bar-slow pickup effect
+    this.time      = 0;     // accumulated time used for cloud/eye animation
   }
 
   // distance: metres travelled by the marble this run
   update(dt, distance) {
+    this.time += dt;
     const d = Math.max(0, distance);
     if (d <= 10000) {
       // Gentle ramp: 200 px/s at start → 300 px/s at 10 000 m
@@ -38,7 +40,7 @@ class Fog {
     this.slowTimer = Math.max(this.slowTimer, duration);
   }
 
-  // True when the bar's bottom edge has reached the marble
+  // True when the void's leading edge has reached the marble
   isCatching(marble) {
     return this.y >= marble.y - marble.radius;
   }
@@ -50,97 +52,104 @@ class Fog {
   }
 
   render(ctx, cameraY) {
-    // barBottom: screen Y of the bar's leading (bottom) edge
-    const barBottom = this.y - cameraY;
-    const barTop    = barBottom - BAR_H;
+    const t        = this.time;
+    const voidEdge = this.y - cameraY;  // screen Y of the leading (bottom) edge
 
-    // ── Dark mass above the bar (the "wall" the player is fleeing) ─────────
-    if (barTop > 0) {
-      ctx.fillStyle = 'rgba(0,0,0,0.80)';
-      ctx.fillRect(0, 0, CANVAS_W, barTop);
-    } else if (barBottom > 0) {
-      // Bar has scrolled partly off the top – fill the whole visible portion
-      ctx.fillStyle = 'rgba(0,0,0,0.80)';
-      ctx.fillRect(0, 0, CANVAS_W, barBottom);
+    // Nothing to draw if the void is entirely below the screen
+    if (voidEdge > CANVAS_H) return;
+
+    // ── Dark void body above the leading edge ──────────────────────────────
+    const bodyBottom = Math.min(voidEdge, CANVAS_H);
+    if (bodyBottom > 0) {
+      ctx.fillStyle = 'rgba(0,0,10,0.94)';
+      ctx.fillRect(0, 0, CANVAS_W, bodyBottom);
+
+      // Subtle purple shimmer near the edge
+      if (voidEdge > 0) {
+        const shimmerH = Math.min(80, voidEdge);
+        const shimmer  = ctx.createLinearGradient(0, voidEdge - shimmerH, 0, voidEdge);
+        shimmer.addColorStop(0, 'rgba(60,0,100,0)');
+        shimmer.addColorStop(1, 'rgba(80,0,180,0.45)');
+        ctx.fillStyle = shimmer;
+        ctx.fillRect(0, voidEdge - shimmerH, CANVAS_W, shimmerH);
+      }
     } else {
-      // Bar is entirely above the screen – the full canvas is below the bar,
-      // so there is nothing to darken.
+      // Void entirely above screen – nothing visible
       return;
     }
 
-    // Skip drawing the bar body if it is off-screen
-    if (barTop > CANVAS_H) return;
-
-    const drawTop = Math.max(barTop, 0);
-    const drawH   = Math.min(barBottom, CANVAS_H) - drawTop;
-    if (drawH <= 0) return;
-
-    // ── Steel body ────────────────────────────────────────────────────────
-    // Gradient is anchored to the bar's world position so the metal texture
-    // stays consistent even when the bar is partially clipped by the top edge.
-    const metal = ctx.createLinearGradient(0, barTop, 0, barBottom);
-    metal.addColorStop(0,    '#2a2a3a');
-    metal.addColorStop(0.12, '#72728a');
-    metal.addColorStop(0.38, '#b8b8cc');
-    metal.addColorStop(0.52, '#dcdcec');
-    metal.addColorStop(0.68, '#9494aa');
-    metal.addColorStop(0.86, '#585868');
-    metal.addColorStop(1,    '#1e1e2a');
-    ctx.fillStyle = metal;
-    ctx.fillRect(0, drawTop, CANVAS_W, drawH);
-
-    // ── Hazard stripe band along the bottom edge ──────────────────────────
-    const stripeH  = 7;
-    const stripeY  = barBottom - stripeH;
-    if (stripeY < CANVAS_H && stripeY + stripeH > 0) {
+    // ── Cloud fringe – undulating bottom edge ──────────────────────────────
+    if (voidEdge < CANVAS_H) {
       ctx.save();
       ctx.beginPath();
-      ctx.rect(0, Math.max(stripeY, 0), CANVAS_W, Math.min(stripeH, CANVAS_H - stripeY));
-      ctx.clip();
-      for (let x = 0; x < CANVAS_W + BAR_STRIPE_W; x += BAR_STRIPE_W * 2) {
-        ctx.fillStyle = 'rgba(255,190,0,0.82)';
-        ctx.fillRect(x,                stripeY, BAR_STRIPE_W, stripeH);
-        ctx.fillStyle = 'rgba(18,18,18,0.82)';
-        ctx.fillRect(x + BAR_STRIPE_W, stripeY, BAR_STRIPE_W, stripeH);
+      ctx.moveTo(0, voidEdge);
+      const steps = Math.ceil(CANVAS_W / 4);
+      for (let i = 0; i <= steps; i++) {
+        const x     = i * 4;
+        const bulge =
+          Math.sin(x * 0.030 + t * 1.8) * 14 +
+          Math.sin(x * 0.070 - t * 2.6) * 8  +
+          Math.sin(x * 0.015 + t * 0.9) * 20;
+        ctx.lineTo(x, voidEdge + bulge + VOID_CLOUD_H * 0.3);
       }
+      ctx.lineTo(CANVAS_W, voidEdge + VOID_CLOUD_H);
+      ctx.lineTo(0,        voidEdge + VOID_CLOUD_H);
+      ctx.closePath();
+
+      const cloudGrad = ctx.createLinearGradient(0, voidEdge, 0, voidEdge + VOID_CLOUD_H);
+      cloudGrad.addColorStop(0,   'rgba(20,0,50,0.85)');
+      cloudGrad.addColorStop(0.5, 'rgba(10,0,30,0.55)');
+      cloudGrad.addColorStop(1,   'rgba(0,0,10,0)');
+      ctx.fillStyle = cloudGrad;
+      ctx.fill();
       ctx.restore();
-    }
 
-    // ── Danger glow below the bar ─────────────────────────────────────────
-    if (barBottom < CANVAS_H) {
-      const glowH    = 20;
-      const glowGrad = ctx.createLinearGradient(0, barBottom, 0, barBottom + glowH);
-      glowGrad.addColorStop(0, 'rgba(255,100,0,0.55)');
-      glowGrad.addColorStop(1, 'rgba(255,40,0,0)');
+      // Glow at the void's leading edge
+      const glowH    = 28;
+      const glowGrad = ctx.createLinearGradient(0, voidEdge, 0, voidEdge + glowH);
+      glowGrad.addColorStop(0, 'rgba(140,0,255,0.50)');
+      glowGrad.addColorStop(1, 'rgba(60,0,120,0)');
       ctx.fillStyle = glowGrad;
-      ctx.fillRect(0, barBottom, CANVAS_W, Math.min(glowH, CANVAS_H - barBottom));
+      ctx.fillRect(0, voidEdge, CANVAS_W, Math.min(glowH, CANVAS_H - voidEdge));
     }
 
-    // ── Rivets along the upper third of the bar ───────────────────────────
-    const rivetY = barTop + BAR_H * 0.32;
-    if (rivetY >= 0 && rivetY < CANVAS_H) {
-      const rivetR   = 3.5;
-      const rivetGap = 44;
-      for (let x = rivetGap / 2; x < CANVAS_W; x += rivetGap) {
-        const rg = ctx.createRadialGradient(x - 1, rivetY - 1, 0, x, rivetY, rivetR);
-        rg.addColorStop(0,   '#ffffff');
-        rg.addColorStop(0.4, '#aaaacc');
-        rg.addColorStop(1,   '#2a2a3a');
+    // ── Eyes – creature gaze emerging from the darkness ───────────────────
+    // Three pairs of glowing eyes scattered across the leading edge
+    const eyeGroups = [
+      { cx: CANVAS_W * 0.18, phase: 0.0 },
+      { cx: CANVAS_W * 0.50, phase: 1.3 },
+      { cx: CANVAS_W * 0.78, phase: 2.6 },
+    ];
+
+    for (const eg of eyeGroups) {
+      // Slow pulse; blink when sin spikes above threshold
+      const pulse = 0.6 + 0.4 * Math.sin(t * 1.5 + eg.phase);
+      const blink = Math.sin(t * 4.1 + eg.phase * 1.7) > 0.88 ? 0 : 1;
+      const alpha = pulse * blink;
+      const eyeY  = voidEdge + 12 + Math.sin(t * 0.8 + eg.phase) * 6;
+
+      for (let side = -1; side <= 1; side += 2) {
+        const ex = eg.cx + side * 7;
+
+        // Outer glow halo
+        const glow = ctx.createRadialGradient(ex, eyeY, 0, ex, eyeY, VOID_EYE_GLOW);
+        glow.addColorStop(0,    `rgba(255,220,255,${(0.85 * alpha).toFixed(2)})`);
+        glow.addColorStop(0.25, `rgba(200,80,255,${(0.70 * alpha).toFixed(2)})`);
+        glow.addColorStop(0.6,  `rgba(100,0,200,${(0.30 * alpha).toFixed(2)})`);
+        glow.addColorStop(1,    'rgba(40,0,80,0)');
+        ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(x, rivetY, rivetR, 0, Math.PI * 2);
-        ctx.fillStyle = rg;
+        ctx.ellipse(ex, eyeY, VOID_EYE_GLOW, VOID_EYE_GLOW * 0.65, 0, 0, Math.PI * 2);
         ctx.fill();
-      }
-    }
 
-    // ── Top highlight scratch line ────────────────────────────────────────
-    if (barTop >= 0 && barTop < CANVAS_H) {
-      ctx.strokeStyle = 'rgba(220,220,240,0.50)';
-      ctx.lineWidth   = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, barTop + 2);
-      ctx.lineTo(CANVAS_W, barTop + 2);
-      ctx.stroke();
+        // Dark pupil
+        if (blink) {
+          ctx.fillStyle = `rgba(5,0,15,${(0.9 * alpha).toFixed(2)})`;
+          ctx.beginPath();
+          ctx.ellipse(ex, eyeY, 3.5, 2.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
     }
   }
 }
