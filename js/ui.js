@@ -6,6 +6,7 @@ class UI {
     this.bestEl      = document.getElementById('best-display');
     this.voidDistEl  = document.getElementById('void-display');
     this.timerEl     = document.getElementById('timer-display');
+    this.coinEl      = document.getElementById('coin-display');
     this.overlay     = document.getElementById('overlay');
     this.gameOverOvl = document.getElementById('gameover-overlay');
     this.goDistEl    = document.getElementById('go-dist');
@@ -32,11 +33,49 @@ class UI {
     this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
   }
 
-  showGameOver(dist, best, isNew, onRetry) {
+  showGameOver(baseDist, totalDist, best, isNew, coins, coinBonus, onRetry) {
     this._show(this.gameOverOvl);
-    this.goDistEl.textContent = `${dist} m`;
+    this.goDistEl.textContent = `${baseDist} m`;
     this.goBestEl.textContent = isNew ? '🏆 New Best!' : `Best: ${best} m`;
+
+    const breakdownEl = document.getElementById('go-coin-breakdown');
+    const coinsEl     = document.getElementById('go-coins');
+    const bonusEl     = document.getElementById('go-bonus');
+    const totalEl     = document.getElementById('go-total');
+
+    if (breakdownEl && coinsEl && bonusEl && totalEl) {
+      if (coins > 0) {
+        // Reset visibility before animating
+        coinsEl.style.opacity = '0';
+        bonusEl.style.opacity = '0';
+        totalEl.style.opacity = '0';
+        coinsEl.textContent = `💰 ${coins} coin${coins !== 1 ? 's' : ''} × ${COIN_VALUE} m`;
+        bonusEl.textContent = `= +${coinBonus} m bonus`;
+        totalEl.textContent = `TOTAL: ${totalDist} m`;
+        breakdownEl.classList.remove('hidden');
+
+        // Staggered fade-in for each line
+        this._fadeInAfter(coinsEl, 500);
+        this._fadeInAfter(bonusEl, 1000);
+        this._fadeInAfter(totalEl, 1500);
+      } else {
+        breakdownEl.classList.add('hidden');
+      }
+    }
+
     this.retryBtn.onclick = () => { this._hide(this.gameOverOvl); onRetry(); };
+  }
+
+  /** Fade an element from opacity 0 → 1 after `delayMs` milliseconds. */
+  _fadeInAfter(el, delayMs) {
+    el.style.transition = 'none';
+    el.style.opacity    = '0';
+    el.style.transform  = 'translateY(6px)';
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+      el.style.opacity    = '1';
+      el.style.transform  = 'translateY(0)';
+    }, delayMs);
   }
 
   hideGameOver() {
@@ -61,6 +100,10 @@ class UI {
     const mins   = Math.floor(totalS / 60);
     const secs   = (totalS % 60).toFixed(1).padStart(4, '0');
     this.timerEl.textContent = `${mins}:${secs}`;
+  }
+
+  updateCoinCount(n) {
+    if (this.coinEl) this.coinEl.textContent = n;
   }
 
   _show(el) {

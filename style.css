@@ -111,6 +111,21 @@ body {
   color: #7de8ff;
 }
 
+#hud-coins {
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffd700;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid #7a5a00;
+}
+
+#hud-coins span {
+  color: #ffe566;
+}
+
 /* ── Fullscreen button ───────────────────────────────── */
 .hud-fs-btn {
   background: rgba(0, 0, 0, 0.55);
@@ -216,6 +231,38 @@ body {
   color: #aaddaa;
   margin-bottom: 26px;
   min-height: 20px;
+}
+
+/* ── Coin breakdown (game over) ─────────────── */
+.coin-breakdown {
+  margin: 6px 0 14px;
+  padding: 10px 16px;
+  background: rgba(255, 215, 0, 0.07);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.finish-coins {
+  font-size: 14px;
+  color: #ffd700;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.finish-bonus {
+  font-size: 17px;
+  font-weight: 700;
+  color: #88ff99;
+  margin-bottom: 6px;
+}
+
+.finish-total {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffe566;
+  text-shadow: 0 0 12px #ffaa00, 0 0 28px #ff8800;
+  letter-spacing: 0.06em;
 }
 
 .pickup-legend {

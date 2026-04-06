@@ -80,3 +80,76 @@ class Pickup {
     ctx.restore();
   }
 }
+
+// ── Coin ──────────────────────────────────────────────────────────────────────
+// A small collectible coin that appears along the normal track.
+// Collected coins are converted to bonus metres at game over.
+
+class Coin {
+  constructor(x, worldY) {
+    this.x         = x;
+    this.worldY    = worldY;
+    this.radius    = 7;
+    this.collected = false;
+    this.pulse     = Math.random() * Math.PI * 2;
+    this.bob       = Math.random() * Math.PI * 2;
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 4.0) % (Math.PI * 2);
+    this.bob   = (this.bob   + dt * 2.5) % (Math.PI * 2);
+  }
+
+  checkCollision(marble, game) {
+    if (this.collected) return;
+    const dx = marble.x - this.x;
+    const dy = marble.y - this.worldY;
+    if (dx * dx + dy * dy < (marble.radius + this.radius) ** 2) {
+      this.collected = true;
+      game.collectCoin();
+    }
+  }
+
+  render(ctx, cameraY) {
+    if (this.collected) return;
+    const sy = this.worldY - cameraY + Math.sin(this.bob) * 3;
+    if (sy < -30 || sy > CANVAS_H + 30) return;
+
+    ctx.save();
+
+    const glow = 0.5 + 0.5 * Math.sin(this.pulse);
+
+    // Outer glow
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur  = 10 + glow * 8;
+
+    // Coin body gradient
+    const grad = ctx.createRadialGradient(
+      this.x - 2, sy - 2, 1,
+      this.x, sy, this.radius
+    );
+    grad.addColorStop(0, '#fff4a0');
+    grad.addColorStop(1, '#cc8800');
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,220,50,${0.6 + glow * 0.4})`;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    // Coin symbol
+    ctx.font         = 'bold 8px sans-serif';
+    ctx.fillStyle    = 'rgba(160,90,0,0.9)';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('¢', this.x, sy);
+
+    ctx.restore();
+  }
+}
