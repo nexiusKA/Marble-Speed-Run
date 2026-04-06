@@ -248,6 +248,7 @@ class Game {
     // Rush-line electric animation state
     this._rushLineFlickerTimer = 0;
     this._rushLineBolts        = [];
+    this._rushLineWorldY       = this.track.startY + POWER_RUSH_INTERVAL; // cached trigger Y
 
     // Pre-populate the first stretch of content
     this._extendLevel(this.track.startY + 1800);
@@ -289,6 +290,7 @@ class Game {
     // Auto-trigger every POWER_RUSH_INTERVAL metres instead of via a pickup
     if (!this.powerRushActive && this.distance > 0 && this.distance >= this.nextPowerRushDist) {
       this.nextPowerRushDist += POWER_RUSH_INTERVAL;
+      this._rushLineWorldY    = this.track.startY + this.nextPowerRushDist;
       this._enterPowerRush();
       return;
     }
@@ -1162,7 +1164,7 @@ class Game {
   // ── Rush-line bolt helpers ────────────────────────────────────────────────
   // Rebuild pre-computed zigzag bolt paths for the orange electric rush line.
   _rebuildRushLineBolts() {
-    const worldY       = this.track.startY + this.nextPowerRushDist;
+    const worldY          = this._rushLineWorldY;
     const { left, right } = this.track.getWallsAtY(worldY);
     this._rushLineBolts = [];
     // 3 bolt layers: main bolt + 2 thinner harmonics
@@ -1184,7 +1186,7 @@ class Game {
 
   // Draw the orange electric trigger line at the next power-rush world-Y.
   _renderRushLine(ctx) {
-    const worldY  = this.track.startY + this.nextPowerRushDist;
+    const worldY  = this._rushLineWorldY;
     const screenY = worldY - this.cameraY;
 
     // Only draw when within the visible viewport (with some lead-in margin)
