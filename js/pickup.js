@@ -84,6 +84,7 @@ class Pickup {
 // ── Coin ──────────────────────────────────────────────────────────────────────
 // A small collectible coin that appears along the normal track.
 // Collected coins are converted to bonus metres at game over.
+// BigCoin is the power-rush variant: 2-3× larger and worth 2 coins each.
 
 class Coin {
   constructor(x, worldY) {
@@ -159,6 +160,97 @@ class Coin {
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('¢', this.x, sy);
+
+    ctx.restore();
+  }
+}
+
+// ── BigCoin ───────────────────────────────────────────────────────────────────
+// Power-rush exclusive coin: ~2.5× the radius of a normal coin, worth 2 coins.
+class BigCoin {
+  constructor(x, worldY) {
+    this.x         = x;
+    this.worldY    = worldY;
+    this.radius    = 18;   // ~2.5× normal coin radius (7)
+    this.collected = false;
+    this.pulse     = Math.random() * Math.PI * 2;
+    this.bob       = Math.random() * Math.PI * 2;
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 3.5) % (Math.PI * 2);
+    this.bob   = (this.bob   + dt * 2.0) % (Math.PI * 2);
+  }
+
+  checkCollision(marble, game, dt = 1 / 60) {
+    if (this.collected) return;
+    const dx = marble.x - this.x;
+    const dy = marble.y - this.worldY;
+    if (game.magnetTimer > 0) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const magnetRadius = 200;
+      if (dist < magnetRadius && dist > 0) {
+        const speed = 400 * (1 - dist / magnetRadius);
+        this.x      += (dx / dist) * speed * dt;
+        this.worldY += (dy / dist) * speed * dt;
+      }
+    }
+    if (dx * dx + dy * dy < (marble.radius + this.radius) ** 2) {
+      this.collected = true;
+      // Worth 2 coins
+      game.collectCoin();
+      game.collectCoin();
+    }
+  }
+
+  render(ctx, cameraY) {
+    if (this.collected) return;
+    const sy = this.worldY - cameraY + Math.sin(this.bob) * 5;
+    if (sy < -40 || sy > CANVAS_H + 40) return;
+
+    ctx.save();
+
+    const glow = 0.5 + 0.5 * Math.sin(this.pulse);
+    const r    = this.radius;
+
+    // Outer glow – brighter/larger than normal coin
+    ctx.shadowColor = '#ffe033';
+    ctx.shadowBlur  = 18 + glow * 14;
+
+    // Coin body gradient
+    const grad = ctx.createRadialGradient(
+      this.x - r * 0.25, sy - r * 0.25, r * 0.1,
+      this.x, sy, r
+    );
+    grad.addColorStop(0, '#fff9c4');
+    grad.addColorStop(0.5, '#ffd700');
+    grad.addColorStop(1, '#b8720a');
+    ctx.beginPath();
+    ctx.arc(this.x, sy, r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(this.x, sy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,230,60,${0.7 + glow * 0.3})`;
+    ctx.lineWidth   = 2.5;
+    ctx.stroke();
+
+    // Inner ring
+    ctx.beginPath();
+    ctx.arc(this.x, sy, r * 0.65, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(180,110,0,0.6)`;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    // "×2" label
+    ctx.font         = `bold ${Math.round(r * 0.72)}px sans-serif`;
+    ctx.fillStyle    = 'rgba(100,55,0,0.95)';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('\xd72', this.x, sy);
 
     ctx.restore();
   }
