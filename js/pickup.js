@@ -170,7 +170,7 @@ class BlueCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 16;
+    this.radius    = 11;
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
@@ -246,7 +246,7 @@ class RedCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 18;
+    this.radius    = 8;
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
