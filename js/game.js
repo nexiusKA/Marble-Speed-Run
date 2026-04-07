@@ -1219,7 +1219,7 @@ class Game {
       this.fog.y -= 1000;
       this._showPickupMsg('VOID PUSHED BACK!');
     } else if (itemId === 'magnet') {
-      this.magnetTimer = 6;
+      this.magnetTimer = 12;
       this._showPickupMsg('MAGNET ACTIVE!');
     }
     // Update shop coin display and button states
