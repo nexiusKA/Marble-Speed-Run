@@ -3,7 +3,7 @@
 
 const PICKUP_CONFIG = {
   speed:      { color1: '#ffe040', color2: '#ff8800', label: '⚡',  name: 'SPEED BOOST!'  },
-  dash:       { color1: '#40ffff', color2: '#0077ff', label: '▶▶', name: 'DASH!'          },
+  magnet:     { color1: '#ff88ff', color2: '#cc00cc', label: '🧲', name: 'MAGNET!'        },
   fog_slow:   { color1: '#dd88ff', color2: '#7700cc', label: '❄',  name: 'BAR SLOWED!'   },
   shield:     { color1: '#88ff99', color2: '#008844', label: '◆',  name: 'SHIELD!'        },
   ghost:      { color1: '#ee88ff', color2: '#6600cc', label: '◈',  name: 'GHOST MODE!'   },
@@ -100,10 +100,20 @@ class Coin {
     this.bob   = (this.bob   + dt * 2.5) % (Math.PI * 2);
   }
 
-  checkCollision(marble, game) {
+  checkCollision(marble, game, dt = 1 / 60) {
     if (this.collected) return;
     const dx = marble.x - this.x;
     const dy = marble.y - this.worldY;
+    // Magnet attraction: pull coin toward marble when magnet is active
+    if (game.magnetTimer > 0) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const magnetRadius = 160;
+      if (dist < magnetRadius && dist > 0) {
+        const speed = 400 * (1 - dist / magnetRadius);
+        this.x      += (dx / dist) * speed * dt;
+        this.worldY += (dy / dist) * speed * dt;
+      }
+    }
     if (dx * dx + dy * dy < (marble.radius + this.radius) ** 2) {
       this.collected = true;
       game.collectCoin();
