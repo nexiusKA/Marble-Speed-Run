@@ -1214,6 +1214,14 @@ class Game {
     } catch { /* ignore storage errors */ }
     const def = ACHIEVEMENT_DEFS.find(a => a.id === id);
     if (def) this._showPickupMsg(`🏆 ${def.name}!`);
+    this._updateAchievementsBadge();
+  }
+
+  _updateAchievementsBadge() {
+    const earned = this._achievements.size;
+    const total  = ACHIEVEMENT_DEFS.length;
+    const achBtn = document.getElementById('achievements-btn');
+    if (achBtn) achBtn.textContent = `🏆 ACHIEVEMENTS (${earned}/${total})`;
   }
 
   // ── Shop ─────────────────────────────────────────────────────────────────
@@ -1280,6 +1288,10 @@ class Game {
     const achCloseBtn = document.getElementById('achievements-close-btn');
 
     const openAch = () => {
+      const earned  = this._achievements.size;
+      const total   = ACHIEVEMENT_DEFS.length;
+      const achTitleEl = achOverlay ? achOverlay.querySelector('.achievements-title') : null;
+      if (achTitleEl) achTitleEl.textContent = `🏆 ACHIEVEMENTS (${earned}/${total})`;
       const achList = document.getElementById('achievements-list');
       if (achList) {
         achList.innerHTML = '';
@@ -1304,6 +1316,7 @@ class Game {
 
     if (achBtn)      achBtn.addEventListener('click', openAch);
     if (achCloseBtn) achCloseBtn.addEventListener('click', closeAch);
+    this._updateAchievementsBadge();
   }
 
   collectCoin() {
