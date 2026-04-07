@@ -19,7 +19,8 @@ const POWER_RUSH_PICKUP_SPACING     = 1100;  // world-units between rush-extend 
 const POWER_RUSH_EXTEND_MAX         = 10;    // max total seconds that rush_extend pickups can add
 const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a blitz strike
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
-const POWER_RUSH_PUSH_PER_DOOR  = 55;    // extra world-units of fog pushback per door scored
+const POWER_RUSH_PUSH_PER_DOOR  = 27;    // extra world-units of fog pushback per door scored (halved from 55)
+const POWER_RUSH_BIG_COIN_SPACING = 350; // world-units between big coin spawns inside the corridor
 const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
@@ -582,8 +583,10 @@ class Game {
     this.powerRushObstacles  = [];
     this.powerRushPickups    = [];   // rush-extend pickups inside the corridor
     this.powerRushPickupCount = 0;  // total rush-extend pickups spawned this rush (max 3 to prevent excessive duration)
+    this.powerRushBigCoins   = [];  // big coins inside the corridor during rush
     this.powerRushGenY       = 0;   // generation cursor for rush door gates
     this.powerRushPickupGenY = 0;   // generation cursor for rush-extend pickups
+    this.powerRushBigCoinGenY = 0;  // generation cursor for big coins
     this.nextPowerRushDist   = POWER_RUSH_INTERVAL; // distance at which next pickup spawns
 
     // Rush-line electric animation state
@@ -776,6 +779,12 @@ class Game {
       pu.checkCollision(this.marble, this);
     }
 
+    // Update big coins and check collection
+    for (const bc of this.powerRushBigCoins) {
+      bc.update(dt);
+      bc.checkCollision(this.marble, this, dt);
+    }
+
     // Score: award a point for each door gate the marble fully passes through
     for (const obs of this.powerRushObstacles) {
       if (!obs.scoreGiven && this.marble.y > obs.worldY + obs.h / 2) {
@@ -932,11 +941,20 @@ class Game {
       this.powerRushPickupCount++;
       this.powerRushPickupGenY += POWER_RUSH_PICKUP_SPACING;
     }
+
+    // Big coins – scattered throughout the corridor
+    while (this.powerRushBigCoinGenY < upToY) {
+      const margin = 24;
+      const x = left + margin + Math.random() * Math.max(0, right - left - margin * 2);
+      this.powerRushBigCoins.push(new BigCoin(x, this.powerRushBigCoinGenY));
+      this.powerRushBigCoinGenY += POWER_RUSH_BIG_COIN_SPACING * (0.75 + Math.random() * 0.5);
+    }
   }
 
   _prunePowerRushObstacles(behindY) {
     this.powerRushObstacles = this.powerRushObstacles.filter(o => o.worldY > behindY);
     this.powerRushPickups   = this.powerRushPickups.filter(p => !p.collected && p.worldY > behindY);
+    this.powerRushBigCoins  = this.powerRushBigCoins.filter(c => !c.collected && c.worldY > behindY);
   }
 
   _enterPowerRush() {
@@ -957,10 +975,13 @@ class Game {
     // Start generating door gates 200 units ahead of the marble
     this.powerRushObstacles  = [];
     this.powerRushPickups    = [];
+    this.powerRushBigCoins   = [];
     this.powerRushPickupCount = 0;
-    this.powerRushGenY       = this.marble.y + 200;
+    this.powerRushGenY        = this.marble.y + 200;
     // Pickups start further ahead so the player can settle into the corridor first
-    this.powerRushPickupGenY = this.marble.y + POWER_RUSH_PICKUP_START_OFFSET;
+    this.powerRushPickupGenY  = this.marble.y + POWER_RUSH_PICKUP_START_OFFSET;
+    // Big coins start a bit ahead too
+    this.powerRushBigCoinGenY = this.marble.y + 300;
 
     this._showPickupMsg('⚡ POWER RUSH ⚡');
     this.sound.playPowerRushStart();
@@ -976,6 +997,7 @@ class Game {
     this.blitzTimer         = 0;
     this.powerRushObstacles = [];
     this.powerRushPickups   = [];
+    this.powerRushBigCoins  = [];
 
     // Reset the next rush trigger to POWER_RUSH_INTERVAL metres from the EXIT
     // point so that distance traveled during rush doesn't shorten the gap.
@@ -1087,6 +1109,7 @@ class Game {
       this.powerRushTrack.render(ctx, this.cameraY);
       for (const obs of this.powerRushObstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.powerRushPickups) pu.render(ctx, this.cameraY);
+      for (const bc of this.powerRushBigCoins) bc.render(ctx, this.cameraY);
     } else {
       // ── Normal rendering ─────────────────────────────────────────────────
       this._renderSynthwaveBg(ctx);
