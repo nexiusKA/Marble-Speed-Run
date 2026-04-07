@@ -156,6 +156,7 @@ class Coin {
 
     // Coin symbol
     ctx.font         = 'bold 12px sans-serif';
+    ctx.fillStyle    = 'rgba(255,255,255,0.9)';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('¢', this.x, sy);
