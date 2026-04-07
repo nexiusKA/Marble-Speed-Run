@@ -616,13 +616,13 @@ body {
   pointer-events: auto;
   transition: background 0.1s, border-color 0.1s;
   outline: none;
-  height: 22px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 0 7px;
-  font-size: 13px;
+  padding: 0 14px;
+  font-size: 18px;
   align-self: flex-start;
 }
 
