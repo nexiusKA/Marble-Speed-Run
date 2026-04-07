@@ -187,11 +187,11 @@ class SoundManager {
   start() {
     this._started = true;
     // Always choose a different random track so each run feels fresh.
-    let next;
+    let nextTrackIndex;
     do {
-      next = Math.floor(Math.random() * MUSIC_TRACKS.length);
-    } while (MUSIC_TRACKS.length > 1 && next === this._trackIndex);
-    this._trackIndex = next;
+      nextTrackIndex = Math.floor(Math.random() * MUSIC_TRACKS.length);
+    } while (MUSIC_TRACKS.length > 1 && nextTrackIndex === this._trackIndex);
+    this._trackIndex = nextTrackIndex;
     this._audio.src = MUSIC_TRACKS[this._trackIndex];
     this._audio.currentTime = 0;
     this._audio.volume = this._effectiveVolume();
