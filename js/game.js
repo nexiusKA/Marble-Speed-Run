@@ -1,6 +1,6 @@
 // ── Game ─────────────────────────────────────────────────────────────────────
 
-const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead' };
+const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop' };
 
 // World-units between successive content-generation passes
 const GEN_SEGMENT = 500;
@@ -28,6 +28,18 @@ const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode 
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
 const COIN_SPACING = 300;  // average world-units between coin spawns
 const COIN_VALUE   = 50;   // metres bonus per collected coin
+
+// ── Shop ─────────────────────────────────────────────────────────────────────
+const SHOP_ITEMS = {
+  void_push: { cost: 20, name: 'Void Push'  },
+  magnet:    { cost: 5,  name: 'Magnet'     },
+};
+
+// ── Achievements ─────────────────────────────────────────────────────────────
+const ACHIEVEMENT_DEFS = [
+  { id: 'reach_10000m',     icon: '🏃', name: 'Marathon',         desc: 'Reach 10,000m in a single run'                },
+  { id: 'clean_power_rush', icon: '⚡', name: 'Untouchable Rush',  desc: 'Complete Power Rush without getting Blitzed'  },
+];
 
 // ── PowerRushTrack ────────────────────────────────────────────────────────────
 // A simple fixed-width straight corridor used during Power Rush mode.
@@ -381,6 +393,15 @@ class Game {
 
     // Wire up void speed controls in the start overlay
     this._initVoidRateControls();
+
+    // Achievements – loaded once and persisted across runs
+    this._achievements = this._loadAchievements();
+
+    // Wire up the in-game shop button and shop overlay
+    this._initShop();
+
+    // Wire up the achievements overlay accessible from the start menu
+    this._initAchievementsUI();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -564,6 +585,9 @@ class Game {
     this.coins          = [];
     this.coinsCollected = 0;
 
+    // Per-run achievement tracking
+    this._rushBlitzes = 0;   // blitz hits during the current Power Rush
+
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY       = this.track.startY;
     this.lastNormalDoorY = this.track.startY - NORMAL_DOOR_INTERVAL; // allow a door immediately at run start
@@ -625,6 +649,12 @@ class Game {
     if (this.input.consumeDebugToggle()) {
       this.debugMode = !this.debugMode;
       console.log(`[DEBUG] Debug mode ${this.debugMode ? 'ON' : 'OFF'}`);
+    }
+
+    // In shop state the game is paused; Escape/R closes the shop
+    if (this.state === STATE.SHOP) {
+      if (this.input.consumeRestart()) this.closeShop();
+      return;
     }
 
     if (this.state !== STATE.RUNNING) return;
@@ -728,6 +758,9 @@ class Game {
     this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
     this.ui.updateTimer(this.elapsed);
 
+    // ── Achievement checks ───────────────────────────────────────────────────
+    if (this.distance >= 10000) this._grantAchievement('reach_10000m');
+
     // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
     this._rushLineFlickerTimer -= dt;
     if (this._rushLineFlickerTimer <= 0) {
@@ -803,6 +836,7 @@ class Game {
           this.powerRushFogBonus += POWER_RUSH_PUSH_PER_DOOR;
           // Blitz: electrify and freeze the marble for a short time
           this.blitzTimer = POWER_RUSH_BLITZ_DURATION;
+          this._rushBlitzes++;
           this._rebuildBlitzBolts();
           this.marble.triggerShake();
           this.sound.playBlitz();
@@ -986,6 +1020,8 @@ class Game {
     this._showPickupMsg('⚡ POWER RUSH ⚡');
     this.sound.playPowerRushStart();
 
+    this._rushBlitzes = 0; // reset blitz counter for clean-rush achievement tracking
+
     if (this.debugMode) console.log('[DEBUG] Power Rush entered');
   }
 
@@ -1020,6 +1056,11 @@ class Game {
       this._showPickupMsg(`RUSH BONUS: ${doorsScored} DOORS! +${Math.floor(fogPushback)}m LEAD`);
     } else {
       this._showPickupMsg('RUSH OVER!');
+    }
+
+    // Grant clean-rush achievement if no blitzes occurred and at least one door was scored
+    if (this._rushBlitzes === 0 && doorsScored > 0) {
+      this._grantAchievement('clean_power_rush');
     }
 
     if (this.debugMode) {
@@ -1070,6 +1111,118 @@ class Game {
 
   _showPickupMsg(text) {
     this.pickupMsg = { text, timer: 2.2 };
+  }
+
+  // ── Achievement helpers ───────────────────────────────────────────────────
+
+  _loadAchievements() {
+    try {
+      const raw = localStorage.getItem('mrAchievements');
+      const arr = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  _grantAchievement(id) {
+    if (this._achievements.has(id)) return; // already unlocked
+    this._achievements.add(id);
+    try {
+      localStorage.setItem('mrAchievements', JSON.stringify([...this._achievements]));
+    } catch { /* ignore storage errors */ }
+    const def = ACHIEVEMENT_DEFS.find(a => a.id === id);
+    if (def) this._showPickupMsg(`🏆 ${def.name}!`);
+  }
+
+  // ── Shop ─────────────────────────────────────────────────────────────────
+
+  _initShop() {
+    const shopBtn   = document.getElementById('shop-btn');
+    const closeBtn  = document.getElementById('shop-close-btn');
+    const voidBtn   = document.getElementById('shop-buy-void');
+    const magnetBtn = document.getElementById('shop-buy-magnet');
+    if (shopBtn)   shopBtn.addEventListener('click',   () => this.openShop());
+    if (closeBtn)  closeBtn.addEventListener('click',  () => this.closeShop());
+    if (voidBtn)   voidBtn.addEventListener('click',   () => this._buyShopItem('void_push'));
+    if (magnetBtn) magnetBtn.addEventListener('click', () => this._buyShopItem('magnet'));
+  }
+
+  openShop() {
+    // Only open during normal running, not during Power Rush
+    if (this.state !== STATE.RUNNING || this.powerRushActive) return;
+    this.state = STATE.SHOP;
+    const overlay = document.getElementById('shop-overlay');
+    const coinEl  = document.getElementById('shop-coin-count');
+    if (coinEl) coinEl.textContent = this.coinsCollected;
+    this._updateShopButtons();
+    if (overlay) { overlay.classList.remove('hidden'); overlay.classList.add('visible'); }
+  }
+
+  closeShop() {
+    if (this.state !== STATE.SHOP) return;
+    this.state = STATE.RUNNING;
+    const overlay = document.getElementById('shop-overlay');
+    if (overlay) { overlay.classList.remove('visible'); overlay.classList.add('hidden'); }
+  }
+
+  _updateShopButtons() {
+    const voidBtn   = document.getElementById('shop-buy-void');
+    const magnetBtn = document.getElementById('shop-buy-magnet');
+    if (voidBtn)   voidBtn.disabled   = this.coinsCollected < SHOP_ITEMS.void_push.cost;
+    if (magnetBtn) magnetBtn.disabled = this.coinsCollected < SHOP_ITEMS.magnet.cost;
+  }
+
+  _buyShopItem(itemId) {
+    const item = SHOP_ITEMS[itemId];
+    if (!item || this.coinsCollected < item.cost) return;
+    this.coinsCollected -= item.cost;
+    this.ui.updateCoinCount(this.coinsCollected);
+    if (itemId === 'void_push') {
+      this.fog.y -= 1000;
+      this._showPickupMsg('VOID PUSHED BACK!');
+    } else if (itemId === 'magnet') {
+      this.magnetTimer = 6;
+      this._showPickupMsg('MAGNET ACTIVE!');
+    }
+    // Update shop coin display and button states
+    const coinEl = document.getElementById('shop-coin-count');
+    if (coinEl) coinEl.textContent = this.coinsCollected;
+    this._updateShopButtons();
+  }
+
+  // ── Achievements UI ───────────────────────────────────────────────────────
+
+  _initAchievementsUI() {
+    const achBtn      = document.getElementById('achievements-btn');
+    const achOverlay  = document.getElementById('achievements-overlay');
+    const achCloseBtn = document.getElementById('achievements-close-btn');
+
+    const openAch = () => {
+      const achList = document.getElementById('achievements-list');
+      if (achList) {
+        achList.innerHTML = '';
+        for (const def of ACHIEVEMENT_DEFS) {
+          const unlocked = this._achievements.has(def.id);
+          const div = document.createElement('div');
+          div.className = `achievement-entry ${unlocked ? 'unlocked' : 'locked'}`;
+          div.innerHTML =
+            `<span class="ach-icon">${unlocked ? def.icon : '🔒'}</span>` +
+            `<div class="ach-info"><div class="ach-name">${def.name}</div>` +
+            `<div class="ach-desc">${def.desc}</div></div>` +
+            (unlocked ? '<span class="ach-check">✓</span>' : '');
+          achList.appendChild(div);
+        }
+      }
+      if (achOverlay) { achOverlay.classList.remove('hidden'); achOverlay.classList.add('visible'); }
+    };
+
+    const closeAch = () => {
+      if (achOverlay) { achOverlay.classList.remove('visible'); achOverlay.classList.add('hidden'); }
+    };
+
+    if (achBtn)      achBtn.addEventListener('click', openAch);
+    if (achCloseBtn) achCloseBtn.addEventListener('click', closeAch);
   }
 
   collectCoin() {

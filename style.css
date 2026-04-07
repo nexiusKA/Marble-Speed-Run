@@ -606,6 +606,222 @@ body {
   transform: translateY(1px);
 }
 
+/* ── Shop HUD button ─────────────────────────────────── */
+.hud-shop-btn {
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffd700;
+  border: 1px solid #7a5a00;
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.1s, border-color 0.1s;
+  outline: none;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 7px;
+  font-size: 13px;
+  align-self: flex-start;
+}
+
+.hud-shop-btn:hover {
+  background: rgba(80, 50, 0, 0.7);
+  border-color: #ffd700;
+}
+
+/* ── Shop overlay ────────────────────────────────────── */
+.shop-box {
+  max-width: 320px;
+  width: 100%;
+}
+
+.shop-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 14px #ffaa00;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.shop-coins-display {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffe566;
+  margin-bottom: 16px;
+}
+
+.shop-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 215, 0, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 8px;
+}
+
+.shop-item-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.shop-item-info {
+  flex: 1;
+  text-align: left;
+}
+
+.shop-item-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e0e0ff;
+}
+
+.shop-item-desc {
+  font-size: 11px;
+  color: #9999bb;
+  margin-top: 2px;
+}
+
+.shop-buy-btn {
+  background: linear-gradient(135deg, #7a6a00, #f0c800);
+  color: #1a1000;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s;
+  outline: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.shop-buy-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #998500, #ffd700);
+  transform: translateY(-1px);
+}
+
+.shop-buy-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.shop-buy-btn:disabled {
+  background: linear-gradient(135deg, #333333, #555555);
+  color: #888888;
+  cursor: not-allowed;
+}
+
+/* ── Achievements button (start menu) ───────────────── */
+.btn-achievements {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffd700;
+  background: rgba(50, 40, 0, 0.65);
+  border: 1.5px solid #aa8800;
+  border-radius: 8px;
+  padding: 9px 0;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  outline: none;
+}
+
+.btn-achievements:hover {
+  background: rgba(80, 60, 0, 0.85);
+  border-color: #ffd700;
+  transform: translateY(-1px);
+}
+
+.btn-achievements:active {
+  transform: translateY(1px);
+}
+
+/* ── Achievements overlay ────────────────────────────── */
+.achievements-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 14px #ffaa00;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  min-width: 240px;
+}
+
+.achievement-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.achievement-entry.unlocked {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.achievement-entry.locked {
+  background: rgba(50, 50, 80, 0.3);
+  border: 1px solid rgba(80, 80, 100, 0.3);
+  opacity: 0.6;
+}
+
+.ach-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.ach-info {
+  flex: 1;
+}
+
+.ach-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e0e0ff;
+}
+
+.achievement-entry.locked .ach-name {
+  color: #888899;
+}
+
+.ach-desc {
+  font-size: 11px;
+  color: #9999bb;
+  margin-top: 2px;
+}
+
+.ach-check {
+  color: #ffd700;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
 /* ── Mobile controls ─────────────────────────────────── */
 #mobile-controls {
   position: absolute;

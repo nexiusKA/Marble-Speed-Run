@@ -15,6 +15,7 @@
         <div id="hud-dist">Dist: <span id="dist-display">0</span> m</div>
         <div id="hud-timer">Time: <span id="timer-display">0:00.0</span></div>
         <div id="hud-coins">💰 <span id="coin-display">0</span></div>
+        <button id="shop-btn" class="hud-shop-btn" title="Open Shop" aria-label="Open Shop">🛒</button>
       </div>
       <div id="hud-void">Void: <span id="void-display">--</span> m</div>
       <div id="hud-right">
@@ -85,6 +86,7 @@
           <button id="hard-btn"   class="btn btn-hard">HARD</button>
         </div>
         <button id="play-btn" class="btn btn-play">PLAY</button>
+        <button id="achievements-btn" class="btn btn-achievements">🏆 ACHIEVEMENTS</button>
         <details class="git-info" id="git-info" open>
           <summary>Build Info</summary>
           <dl class="git-info-grid">
@@ -110,6 +112,40 @@
         </div>
         <p id="go-best" class="finish-best"></p>
         <button id="retry-btn" class="btn">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <div id="shop-overlay" class="overlay hidden">
+      <div class="overlay-box shop-box">
+        <h2 class="shop-title">🛒 SHOP</h2>
+        <p class="shop-coins-display">💰 <span id="shop-coin-count">0</span> coins</p>
+        <div class="shop-items">
+          <div class="shop-item">
+            <span class="shop-item-icon">🌑</span>
+            <div class="shop-item-info">
+              <div class="shop-item-name">Void Push</div>
+              <div class="shop-item-desc">Push void 1000m further back</div>
+            </div>
+            <button id="shop-buy-void" class="shop-buy-btn">20 💰</button>
+          </div>
+          <div class="shop-item">
+            <span class="shop-item-icon">🧲</span>
+            <div class="shop-item-info">
+              <div class="shop-item-name">Magnet</div>
+              <div class="shop-item-desc">Attract coins for 6s</div>
+            </div>
+            <button id="shop-buy-magnet" class="shop-buy-btn">5 💰</button>
+          </div>
+        </div>
+        <button id="shop-close-btn" class="btn btn-play">RESUME</button>
+      </div>
+    </div>
+
+    <div id="achievements-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <h2 class="achievements-title">🏆 ACHIEVEMENTS</h2>
+        <div id="achievements-list" class="achievements-list"></div>
+        <button id="achievements-close-btn" class="btn">CLOSE</button>
       </div>
     </div>
   </div>
