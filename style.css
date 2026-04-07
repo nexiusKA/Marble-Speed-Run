@@ -52,7 +52,7 @@ body {
   right: 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 0 14px;
   pointer-events: none;
   z-index: 10;
@@ -79,6 +79,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+#hud-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  pointer-events: auto;
 }
 
 #hud-void {
@@ -277,7 +285,7 @@ body {
 }
 
 .pl-speed      { color: #ffe040; }
-.pl-dash       { color: #40ffff; }
+.pl-magnet     { color: #ff88ff; }
 .pl-fog        { color: #dd88ff; }
 .pl-shield     { color: #88ff99; }
 .pl-powerrush  { color: #ffdd00; }

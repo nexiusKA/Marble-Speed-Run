@@ -13,19 +13,21 @@
     <div id="hud">
       <div id="hud-left">
         <div id="hud-dist">Dist: <span id="dist-display">0</span> m</div>
-        <div id="hud-void">Void: <span id="void-display">--</span> m</div>
         <div id="hud-timer">Time: <span id="timer-display">0:00.0</span></div>
         <div id="hud-coins">💰 <span id="coin-display">0</span></div>
       </div>
-      <div id="hud-best">Best: <span id="best-display">--</span></div>
-      <button id="fullscreen-btn" class="hud-fs-btn" title="Enter fullscreen" aria-label="Enter fullscreen">
-        <svg id="fs-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
-          <polyline points="0,4 0,0 4,0"/>
-          <polyline points="10,0 14,0 14,4"/>
-          <polyline points="14,10 14,14 10,14"/>
-          <polyline points="4,14 0,14 0,10"/>
-        </svg>
-      </button>
+      <div id="hud-void">Void: <span id="void-display">--</span> m</div>
+      <div id="hud-right">
+        <div id="hud-best">Best: <span id="best-display">--</span></div>
+        <button id="fullscreen-btn" class="hud-fs-btn" title="Enter fullscreen" aria-label="Enter fullscreen">
+          <svg id="fs-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
+            <polyline points="0,4 0,0 4,0"/>
+            <polyline points="10,0 14,0 14,4"/>
+            <polyline points="14,10 14,14 10,14"/>
+            <polyline points="4,14 0,14 0,10"/>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <div id="mobile-controls">
@@ -47,7 +49,7 @@
         </div>
         <div class="pickup-legend">
           <span class="pl-speed">⚡ Speed</span>
-          <span class="pl-dash">▶▶ Dash</span>
+          <span class="pl-magnet">🧲 Magnet</span>
           <span class="pl-fog">❄ Bar Slow</span>
           <span class="pl-shield">◆ Shield</span>
           <span class="pl-powerrush">⚡⚡ Power Rush</span>
