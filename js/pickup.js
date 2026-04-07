@@ -90,7 +90,7 @@ class Coin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 7;
+    this.radius    = 14;
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
@@ -155,8 +155,7 @@ class Coin {
     ctx.stroke();
 
     // Coin symbol
-    ctx.font         = 'bold 8px sans-serif';
-    ctx.fillStyle    = 'rgba(160,90,0,0.9)';
+    ctx.font         = 'bold 12px sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('¢', this.x, sy);
@@ -171,7 +170,7 @@ class BlueCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 9;
+    this.radius    = 16;
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
@@ -231,7 +230,7 @@ class BlueCoin {
     ctx.lineWidth   = 1.5;
     ctx.stroke();
 
-    ctx.font         = 'bold 8px sans-serif';
+    ctx.font         = 'bold 12px sans-serif';
     ctx.fillStyle    = 'rgba(220,240,255,0.95)';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
@@ -247,7 +246,7 @@ class RedCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 10;
+    this.radius    = 18;
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
@@ -307,7 +306,7 @@ class RedCoin {
     ctx.lineWidth   = 1.5;
     ctx.stroke();
 
-    ctx.font         = 'bold 8px sans-serif';
+    ctx.font         = 'bold 12px sans-serif';
     ctx.fillStyle    = 'rgba(255,230,230,0.95)';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
@@ -323,7 +322,7 @@ class BigCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 18;   // ~2.5× normal coin radius (7)
+    this.radius    = 26;   // ~2.5× normal coin radius (now 14)
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
