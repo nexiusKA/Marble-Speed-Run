@@ -822,7 +822,8 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Mobile controls ─────────────────────────────────── */#mobile-controls {
+/* ── Mobile controls ─────────────────────────────────── */
+#mobile-controls {
   position: absolute;
   bottom: 10px;
   left: 0;
