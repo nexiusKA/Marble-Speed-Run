@@ -26,7 +26,9 @@ const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode 
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
-const COIN_SPACING = 300;  // average world-units between coin spawns
+const COIN_SPACING      = 300;  // average world-units between coin spawns
+const BLUE_COIN_SPACING = 1800; // average world-units between blue coin spawns (rare, worth 3)
+const RED_COIN_SPACING  = 3500; // average world-units between red coin spawns (very rare, worth 5)
 const COIN_VALUE   = 50;   // metres bonus per collected coin
 
 // ── Shop ─────────────────────────────────────────────────────────────────────
@@ -41,6 +43,12 @@ const ACHIEVEMENT_DEFS = [
   { id: 'reach_5000m',      icon: '🚀', name: 'Speed Seeker',      desc: 'Reach 5,000m in a single run'                         },
   { id: 'reach_10000m',     icon: '🏃', name: 'Marathon',          desc: 'Reach 10,000m in a single run'                        },
   { id: 'reach_25000m',     icon: '👹', name: 'Speed Demon',       desc: 'Reach 25,000m in a single run'                        },
+  { id: 'reach_50000m',     icon: '🌟', name: 'Hypersonic',         desc: 'Reach 50,000m in a single run'                        },
+  { id: 'reach_75000m',     icon: '🔮', name: 'Transcendent',       desc: 'Reach 75,000m in a single run'                        },
+  { id: 'reach_100000m',    icon: '💫', name: 'Legendary',          desc: 'Reach 100,000m in a single run'                       },
+  { id: 'reach_150000m',    icon: '🌀', name: 'Unstoppable',        desc: 'Reach 150,000m in a single run'                       },
+  { id: 'reach_200000m',    icon: '☄️', name: 'Godspeed',           desc: 'Reach 200,000m in a single run'                       },
+  { id: 'reach_250000m',    icon: '🏅', name: 'The Infinite Run',   desc: 'Reach 250,000m in a single run'                       },
   { id: 'coin_hoarder',     icon: '💰', name: 'Coin Hoarder',      desc: 'Collect 10 coins in a single run'                     },
   { id: 'treasure_hunter',  icon: '💎', name: 'Treasure Hunter',   desc: 'Collect 50 coins in a single run'                     },
   { id: 'power_up',         icon: '⭐', name: 'Power Up!',         desc: 'Collect your first pickup'                            },
@@ -593,6 +601,8 @@ class Game {
 
     // Coin system
     this.coins          = [];
+    this.blueCoins      = [];
+    this.redCoins       = [];
     this.coinsCollected = 0;
 
     // Per-run achievement tracking
@@ -742,6 +752,14 @@ class Game {
       coin.update(dt);
       coin.checkCollision(this.marble, this, dt);
     }
+    for (const bc of this.blueCoins) {
+      bc.update(dt);
+      bc.checkCollision(this.marble, this, dt);
+    }
+    for (const rc of this.redCoins) {
+      rc.update(dt);
+      rc.checkCollision(this.marble, this, dt);
+    }
 
     // Pickup message fade
     if (this.pickupMsg) {
@@ -778,10 +796,16 @@ class Game {
     this.ui.updateTimer(this.elapsed);
 
     // ── Achievement checks ───────────────────────────────────────────────────
-    if (this.distance >= 1000)  this._grantAchievement('reach_1000m');
-    if (this.distance >= 5000)  this._grantAchievement('reach_5000m');
-    if (this.distance >= 10000) this._grantAchievement('reach_10000m');
-    if (this.distance >= 25000) this._grantAchievement('reach_25000m');
+    if (this.distance >= 1000)   this._grantAchievement('reach_1000m');
+    if (this.distance >= 5000)   this._grantAchievement('reach_5000m');
+    if (this.distance >= 10000)  this._grantAchievement('reach_10000m');
+    if (this.distance >= 25000)  this._grantAchievement('reach_25000m');
+    if (this.distance >= 50000)  this._grantAchievement('reach_50000m');
+    if (this.distance >= 75000)  this._grantAchievement('reach_75000m');
+    if (this.distance >= 100000) this._grantAchievement('reach_100000m');
+    if (this.distance >= 150000) this._grantAchievement('reach_150000m');
+    if (this.distance >= 200000) this._grantAchievement('reach_200000m');
+    if (this.distance >= 250000) this._grantAchievement('reach_250000m');
 
     // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
     this._rushLineFlickerTimer -= dt;
@@ -972,12 +996,32 @@ class Game {
       const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
       this.coins.push(new Coin(cx, cy));
     }
+
+    // Blue coins (rarer, worth 3)
+    if (Math.random() < segLen / BLUE_COIN_SPACING) {
+      const cy = fromY + Math.random() * segLen;
+      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+      const margin = 14;
+      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+      this.blueCoins.push(new BlueCoin(cx, cy));
+    }
+
+    // Red coins (very rare, worth 5)
+    if (Math.random() < segLen / RED_COIN_SPACING) {
+      const cy = fromY + Math.random() * segLen;
+      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+      const margin = 14;
+      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+      this.redCoins.push(new RedCoin(cx, cy));
+    }
   }
 
   _pruneEntities(behindY) {
     this.obstacles = this.obstacles.filter(o => o.worldY > behindY);
     this.pickups   = this.pickups.filter(p => !p.collected && p.worldY > behindY);
     this.coins     = this.coins.filter(c => !c.collected && c.worldY > behindY);
+    this.blueCoins = this.blueCoins.filter(c => !c.collected && c.worldY > behindY);
+    this.redCoins  = this.redCoins.filter(c => !c.collected && c.worldY > behindY);
     this.track.prune(behindY - 400);
   }
 
@@ -1271,6 +1315,16 @@ class Game {
     for (let i = 0; i < 8; i++) this._spawnParticle(this.marble.x, this.marble.y, '255,215,0');
   }
 
+  collectCoins(n) {
+    this.coinsCollected += n;
+    this.ui.updateCoinCount(this.coinsCollected);
+    if (this.coinsCollected >= 10) this._grantAchievement('coin_hoarder');
+    if (this.coinsCollected >= 50) this._grantAchievement('treasure_hunter');
+    // Particle burst color matches coin type: blue for ×3, red for ×5
+    const color = n >= 5 ? '255,80,80' : n >= 3 ? '80,160,255' : '255,215,0';
+    for (let i = 0; i < 6 + n * 2; i++) this._spawnParticle(this.marble.x, this.marble.y, color);
+  }
+
   // ── Game over ─────────────────────────────────────────────────────────────
   _gameOver() {
     this.state = STATE.DEAD;
@@ -1310,6 +1364,8 @@ class Game {
       for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.pickups) pu.render(ctx, this.cameraY);
       for (const coin of this.coins) coin.render(ctx, this.cameraY);
+      for (const bc of this.blueCoins) bc.render(ctx, this.cameraY);
+      for (const rc of this.redCoins) rc.render(ctx, this.cameraY);
       this._renderRushLine(ctx);
     }
 

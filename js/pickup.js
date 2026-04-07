@@ -165,6 +165,158 @@ class Coin {
   }
 }
 
+// ── BlueCoin ──────────────────────────────────────────────────────────────────
+// A rare blue coin that appears on the normal track and is worth 3 coins.
+class BlueCoin {
+  constructor(x, worldY) {
+    this.x         = x;
+    this.worldY    = worldY;
+    this.radius    = 9;
+    this.collected = false;
+    this.pulse     = Math.random() * Math.PI * 2;
+    this.bob       = Math.random() * Math.PI * 2;
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 4.0) % (Math.PI * 2);
+    this.bob   = (this.bob   + dt * 2.5) % (Math.PI * 2);
+  }
+
+  checkCollision(marble, game, dt = 1 / 60) {
+    if (this.collected) return;
+    const dx = marble.x - this.x;
+    const dy = marble.y - this.worldY;
+    if (game.magnetTimer > 0) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const magnetRadius = 160;
+      if (dist < magnetRadius && dist > 0) {
+        const speed = 400 * (1 - dist / magnetRadius);
+        this.x      += (dx / dist) * speed * dt;
+        this.worldY += (dy / dist) * speed * dt;
+      }
+    }
+    if (dx * dx + dy * dy < (marble.radius + this.radius) ** 2) {
+      this.collected = true;
+      game.collectCoins(3);
+    }
+  }
+
+  render(ctx, cameraY) {
+    if (this.collected) return;
+    const sy = this.worldY - cameraY + Math.sin(this.bob) * 3;
+    if (sy < -30 || sy > CANVAS_H + 30) return;
+
+    ctx.save();
+
+    const glow = 0.5 + 0.5 * Math.sin(this.pulse);
+
+    ctx.shadowColor = '#44aaff';
+    ctx.shadowBlur  = 12 + glow * 10;
+
+    const grad = ctx.createRadialGradient(
+      this.x - 2, sy - 2, 1,
+      this.x, sy, this.radius
+    );
+    grad.addColorStop(0, '#aaddff');
+    grad.addColorStop(1, '#0055cc');
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(100,180,255,${0.6 + glow * 0.4})`;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    ctx.font         = 'bold 8px sans-serif';
+    ctx.fillStyle    = 'rgba(220,240,255,0.95)';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×3', this.x, sy);
+
+    ctx.restore();
+  }
+}
+
+// ── RedCoin ───────────────────────────────────────────────────────────────────
+// A very rare red coin that appears on the normal track and is worth 5 coins.
+class RedCoin {
+  constructor(x, worldY) {
+    this.x         = x;
+    this.worldY    = worldY;
+    this.radius    = 10;
+    this.collected = false;
+    this.pulse     = Math.random() * Math.PI * 2;
+    this.bob       = Math.random() * Math.PI * 2;
+  }
+
+  update(dt) {
+    this.pulse = (this.pulse + dt * 4.5) % (Math.PI * 2);
+    this.bob   = (this.bob   + dt * 2.5) % (Math.PI * 2);
+  }
+
+  checkCollision(marble, game, dt = 1 / 60) {
+    if (this.collected) return;
+    const dx = marble.x - this.x;
+    const dy = marble.y - this.worldY;
+    if (game.magnetTimer > 0) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const magnetRadius = 160;
+      if (dist < magnetRadius && dist > 0) {
+        const speed = 400 * (1 - dist / magnetRadius);
+        this.x      += (dx / dist) * speed * dt;
+        this.worldY += (dy / dist) * speed * dt;
+      }
+    }
+    if (dx * dx + dy * dy < (marble.radius + this.radius) ** 2) {
+      this.collected = true;
+      game.collectCoins(5);
+    }
+  }
+
+  render(ctx, cameraY) {
+    if (this.collected) return;
+    const sy = this.worldY - cameraY + Math.sin(this.bob) * 3;
+    if (sy < -30 || sy > CANVAS_H + 30) return;
+
+    ctx.save();
+
+    const glow = 0.5 + 0.5 * Math.sin(this.pulse);
+
+    ctx.shadowColor = '#ff4444';
+    ctx.shadowBlur  = 14 + glow * 12;
+
+    const grad = ctx.createRadialGradient(
+      this.x - 2, sy - 2, 1,
+      this.x, sy, this.radius
+    );
+    grad.addColorStop(0, '#ffaaaa');
+    grad.addColorStop(1, '#cc0000');
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.beginPath();
+    ctx.arc(this.x, sy, this.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,100,100,${0.6 + glow * 0.4})`;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    ctx.font         = 'bold 8px sans-serif';
+    ctx.fillStyle    = 'rgba(255,230,230,0.95)';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('×5', this.x, sy);
+
+    ctx.restore();
+  }
+}
+
 // ── BigCoin ───────────────────────────────────────────────────────────────────
 // Power-rush exclusive coin: ~2.5× the radius of a normal coin, worth 2 coins.
 class BigCoin {
