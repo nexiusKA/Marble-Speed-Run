@@ -322,7 +322,7 @@ class BigCoin {
   constructor(x, worldY) {
     this.x         = x;
     this.worldY    = worldY;
-    this.radius    = 26;   // ~2.5× normal coin radius (now 14)
+    this.radius    = 18;   // ~2.5× normal coin radius
     this.collected = false;
     this.pulse     = Math.random() * Math.PI * 2;
     this.bob       = Math.random() * Math.PI * 2;
