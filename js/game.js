@@ -37,8 +37,18 @@ const SHOP_ITEMS = {
 
 // ── Achievements ─────────────────────────────────────────────────────────────
 const ACHIEVEMENT_DEFS = [
-  { id: 'reach_10000m',     icon: '🏃', name: 'Marathon',         desc: 'Reach 10,000m in a single run'                },
-  { id: 'clean_power_rush', icon: '⚡', name: 'Untouchable Rush',  desc: 'Complete Power Rush without getting Blitzed'  },
+  { id: 'reach_1000m',      icon: '🦶', name: 'First Steps',       desc: 'Reach 1,000m in a single run'                         },
+  { id: 'reach_5000m',      icon: '🚀', name: 'Speed Seeker',      desc: 'Reach 5,000m in a single run'                         },
+  { id: 'reach_10000m',     icon: '🏃', name: 'Marathon',          desc: 'Reach 10,000m in a single run'                        },
+  { id: 'reach_25000m',     icon: '👹', name: 'Speed Demon',       desc: 'Reach 25,000m in a single run'                        },
+  { id: 'coin_hoarder',     icon: '💰', name: 'Coin Hoarder',      desc: 'Collect 10 coins in a single run'                     },
+  { id: 'treasure_hunter',  icon: '💎', name: 'Treasure Hunter',   desc: 'Collect 50 coins in a single run'                     },
+  { id: 'power_up',         icon: '⭐', name: 'Power Up!',         desc: 'Collect your first pickup'                            },
+  { id: 'iron_shell',       icon: '🛡', name: 'Iron Shell',        desc: 'Block the Void with a shield'                         },
+  { id: 'rush_veteran',     icon: '🔥', name: 'Rush Veteran',      desc: 'Complete 3 Power Rushes in a single run'              },
+  { id: 'door_master',      icon: '🚪', name: 'Door Master',       desc: 'Score 10 doors across all Power Rushes in one run'    },
+  { id: 'combo_striker',    icon: '🎯', name: 'Combo Striker',     desc: 'Achieve a 3× door combo in Power Rush'                },
+  { id: 'clean_power_rush', icon: '⚡', name: 'Untouchable Rush',  desc: 'Complete Power Rush without getting Blitzed'          },
 ];
 
 // ── PowerRushTrack ────────────────────────────────────────────────────────────
@@ -586,7 +596,12 @@ class Game {
     this.coinsCollected = 0;
 
     // Per-run achievement tracking
-    this._rushBlitzes = 0;   // blitz hits during the current Power Rush
+    this._rushBlitzes        = 0;   // blitz hits during the current Power Rush
+    this._rushesCompleted    = 0;   // Power Rushes fully completed this run
+    this._totalDoorsScored   = 0;   // doors scored across all rushes this run
+    this._maxDoorCombo       = 0;   // highest door combo reached this run
+    this._pickupCollected    = false; // whether any pickup was collected this run
+    this._shieldUsed         = false; // whether a shield block occurred this run
 
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY       = this.track.startY;
@@ -698,6 +713,10 @@ class Game {
         this.shieldTimer = 0;
         this.fog.y = this.marble.y - 480;
         this._showPickupMsg('SHIELD USED!');
+        if (!this._shieldUsed) {
+          this._shieldUsed = true;
+          this._grantAchievement('iron_shell');
+        }
       } else {
         this._gameOver();
         return;
@@ -759,7 +778,10 @@ class Game {
     this.ui.updateTimer(this.elapsed);
 
     // ── Achievement checks ───────────────────────────────────────────────────
+    if (this.distance >= 1000)  this._grantAchievement('reach_1000m');
+    if (this.distance >= 5000)  this._grantAchievement('reach_5000m');
     if (this.distance >= 10000) this._grantAchievement('reach_10000m');
+    if (this.distance >= 25000) this._grantAchievement('reach_25000m');
 
     // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
     this._rushLineFlickerTimer -= dt;
@@ -830,6 +852,10 @@ class Game {
           this.powerRushFogBonus += POWER_RUSH_PUSH_PER_DOOR * multiplier;
           if (this.doorCombo >= 2) {
             this._showPickupMsg(`COMBO x${this.doorCombo}! 🎯`);
+          }
+          if (this.doorCombo > this._maxDoorCombo) {
+            this._maxDoorCombo = this.doorCombo;
+            if (this._maxDoorCombo >= 3) this._grantAchievement('combo_striker');
           }
         } else {
           this.doorCombo = 0;
@@ -1063,6 +1089,12 @@ class Game {
       this._grantAchievement('clean_power_rush');
     }
 
+    // Track cumulative rush/door stats for multi-rush achievements
+    this._rushesCompleted++;
+    this._totalDoorsScored += doorsScored;
+    if (this._rushesCompleted >= 3)       this._grantAchievement('rush_veteran');
+    if (this._totalDoorsScored >= 10)     this._grantAchievement('door_master');
+
     if (this.debugMode) {
       console.log(`[DEBUG] Power Rush exited | doors=${doorsScored} | fogPushback=${fogPushback}`);
     }
@@ -1105,6 +1137,11 @@ class Game {
     }
     this._showPickupMsg(PICKUP_CONFIG[type].name);
     if (this.debugMode) console.log(`[DEBUG] Pickup collected: ${type}`);
+    // Grant first-pickup achievement
+    if (!this._pickupCollected) {
+      this._pickupCollected = true;
+      this._grantAchievement('power_up');
+    }
     // Burst of particles on collection
     for (let i = 0; i < 14; i++) this._spawnParticle(this.marble.x, this.marble.y);
   }
@@ -1228,6 +1265,8 @@ class Game {
   collectCoin() {
     this.coinsCollected++;
     this.ui.updateCoinCount(this.coinsCollected);
+    if (this.coinsCollected >= 10) this._grantAchievement('coin_hoarder');
+    if (this.coinsCollected >= 50) this._grantAchievement('treasure_hunter');
     // Small golden particle burst
     for (let i = 0; i < 8; i++) this._spawnParticle(this.marble.x, this.marble.y, '255,215,0');
   }
