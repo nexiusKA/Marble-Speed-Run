@@ -601,6 +601,7 @@ class Game {
     this.ui.updateDistance(0);
     this.ui.updateVoidDistance('--');
     this.ui.updateTimer(0);
+    this.ui.updateCoinCount(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
     this.sound.start();
   }
