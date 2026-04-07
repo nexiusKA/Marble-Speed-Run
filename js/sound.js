@@ -8,12 +8,9 @@
 // All music tracks live in the sounds/ folder.  A random track is chosen at
 // the start of each run; when a track ends the next random track begins.
 
+// Only vacation_synth.mp3 is a real track; the others are placeholder stubs.
+// Replace the stub files with real audio to expand the playlist.
 const MUSIC_TRACKS = [
-  'sounds/adventure.mp3',
-  'sounds/flowerhunt.mp3',
-  'sounds/nightfall.mp3',
-  'sounds/ride_the_wave.mp3',
-  'sounds/sunfall.mp3',
   'sounds/vacation_synth.mp3',
 ];
 
@@ -25,7 +22,7 @@ class SoundManager {
 
     this._trackIndex = Math.floor(Math.random() * MUSIC_TRACKS.length);
     this._audio        = new Audio(MUSIC_TRACKS[this._trackIndex]);
-    this._audio.loop   = false;
+    this._audio.loop   = MUSIC_TRACKS.length === 1; // loop when there is only one track
     this._audio.volume = this._effectiveVolume();
 
     this._audio.addEventListener('error', () => {
@@ -193,6 +190,7 @@ class SoundManager {
     } while (MUSIC_TRACKS.length > 1 && nextTrackIndex === this._trackIndex);
     this._trackIndex = nextTrackIndex;
     this._audio.src = MUSIC_TRACKS[this._trackIndex];
+    this._audio.loop = MUSIC_TRACKS.length === 1;
     this._audio.currentTime = 0;
     this._audio.volume = this._effectiveVolume();
     if (!this._muted && this._volume > 0) {
