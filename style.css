@@ -753,6 +753,13 @@ body {
 }
 
 /* ── Achievements overlay ────────────────────────────── */
+#achievements-overlay .overlay-box {
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .achievements-title {
   font-size: 22px;
   font-weight: 900;
@@ -768,6 +775,9 @@ body {
   gap: 10px;
   margin-bottom: 14px;
   min-width: 240px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .achievement-entry {
