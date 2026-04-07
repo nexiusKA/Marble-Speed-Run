@@ -604,6 +604,7 @@ class Game {
     this.blueCoins      = [];
     this.redCoins       = [];
     this.coinsCollected = 0;
+    this.coinFloats     = []; // floating "+N" labels shown on coin collection
 
     // Per-run achievement tracking
     this._rushBlitzes        = 0;   // blitz hits during the current Power Rush
@@ -766,6 +767,7 @@ class Game {
       this.pickupMsg.timer -= dt;
       if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
     }
+    this._updateCoinFloats(dt);
 
     // ── Particles ───────────────────────────────────────────────────────────
     if (this.marble.speed > 300 && Math.random() < dt * 12) {
@@ -831,6 +833,7 @@ class Game {
         this.pickupMsg.timer -= dt;
         if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
       }
+      this._updateCoinFloats(dt);
       return; // skip everything else while frozen
     }
 
@@ -906,6 +909,7 @@ class Game {
       this.pickupMsg.timer -= dt;
       if (this.pickupMsg.timer <= 0) this.pickupMsg = null;
     }
+    this._updateCoinFloats(dt);
 
     // Camera
     const targetCamY = this.marble.y - CANVAS_H * 0.28;
@@ -1326,6 +1330,7 @@ class Game {
     if (this.coinsCollected >= 50) this._grantAchievement('treasure_hunter');
     // Small golden particle burst
     for (let i = 0; i < 8; i++) this._spawnParticle(this.marble.x, this.marble.y, '255,215,0');
+    this._spawnCoinFloat(this.marble.x, this.marble.y, '+1');
   }
 
   collectCoins(n) {
@@ -1336,6 +1341,7 @@ class Game {
     // Particle burst color matches coin type: blue for ×3, red for ×5
     const color = n >= 5 ? '255,80,80' : n >= 3 ? '80,160,255' : '255,215,0';
     for (let i = 0; i < 6 + n * 2; i++) this._spawnParticle(this.marble.x, this.marble.y, color);
+    this._spawnCoinFloat(this.marble.x, this.marble.y, `+${n}`);
   }
 
   // ── Game over ─────────────────────────────────────────────────────────────
@@ -1485,6 +1491,21 @@ class Game {
       ctx.textBaseline  = 'middle';
       ctx.fillStyle     = `rgba(255,240,80,${alpha})`;
       ctx.fillText(this.pickupMsg.text, CANVAS_W / 2, CANVAS_H * 0.33);
+      ctx.restore();
+    }
+
+    // Coin collection floats
+    if (this.coinFloats.length > 0) {
+      ctx.save();
+      ctx.font         = 'bold 15px monospace';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      for (const f of this.coinFloats) {
+        const alpha = Math.min(f.timer / 0.5, 1);
+        const sy    = f.y - this.cameraY;
+        ctx.fillStyle = `rgba(255,215,0,${alpha})`;
+        ctx.fillText(`${f.text} 💰`, f.x, sy);
+      }
       ctx.restore();
     }
 
@@ -2079,6 +2100,19 @@ class Game {
       p.y    += p.vy * dt;
       p.life -= dt * 2.5;
       if (p.life <= 0) this.particles.splice(i, 1);
+    }
+  }
+
+  _spawnCoinFloat(x, y, text) {
+    this.coinFloats.push({ x, y, text, timer: 1.2 });
+  }
+
+  _updateCoinFloats(dt) {
+    for (let i = this.coinFloats.length - 1; i >= 0; i--) {
+      const f = this.coinFloats[i];
+      f.y     -= 40 * dt;  // float upward (world space)
+      f.timer -= dt;
+      if (f.timer <= 0) this.coinFloats.splice(i, 1);
     }
   }
 }
