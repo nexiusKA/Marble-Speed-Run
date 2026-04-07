@@ -183,11 +183,19 @@ class SoundManager {
   // ── Public API ───────────────────────────────────────────────────────────
 
   // Call once (and on every PLAY AGAIN) inside a click handler.
-  // Safe to call multiple times – resumes only when actually paused.
+  // Picks a new random track (different from the current one) on each call.
   start() {
     this._started = true;
+    // Always choose a different random track so each run feels fresh.
+    let next;
+    do {
+      next = Math.floor(Math.random() * MUSIC_TRACKS.length);
+    } while (MUSIC_TRACKS.length > 1 && next === this._trackIndex);
+    this._trackIndex = next;
+    this._audio.src = MUSIC_TRACKS[this._trackIndex];
+    this._audio.currentTime = 0;
     this._audio.volume = this._effectiveVolume();
-    if (!this._muted && this._volume > 0 && this._audio.paused) {
+    if (!this._muted && this._volume > 0) {
       this._audio.play().catch(err => {
         console.warn('[Audio] play() failed:', err);
       });
