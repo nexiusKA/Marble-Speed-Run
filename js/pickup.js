@@ -84,7 +84,7 @@ class Pickup {
 // ── Coin ──────────────────────────────────────────────────────────────────────
 // A small collectible coin that appears along the normal track.
 // Collected coins are converted to bonus metres at game over.
-// BigCoin is the power-rush variant: 2-3× larger and worth 2 coins each.
+// BigCoin is the power-rush variant: ~2.5× larger and worth 2 coins each.
 
 class Coin {
   constructor(x, worldY) {
@@ -250,7 +250,7 @@ class BigCoin {
     ctx.fillStyle    = 'rgba(100,55,0,0.95)';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('\xd72', this.x, sy);
+    ctx.fillText('×2', this.x, sy);
 
     ctx.restore();
   }
