@@ -23,10 +23,10 @@ class Fog {
       // Gentle ramp: 200 px/s at start → 300 px/s at 10 000 m
       this.speed = 200 + d * 0.01;
     } else {
-      // After 10 000 m: base increases by 50 px/s every 5 000 m (capped at 750 px/s),
+      // After 10 000 m: base increases by 50 px/s every 10 000 m (capped at 750 px/s),
       // with a gentle continuous ramp within each band for a smooth feel.
-      const steps = Math.floor((d - 10000) / 5000);
-      const rem   = (d - 10000) % 5000;
+      const steps = Math.floor((d - 10000) / 10000);
+      const rem   = (d - 10000) % 10000;
       this.speed  = Math.min(300 + steps * 50 + rem * 0.01, 750);
     }
 
