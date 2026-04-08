@@ -1096,6 +1096,14 @@ class Game {
 
     this._rushBlitzes = 0; // reset blitz counter for clean-rush achievement tracking
 
+    // Auto-open the shop so the player can buy items before the rush begins
+    this.state = STATE.SHOP;
+    const overlay = document.getElementById('shop-overlay');
+    const coinEl  = document.getElementById('shop-coin-count');
+    if (coinEl) coinEl.textContent = this.coinsCollected;
+    this._updateShopButtons();
+    if (overlay) { overlay.classList.remove('hidden'); overlay.classList.add('visible'); }
+
     if (this.debugMode) console.log('[DEBUG] Power Rush entered');
   }
 
@@ -1242,7 +1250,7 @@ class Game {
   }
 
   openShop() {
-    // Only open during normal running, not during Power Rush
+    // Only open during normal running (manual open via button is blocked during Power Rush)
     if (this.state !== STATE.RUNNING || this.powerRushActive) return;
     this.state = STATE.SHOP;
     const overlay = document.getElementById('shop-overlay');
