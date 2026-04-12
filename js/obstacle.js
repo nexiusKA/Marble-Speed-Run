@@ -6,6 +6,7 @@
 //   4. WallBlocker    – diagonal bar from the wall
 //   5. ElectricSpinner– multi-arm spinning obstacle crackling with electricity
 //   6. DoorGate       – three doors spanning the track; one open (green), two blocked (red)
+//   7. Flipper        – pinball-style flipper arm anchored to a side wall, swings back and forth
 
 // Colour palettes for rotating bars [body, highlight, pivotFill, pivotStroke]
 const BAR_STYLES = [
@@ -488,6 +489,125 @@ class WallBlocker {
   }
 }
 
+// ── Flipper ───────────────────────────────────────────────────────────────────
+// A pinball-style flipper arm anchored at the left or right track wall.
+// It oscillates back and forth around its hinge point, sweeping through the
+// track interior and bouncing the marble away with high restitution.
+class Flipper {
+  constructor(worldY, side, wallX, length) {
+    this.worldY = worldY;
+    this.side   = side;    // 'left' | 'right'
+    this.wallX  = wallX;   // hinge X at the wall edge
+    this.length = length;  // arm length in pixels (extends inward)
+
+    // Oscillation: arm sweeps ±sweepAmp radians around a slight downward rest angle
+    this._phase    = Math.random() * Math.PI * 2;
+    this._speed    = (1.8 + Math.random() * 1.6) * (Math.random() < 0.5 ? 1 : -1);
+    this._restAngle = 0.22;   // ~13° below horizontal – rest tilt
+    this._sweepAmp  = 0.72;   // ~41° sweep amplitude
+
+    this._pulse = Math.random() * Math.PI * 2;
+  }
+
+  // Current angle of the arm (positive = clockwise / downward in canvas coords)
+  get _angle() {
+    return this._restAngle + this._sweepAmp * Math.sin(this._phase);
+  }
+
+  // Returns the two world-space endpoints of the arm {ax,ay,bx,by}
+  // ax/ay is always the hinge (at the wall), bx/by is the free tip
+  endpoints() {
+    const angle = this._angle;
+    const px = this.wallX, py = this.worldY;
+    const dx = this.length * Math.cos(angle);
+    const dy = this.length * Math.sin(angle);
+    if (this.side === 'left') {
+      return { ax: px, ay: py, bx: px + dx, by: py + dy };
+    } else {
+      return { ax: px, ay: py, bx: px - dx, by: py + dy };
+    }
+  }
+
+  update(dt) {
+    this._phase += this._speed * dt;
+    this._pulse = (this._pulse + dt * 6) % (Math.PI * 2);
+  }
+
+  checkCollision(marble) {
+    const { ax, ay, bx, by } = this.endpoints();
+    const hit = circleSegmentCollision(marble.x, marble.y, marble.radius, ax, ay, bx, by);
+    if (!hit) return false;
+    marble.x += hit.nx * hit.depth;
+    marble.y += hit.ny * hit.depth;
+    // Energetic pinball-style bounce – preserve most speed
+    const dot = marble.vx * hit.nx + marble.vy * hit.ny;
+    marble.vx = (marble.vx - 2 * dot * hit.nx) * 0.88;
+    marble.vy = (marble.vy - 2 * dot * hit.ny) * 0.88;
+    marble.triggerShake();
+    return true;
+  }
+
+  render(ctx, cameraY) {
+    const { ax, ay, bx, by } = this.endpoints();
+    const sax = ax, say = ay - cameraY;
+    const sbx = bx, sby = by - cameraY;
+    const flicker = 0.55 + 0.45 * Math.sin(this._pulse);
+
+    ctx.lineCap  = 'round';
+    ctx.lineJoin = 'round';
+
+    // Outer magenta corona glow
+    ctx.shadowColor = `rgba(255,40,220,${flicker * 0.9})`;
+    ctx.shadowBlur  = 22;
+    ctx.lineWidth   = 14;
+    ctx.strokeStyle = `rgba(160,0,140,${flicker * 0.45})`;
+    ctx.beginPath();
+    ctx.moveTo(sax, say);
+    ctx.lineTo(sbx, sby);
+    ctx.stroke();
+
+    // Flipper body – bright magenta/pink
+    ctx.shadowBlur  = 10;
+    ctx.lineWidth   = 9;
+    ctx.strokeStyle = `rgba(220,30,200,${0.75 + flicker * 0.25})`;
+    ctx.beginPath();
+    ctx.moveTo(sax, say);
+    ctx.lineTo(sbx, sby);
+    ctx.stroke();
+
+    // Bright highlight stripe along the top
+    ctx.shadowBlur  = 4;
+    ctx.lineWidth   = 2.5;
+    ctx.strokeStyle = `rgba(255,180,255,${0.8 + flicker * 0.2})`;
+    ctx.beginPath();
+    ctx.moveTo(sax, say);
+    ctx.lineTo(sbx, sby);
+    ctx.stroke();
+
+    // Hinge node (wall anchor)
+    ctx.shadowColor = 'rgba(255,120,255,1)';
+    ctx.shadowBlur  = 16;
+    ctx.beginPath();
+    ctx.arc(sax, say, 5 + flicker * 1, 0, Math.PI * 2);
+    ctx.fillStyle   = '#ff99ff';
+    ctx.fill();
+    ctx.lineWidth   = 1.5;
+    ctx.strokeStyle = '#cc00cc';
+    ctx.stroke();
+
+    // Free-tip spark
+    ctx.shadowColor = 'rgba(255,220,255,0.95)';
+    ctx.shadowBlur  = 14;
+    ctx.beginPath();
+    ctx.arc(sbx, sby, 3 + flicker * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,200,255,${flicker * 0.9})`;
+    ctx.fill();
+
+    ctx.shadowBlur  = 0;
+    ctx.shadowColor = 'transparent';
+  }
+}
+
 // ── DoorGate ──────────────────────────────────────────────────────────────────
 // Three doors spanning the full track width.
 // One randomly-chosen door is open (pulses green) and lets the marble through.
@@ -700,11 +820,16 @@ function buildObstaclesForRange(fromY, toY, difficulty, track, allowDoor = true)
       const spd    = 90 + Math.random() * (80 + difficulty * 80);
       obs.push(new MovingBlocker(y, left + margin, right - margin, spd, blkW, 14));
     } else if (rand < 0.84) {
-      // Wall blocker – small electrified blue line protruding from left or right wall
-      const side    = Math.random() < 0.5 ? 'left' : 'right';
-      const protrude = 28 + Math.random() * 22; // 28–50 px – small but visible
-      const wallX   = side === 'left' ? left : right;
-      obs.push(new WallBlocker(y, side, wallX, protrude));
+      // Wall-side obstacle: 50 % WallBlocker (electric line), 50 % Flipper (pinball arm)
+      const side  = Math.random() < 0.5 ? 'left' : 'right';
+      const wallX = side === 'left' ? left : right;
+      if (Math.random() < 0.5) {
+        const protrude = 28 + Math.random() * 22;
+        obs.push(new WallBlocker(y, side, wallX, protrude));
+      } else {
+        const flipLen = 50 + Math.random() * 30; // 50–80 px
+        obs.push(new Flipper(y, side, wallX, flipLen));
+      }
     } else if (rand < 0.90) {
       // Boost pad (reward, not hazard)
       obs.push(new BoostPad(cx, y, width));
@@ -712,11 +837,16 @@ function buildObstaclesForRange(fromY, toY, difficulty, track, allowDoor = true)
       // Door gate – three doors spanning the track, only one is passable
       obs.push(new DoorGate(y, left, right));
     } else {
-      // Door suppressed (too soon after last door) – use a wall blocker instead
-      const side    = Math.random() < 0.5 ? 'left' : 'right';
-      const protrude = 28 + Math.random() * 22;
-      const wallX   = side === 'left' ? left : right;
-      obs.push(new WallBlocker(y, side, wallX, protrude));
+      // Door suppressed (too soon after last door) – use a wall-side obstacle instead
+      const side  = Math.random() < 0.5 ? 'left' : 'right';
+      const wallX = side === 'left' ? left : right;
+      if (Math.random() < 0.5) {
+        const protrude = 28 + Math.random() * 22;
+        obs.push(new WallBlocker(y, side, wallX, protrude));
+      } else {
+        const flipLen = 50 + Math.random() * 30;
+        obs.push(new Flipper(y, side, wallX, flipLen));
+      }
     }
   }
 
