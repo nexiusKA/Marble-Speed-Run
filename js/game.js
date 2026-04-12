@@ -21,7 +21,8 @@ const POWER_RUSH_BLITZ_DURATION     = 0.5;  // seconds the ball is frozen by a b
 const POWER_RUSH_PICKUP_START_OFFSET = 650;  // world-units ahead before first rush pickup appears
 const POWER_RUSH_PUSH_PER_DOOR  = 100;   // extra world-units of fog pushback per door scored
 const POWER_RUSH_BIG_COIN_SPACING = 350; // world-units between big coin spawns inside the corridor
-const POWER_RUSH_INTERVAL       = 10000; // metres between power-rush pickup spawns
+const POWER_RUSH_INTERVAL            = 10000; // metres to the first power-rush trigger
+const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent power-rush
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // Coin system
@@ -692,7 +693,7 @@ class Game {
     // ── Power Rush Mode – runs its own update branch ────────────────────────
     // Auto-trigger every POWER_RUSH_INTERVAL metres instead of via a pickup
     if (!this.powerRushActive && this.distance > 0 && this.distance >= this.nextPowerRushDist) {
-      this.nextPowerRushDist += POWER_RUSH_INTERVAL;
+      this.nextPowerRushDist += POWER_RUSH_SUBSEQUENT_INTERVAL;
       this._rushLineWorldY    = this.track.startY + this.nextPowerRushDist;
       this._enterPowerRush();
       return;
@@ -1117,9 +1118,9 @@ class Game {
     this.powerRushPickups   = [];
     this.powerRushBigCoins  = [];
 
-    // Reset the next rush trigger to POWER_RUSH_INTERVAL metres from the EXIT
+    // Reset the next rush trigger to POWER_RUSH_SUBSEQUENT_INTERVAL metres from the EXIT
     // point so that distance traveled during rush doesn't shorten the gap.
-    this.nextPowerRushDist = this.distance + POWER_RUSH_INTERVAL;
+    this.nextPowerRushDist = this.distance + POWER_RUSH_SUBSEQUENT_INTERVAL;
     this._rushLineWorldY   = this.track.startY + this.nextPowerRushDist;
 
     // Clear any stale normal obstacles/pickups from before the rush started
