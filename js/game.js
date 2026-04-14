@@ -27,7 +27,7 @@ const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode 
 
 // PVP mode
 const PVP_GOAL_DEFAULT   = 10000; // metres – default race distance
-const PVP_ENEMY_DEFAULT  = 3;     // default number of bot opponents
+const PVP_ENEMY_DEFAULT  = 10;     // default number of bot opponents
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
