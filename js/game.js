@@ -26,7 +26,7 @@ const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent 
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // PVP mode
-const PVP_GOAL_DISTANCE = 10000; // metres – first racer to reach this wins
+const PVP_GOAL_DEFAULT  = 10000; // metres – default race distance
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
@@ -373,7 +373,7 @@ const BOT_COLORS       = [
 ];
 
 class BotMarble {
-  constructor(x, y, index, startY) {
+  constructor(x, y, index, startY, difficulty = 'normal') {
     this.marble   = new Marble(x, y);
     this.index    = index;
     this.name     = BOT_NAMES[index % BOT_NAMES.length];
@@ -381,6 +381,24 @@ class BotMarble {
     this.startY   = startY;
     this.finished = false;
     this.finishDist = 0;
+    this.finishTime = 0;
+
+    // Difficulty-based base parameters
+    let baseAggression, baseSteerChange, gravFactor;
+    if (difficulty === 'easy') {
+      baseAggression  = 0.20;
+      baseSteerChange = 0.60;
+      gravFactor      = 0.72;
+    } else if (difficulty === 'hard') {
+      baseAggression  = 0.75;
+      baseSteerChange = 0.12;
+      gravFactor      = 1.15;
+    } else { // normal
+      baseAggression  = 0.50;
+      baseSteerChange = 0.30;
+      gravFactor      = 0.90;
+    }
+    this._gravFactor = gravFactor;
 
     // AI state
     this._steerTimer = 0;
@@ -388,9 +406,9 @@ class BotMarble {
     this._downTimer  = 0;
     this._downActive = false;
 
-    // Slight per-bot personality variation
-    this._aggression  = 0.5 + index * 0.15; // how often they boost
-    this._steerChange = 0.3 + index * 0.1;  // seconds between steering updates
+    // Slight per-bot personality variation within the difficulty band
+    this._aggression  = baseAggression  + index * 0.05;
+    this._steerChange = baseSteerChange + index * 0.05;
   }
 
   get distance() {
@@ -421,7 +439,7 @@ class BotMarble {
       down:  this._downActive,
     };
 
-    this.marble.update(dt, input, track, steerMult, gravMult);
+    this.marble.update(dt, input, track, steerMult, gravMult * this._gravFactor);
   }
 
   _chooseSteer(track) {
@@ -536,9 +554,17 @@ class Game {
 
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
+    this._pvpDifficulty   = 'normal'; // difficulty for PVP bot opponents
+    this._pvpGoalDistance = PVP_GOAL_DEFAULT; // metres – first racer to reach this wins
     this._init();
 
-    this.ui.showStart((voidSpeedPct) => { this._applyVoidRate(voidSpeedPct); }, () => { this.startRun(); });
+    this.ui.showStart((voidSpeedPct) => {
+      this._applyVoidRate(voidSpeedPct);
+      // Map difficulty button value to PVP bot difficulty
+      if (voidSpeedPct === 125) this._pvpDifficulty = 'easy';
+      else if (voidSpeedPct === 175) this._pvpDifficulty = 'hard';
+      else this._pvpDifficulty = 'normal';
+    }, () => { this.startRun(); });
     this.ui.updateBestDistance(this.bestDistance);
 
     // Wire up sound controls in the start overlay
@@ -564,6 +590,9 @@ class Game {
 
     // Wire up the PVP button
     this._initPvpButton();
+
+    // Wire up the PVP goal distance slider
+    this._initPvpGoalSlider();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -800,6 +829,7 @@ class Game {
     this.pvpMode = false;
     this._init();
     this.state = STATE.RUNNING;
+    this.ui.setPvpHud(false);
     this.ui.updateDistance(0);
     this.ui.updateVoidDistance('--');
     this.ui.updateTimer(0);
@@ -823,14 +853,12 @@ class Game {
     const sy = this.track.startY;
     const offsets = [-28, 0, 28]; // horizontal offsets
     for (let i = 0; i < 3; i++) {
-      this.pvpBots.push(new BotMarble(sx + offsets[i], sy, i, sy));
+      this.pvpBots.push(new BotMarble(sx + offsets[i], sy, i, sy, this._pvpDifficulty));
     }
 
     this.state = STATE.RUNNING;
-    this.ui.updateDistance(0);
-    this.ui.updateVoidDistance('RACE');
+    this.ui.setPvpHud(true);
     this.ui.updateTimer(0);
-    this.ui.updateCoinCount(0);
     if (this.debugMode) console.log('[DEBUG] PVP run started');
     this.sound.start();
   }
@@ -847,15 +875,43 @@ class Game {
     }
   }
 
+  _initPvpGoalSlider() {
+    const slider  = document.getElementById('pvp-goal-slider');
+    const valueEl = document.getElementById('pvp-goal-value');
+    if (!slider || !valueEl) return;
+
+    const apply = (v) => {
+      this._pvpGoalDistance = v;
+      valueEl.textContent   = v.toLocaleString();
+      // CSS custom property drives the slider fill (0–100 %)
+      const pct = (v - 10000) / (50000 - 10000) * 100;
+      slider.style.setProperty('--val', `${pct}%`);
+    };
+
+    slider.value = this._pvpGoalDistance;
+    apply(this._pvpGoalDistance);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+  }
+
   _pvpGameOver() {
     this.state = STATE.PVP_OVER;
 
-    // Build rankings sorted by distance (descending)
+    const playerFinished = this.distance >= this._pvpGoalDistance;
+
+    // Build rankings with finish time for those who completed the race
     const entries = [
-      { name: 'You', dist: this.distance, isPlayer: true },
-      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, isPlayer: false })),
+      { name: 'You', dist: this.distance, time: this.elapsed, finished: playerFinished, isPlayer: true },
+      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, time: b.finishTime, finished: b.finished, isPlayer: false })),
     ];
-    entries.sort((a, b) => b.dist - a.dist);
+    // Finishers rank above DNFs; finishers sorted by time asc, DNFs by distance desc
+    entries.sort((a, b) => {
+      if (a.finished !== b.finished) return a.finished ? -1 : 1;
+      if (a.finished) return a.time - b.time;
+      return b.dist - a.dist;
+    });
 
     const playerWon = entries[0].isPlayer;
     this.ui.showPvpResult(
@@ -866,6 +922,7 @@ class Game {
         this.pvpMode = false;
         this._init();
         this.state = STATE.MENU;
+        this.ui.setPvpHud(false);
         const overlay = document.getElementById('overlay');
         if (overlay) { overlay.classList.remove('hidden'); overlay.classList.add('visible'); }
       }
@@ -955,14 +1012,15 @@ class Game {
       for (const bot of this.pvpBots) {
         bot.update(dt, this.track, steer, grav);
         // Check if bot reached goal distance
-        if (!bot.finished && bot.distance >= PVP_GOAL_DISTANCE) {
-          bot.finished  = true;
+        if (!bot.finished && bot.distance >= this._pvpGoalDistance) {
+          bot.finished   = true;
           bot.finishDist = bot.distance;
+          bot.finishTime = this.elapsed;
         }
       }
 
       // Check if player reached the goal or any bot has finished (first to goal wins)
-      const playerDone = this.distance >= PVP_GOAL_DISTANCE;
+      const playerDone = this.distance >= this._pvpGoalDistance;
       const anyBotDone = this.pvpBots.some(b => b.finished);
       if (playerDone || anyBotDone) {
         this._pvpGameOver();
@@ -974,6 +1032,12 @@ class Game {
     for (const obs of this.obstacles) {
       obs.update(dt);
       if (this.ghostTimer <= 0) obs.checkCollision(this.marble);
+      // Bots are always affected by obstacles (no ghost pickup for them)
+      if (this.pvpMode) {
+        for (const bot of this.pvpBots) {
+          if (!bot.finished) obs.checkCollision(bot.marble);
+        }
+      }
     }
     if (this.ghostTimer > 0) this.ghostTimer -= dt;
 
@@ -1028,12 +1092,8 @@ class Game {
     this._pruneEntities(this.marble.y - 1200);
 
     // ── HUD ─────────────────────────────────────────────────────────────────
-    this.ui.updateDistance(this.distance);
-    if (this.pvpMode) {
-      // Show leading bot distance in the void slot
-      const maxBotDist = this.pvpBots.reduce((m, b) => Math.max(m, b.distance), 0);
-      this.ui.updateVoidDistance(`${maxBotDist}m`);
-    } else {
+    if (!this.pvpMode) {
+      this.ui.updateDistance(this.distance);
       this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
     }
     this.ui.updateTimer(this.elapsed);
@@ -1981,7 +2041,7 @@ class Game {
 
   // ── PVP race HUD overlay ──────────────────────────────────────────────────
   _renderPvpOverlay(ctx) {
-    const GOAL = PVP_GOAL_DISTANCE;
+    const GOAL = this._pvpGoalDistance;
     ctx.save();
 
     // Title
@@ -1991,7 +2051,7 @@ class Game {
     ctx.shadowColor  = '#ff2200';
     ctx.shadowBlur   = 12;
     ctx.fillStyle    = '#ff6644';
-    ctx.fillText(`⚔ RACE TO ${PVP_GOAL_DISTANCE.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
+    ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
     // Progress bars for each racer (player + 3 bots)

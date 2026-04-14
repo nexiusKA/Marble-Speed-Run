@@ -91,9 +91,10 @@ class UI {
       titleEl.className   = `pvp-result-title ${playerWon ? 'win' : 'lose'}`;
     }
     if (subEl) {
-      subEl.textContent = playerWon
-        ? 'First to 10,000 m – you crushed the opposition!'
-        : 'Better luck next time!';
+      const winner = rankings[0];
+      subEl.textContent = winner && winner.finished
+        ? (playerWon ? `You finished in ${UI._formatTime(winner.time)}!` : 'Better luck next time!')
+        : (playerWon ? 'You crushed the opposition!' : 'Better luck next time!');
     }
     if (rankEl) {
       rankEl.innerHTML = '';
@@ -101,16 +102,34 @@ class UI {
       rankings.forEach((r, i) => {
         const row = document.createElement('div');
         row.className = `pvp-rank-row rank-${i + 1}`;
+        const statText = r.finished ? UI._formatTime(r.time) : `${r.dist} m`;
         row.innerHTML =
           `<span class="pvp-rank-medal">${medals[i]}</span>` +
           `<span class="pvp-rank-name">${r.name}</span>` +
-          `<span class="pvp-rank-dist">${r.dist} m</span>`;
+          `<span class="pvp-rank-dist">${statText}</span>`;
         rankEl.appendChild(row);
       });
     }
     if (retryBtn) retryBtn.onclick = () => { this._hide(overlay); onRetry(); };
     if (menuBtn)  menuBtn.onclick  = () => { this._hide(overlay); onMenu();  };
     if (overlay)  this._show(overlay);
+  }
+
+  /** Show/hide HUD elements that are only relevant in normal (non-PvP) mode. */
+  setPvpHud(isPvp) {
+    const ids = ['hud-dist', 'hud-coins', 'shop-btn', 'hud-void', 'hud-best'];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('hidden', isPvp);
+    }
+  }
+
+  /** Format milliseconds as M:SS.T (e.g. 1:23.4). */
+  static _formatTime(ms) {
+    const totalS = ms / 1000;
+    const mins   = Math.floor(totalS / 60);
+    const secs   = (totalS % 60).toFixed(1).padStart(4, '0');
+    return `${mins}:${secs}`;
   }
 
   hideGameOver() {
