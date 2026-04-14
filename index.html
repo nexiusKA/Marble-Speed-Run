@@ -40,81 +40,100 @@
 
     <div id="overlay" class="overlay visible">
       <div class="overlay-box">
-        <h1 class="game-title">MARBLE RUSH</h1>
-        <p class="subtitle">Outrun the void. Survive forever.</p>
-        <div class="controls-info">
-          <span>← → &nbsp;Steer</span>
-          <span>↑ &nbsp;Slow</span>
-          <span>↓ &nbsp;Boost</span>
-          <span>R &nbsp;Restart</span>
-        </div>
-        <div class="pickup-legend">
-          <span class="pl-speed">⚡ Speed</span>
-          <span class="pl-magnet">🧲 Magnet</span>
-          <span class="pl-fog">❄ Bar Slow</span>
-          <span class="pl-shield">◆ Shield</span>
-          <span class="pl-powerrush">⚡⚡ Power Rush</span>
-        </div>
-        <div class="sound-controls">
-          <button id="sound-toggle" class="sound-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
-          <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
-          <button id="volume-default-btn" class="btn-small">Default</button>
-        </div>
-        <div class="steer-controls" style="display:none">
-          <div class="steer-label">Steering <span id="steer-value">100</span></div>
-          <div class="steer-row">
-            <input type="range" id="steer-slider" class="steer-slider" min="1" max="100" value="100" aria-label="Steering sensitivity">
-            <button id="steer-default-btn" class="btn-small">Default</button>
+
+        <!-- ── Main Menu Panel ─────────────────────────────── -->
+        <div id="menu-panel-main" class="menu-panel active">
+          <h1 class="game-title">MARBLE RUSH</h1>
+          <p class="subtitle">Outrun the void. Survive forever.</p>
+          <div class="controls-info">
+            <span>← → &nbsp;Steer</span>
+            <span>↑ &nbsp;Slow</span>
+            <span>↓ &nbsp;Boost</span>
+            <span>R &nbsp;Restart</span>
           </div>
-        </div>
-        <div class="steer-controls" style="display:none">
-          <div class="steer-label">Fall Speed <span id="fall-value">100</span></div>
-          <div class="steer-row">
-            <input type="range" id="fall-slider" class="steer-slider" min="1" max="100" value="100" aria-label="Fall speed">
-            <button id="fall-default-btn" class="btn-small">Default</button>
+          <div class="pickup-legend">
+            <span class="pl-speed">⚡ Speed</span>
+            <span class="pl-magnet">🧲 Magnet</span>
+            <span class="pl-fog">❄ Bar Slow</span>
+            <span class="pl-shield">◆ Shield</span>
+            <span class="pl-powerrush">⚡⚡ Power Rush</span>
           </div>
-        </div>
-        <div class="steer-controls">
-          <div class="steer-label">Void Speed <span id="void-rate-value">100</span>%</div>
-          <div class="steer-row">
-            <span class="slider-emoji">🌀</span>
-            <input type="range" id="void-rate-slider" class="steer-slider" min="10" max="200" value="100" aria-label="Void speed">
-            <button id="void-rate-default-btn" class="btn-small">Default</button>
+          <div class="sound-controls">
+            <button id="sound-toggle" class="sound-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
+            <button id="volume-default-btn" class="btn-small">Default</button>
           </div>
+          <button id="endless-btn" class="btn btn-endless">🏃 ENDLESS RUN</button>
+          <button id="pvp-btn" class="btn btn-pvp">⚔ PVP MODE</button>
+          <button id="achievements-btn" class="btn btn-achievements">🏆 ACHIEVEMENTS</button>
+          <details class="git-info" id="git-info" open>
+            <summary>Build Info</summary>
+            <dl class="git-info-grid">
+              <dt>Run</dt><dd id="gi-run">dev</dd>
+              <dt>Commit</dt><dd id="gi-sha">dev</dd>
+              <dt>Branch</dt><dd id="gi-branch">dev</dd>
+              <dt>Date</dt><dd id="gi-date">dev</dd>
+            </dl>
+          </details>
         </div>
-        <div class="steer-controls">
-          <div class="steer-label">Race Distance <span id="pvp-goal-value">10,000</span> m</div>
-          <div class="steer-row">
-            <span class="slider-emoji">🏁</span>
-            <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="PvP goal distance">
-            <button id="pvp-goal-default-btn" class="btn-small">Default</button>
+
+        <!-- ── Endless Run Panel ───────────────────────────── -->
+        <div id="menu-panel-endless" class="menu-panel">
+          <h2 class="panel-title">🏃 ENDLESS RUN</h2>
+          <div class="steer-controls" style="display:none">
+            <div class="steer-label">Steering <span id="steer-value">100</span></div>
+            <div class="steer-row">
+              <input type="range" id="steer-slider" class="steer-slider" min="1" max="100" value="100" aria-label="Steering sensitivity">
+              <button id="steer-default-btn" class="btn-small">Default</button>
+            </div>
           </div>
-        </div>
-        <div class="steer-controls">
-          <div class="steer-label">Enemies <span id="pvp-enemy-value">3</span></div>
-          <div class="steer-row">
-            <span class="slider-emoji">👾</span>
-            <input type="range" id="pvp-enemy-slider" class="steer-slider" min="1" max="10" step="1" value="3" aria-label="PvP enemy count">
-            <button id="pvp-enemy-default-btn" class="btn-small">Default</button>
+          <div class="steer-controls" style="display:none">
+            <div class="steer-label">Fall Speed <span id="fall-value">100</span></div>
+            <div class="steer-row">
+              <input type="range" id="fall-slider" class="steer-slider" min="1" max="100" value="100" aria-label="Fall speed">
+              <button id="fall-default-btn" class="btn-small">Default</button>
+            </div>
           </div>
+          <div class="steer-controls">
+            <div class="steer-label">Void Speed <span id="void-rate-value">100</span>%</div>
+            <div class="steer-row">
+              <span class="slider-emoji">🌀</span>
+              <input type="range" id="void-rate-slider" class="steer-slider" min="10" max="200" value="100" aria-label="Void speed">
+              <button id="void-rate-default-btn" class="btn-small">Default</button>
+            </div>
+          </div>
+          <div class="difficulty-btns">
+            <button id="easy-btn"   class="btn btn-easy">EASY</button>
+            <button id="normal-btn" class="btn btn-normal">NORMAL</button>
+            <button id="hard-btn"   class="btn btn-hard">HARD</button>
+          </div>
+          <button id="play-btn" class="btn btn-play">PLAY</button>
+          <button id="back-endless-btn" class="btn btn-back">← BACK</button>
         </div>
-        <div class="difficulty-btns">
-          <button id="easy-btn"   class="btn btn-easy">EASY</button>
-          <button id="normal-btn" class="btn btn-normal">NORMAL</button>
-          <button id="hard-btn"   class="btn btn-hard">HARD</button>
+
+        <!-- ── PvP Mode Panel ──────────────────────────────── -->
+        <div id="menu-panel-pvp" class="menu-panel">
+          <h2 class="panel-title">⚔ PVP MODE</h2>
+          <div class="steer-controls">
+            <div class="steer-label">Race Distance <span id="pvp-goal-value">10,000</span> m</div>
+            <div class="steer-row">
+              <span class="slider-emoji">🏁</span>
+              <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="PvP goal distance">
+              <button id="pvp-goal-default-btn" class="btn-small">Default</button>
+            </div>
+          </div>
+          <div class="steer-controls">
+            <div class="steer-label">Enemies <span id="pvp-enemy-value">3</span></div>
+            <div class="steer-row">
+              <span class="slider-emoji">👾</span>
+              <input type="range" id="pvp-enemy-slider" class="steer-slider" min="1" max="10" step="1" value="3" aria-label="PvP enemy count">
+              <button id="pvp-enemy-default-btn" class="btn-small">Default</button>
+            </div>
+          </div>
+          <button id="pvp-play-btn" class="btn btn-pvp">⚔ PLAY PVP</button>
+          <button id="back-pvp-btn" class="btn btn-back">← BACK</button>
         </div>
-        <button id="play-btn" class="btn btn-play">PLAY</button>
-        <button id="pvp-btn" class="btn btn-pvp">⚔ PVP MODE</button>
-        <button id="achievements-btn" class="btn btn-achievements">🏆 ACHIEVEMENTS</button>
-        <details class="git-info" id="git-info" open>
-          <summary>Build Info</summary>
-          <dl class="git-info-grid">
-            <dt>Run</dt><dd id="gi-run">dev</dd>
-            <dt>Commit</dt><dd id="gi-sha">dev</dd>
-            <dt>Branch</dt><dd id="gi-branch">dev</dd>
-            <dt>Date</dt><dd id="gi-date">dev</dd>
-          </dl>
-        </details>
+
       </div>
     </div>
 

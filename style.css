@@ -836,6 +836,91 @@ body {
   flex-shrink: 0;
 }
 
+/* ── Menu panels ─────────────────────────────────────────── */
+.menu-panel {
+  display: none;
+}
+
+.menu-panel.active {
+  display: block;
+}
+
+/* ── Panel title (sub-menus) ──────────────────────────────── */
+.panel-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 14px #7070ff, 0 0 30px #4040cc;
+  margin-bottom: 22px;
+  letter-spacing: 0.08em;
+}
+
+/* ── Endless Run button ───────────────────────────────────── */
+@keyframes endless-flicker {
+  0%   { box-shadow: 0 0 10px 2px #00ff88, 0 0 24px 6px #00aa44, inset 0 0 6px 1px #00ff8888; border-color: #00ff88; }
+  20%  { box-shadow: 0 0 18px 4px #ffffff, 0 0 32px 8px #00ff66, inset 0 0 10px 2px #aaffcc88; border-color: #aaffcc; }
+  40%  { box-shadow: 0 0 8px 2px #00ff88, 0 0 20px 4px #008844, inset 0 0 4px 1px #00ff8866; border-color: #00cc66; }
+  60%  { box-shadow: 0 0 22px 6px #ffffff, 0 0 40px 10px #00ff66, inset 0 0 12px 2px #ffffff66; border-color: #ffffff; }
+  80%  { box-shadow: 0 0 12px 3px #00ff88, 0 0 28px 6px #00aa44, inset 0 0 8px 1px #00ff8888; border-color: #00ff88; }
+  100% { box-shadow: 0 0 10px 2px #00ff88, 0 0 24px 6px #00aa44, inset 0 0 6px 1px #00ff8888; border-color: #00ff88; }
+}
+
+.btn-endless {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: linear-gradient(135deg, #003320, #006640, #003320);
+  border: 2px solid #00ff88;
+  border-radius: 10px;
+  padding: 14px 0;
+  cursor: pointer;
+  text-shadow: 0 0 10px #00ff88, 0 0 20px #00cc55;
+  animation: endless-flicker 1.6s ease-in-out infinite;
+  outline: none;
+}
+
+.btn-endless:hover {
+  background: linear-gradient(135deg, #004430, #008850, #004430);
+  filter: brightness(1.15);
+}
+
+.btn-endless:active {
+  transform: translateY(1px);
+}
+
+/* ── Back button ──────────────────────────────────────────── */
+.btn-back {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #aaaadd;
+  background: rgba(30, 30, 60, 0.6);
+  border: 1.5px solid #4040a0;
+  border-radius: 8px;
+  padding: 9px 0;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s, color 0.12s;
+  outline: none;
+}
+
+.btn-back:hover {
+  background: rgba(50, 50, 100, 0.8);
+  border-color: #7070dd;
+  color: #ccccff;
+  transform: translateY(-1px);
+}
+
+.btn-back:active {
+  transform: translateY(1px);
+}
+
 /* ── PVP button ────────────────────────────────────────────── */
 @keyframes pvp-flicker {
   0%   { box-shadow: 0 0 10px 2px #ff2200, 0 0 24px 6px #cc0000, inset 0 0 6px 1px #ff220088; border-color: #ff2200; }

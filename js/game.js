@@ -567,13 +567,17 @@ class Game {
     this._pvpEnemyCount   = PVP_ENEMY_DEFAULT; // number of bot opponents in PVP mode
     this._init();
 
-    this.ui.showStart((voidSpeedPct) => {
+    // Store callbacks so the menu can be re-shown after returning from PVP
+    this._onMenuDifficulty = (voidSpeedPct) => {
       this._applyVoidRate(voidSpeedPct);
       // Map difficulty button value to PVP bot difficulty
       if (voidSpeedPct === 125) this._pvpDifficulty = 'easy';
-      else if (voidSpeedPct === 200) this._pvpDifficulty = 'hard';
+      else if (voidSpeedPct === 175) this._pvpDifficulty = 'hard';
       else this._pvpDifficulty = 'normal';
-    }, () => { this.startRun(); });
+    };
+    this._onMenuPlay = () => { this.startRun(); };
+
+    this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay);
     this.ui.updateBestDistance(this.bestDistance);
 
     // Wire up sound controls in the start overlay
@@ -894,9 +898,9 @@ class Game {
   }
 
   _initPvpButton() {
-    const pvpBtn = document.getElementById('pvp-btn');
-    if (pvpBtn) {
-      pvpBtn.addEventListener('click', () => {
+    const pvpPlayBtn = document.getElementById('pvp-play-btn');
+    if (pvpPlayBtn) {
+      pvpPlayBtn.addEventListener('click', () => {
         // Hide the start overlay then begin PVP
         const overlay = document.getElementById('overlay');
         if (overlay) { overlay.classList.remove('visible'); overlay.classList.add('hidden'); }
@@ -991,8 +995,7 @@ class Game {
         this._init();
         this.state = STATE.MENU;
         this.ui.setPvpHud(false);
-        const overlay = document.getElementById('overlay');
-        if (overlay) { overlay.classList.remove('hidden'); overlay.classList.add('visible'); }
+        this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay);
       }
     );
   }
