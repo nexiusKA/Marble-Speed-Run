@@ -144,8 +144,9 @@ class UI {
         const row = document.createElement('div');
         row.className = `pvp-rank-row rank-${i + 1}`;
         const statText = r.finished ? UI._formatTime(r.time) : `${r.dist} m`;
+        const medal = i < medals.length ? medals[i] : `${i + 1}.`;
         row.innerHTML =
-          `<span class="pvp-rank-medal">${medals[i]}</span>` +
+          `<span class="pvp-rank-medal">${medal}</span>` +
           `<span class="pvp-rank-name">${r.name}</span>` +
           `<span class="pvp-rank-dist">${statText}</span>`;
         rankEl.appendChild(row);
