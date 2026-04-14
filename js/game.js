@@ -25,6 +25,9 @@ const POWER_RUSH_INTERVAL            = 10000; // metres to the first power-rush 
 const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent power-rush
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
+// PVP mode
+const PVP_GOAL_DISTANCE = 10000; // metres – first racer to reach this wins
+
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
 const COIN_SPACING      = 300;  // average world-units between coin spawns
@@ -951,17 +954,17 @@ class Game {
       const grav  = this._fallMult();
       for (const bot of this.pvpBots) {
         bot.update(dt, this.track, steer, grav);
-        // Check if bot reached 10 000 m
-        if (!bot.finished && bot.distance >= 10000) {
+        // Check if bot reached goal distance
+        if (!bot.finished && bot.distance >= PVP_GOAL_DISTANCE) {
           bot.finished  = true;
           bot.finishDist = bot.distance;
         }
       }
 
-      // Check if player reached 10 000 m or all bots have finished
-      const playerDone = this.distance >= 10000;
-      const allDone    = playerDone || this.pvpBots.every(b => b.finished);
-      if (playerDone || allDone) {
+      // Check if player reached the goal or any bot has finished (first to goal wins)
+      const playerDone = this.distance >= PVP_GOAL_DISTANCE;
+      const anyBotDone = this.pvpBots.some(b => b.finished);
+      if (playerDone || anyBotDone) {
         this._pvpGameOver();
         return;
       }
@@ -1978,7 +1981,7 @@ class Game {
 
   // ── PVP race HUD overlay ──────────────────────────────────────────────────
   _renderPvpOverlay(ctx) {
-    const GOAL = 10000;
+    const GOAL = PVP_GOAL_DISTANCE;
     ctx.save();
 
     // Title
@@ -1988,7 +1991,7 @@ class Game {
     ctx.shadowColor  = '#ff2200';
     ctx.shadowBlur   = 12;
     ctx.fillStyle    = '#ff6644';
-    ctx.fillText('⚔ RACE TO 10,000 m ⚔', CANVAS_W / 2, 8);
+    ctx.fillText(`⚔ RACE TO ${PVP_GOAL_DISTANCE.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
     // Progress bars for each racer (player + 3 bots)
