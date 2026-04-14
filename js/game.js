@@ -489,17 +489,8 @@ class BotMarble {
     const m   = this.marble;
     const col = this.colors;
 
-    // Trail
     ctx.save();
     ctx.translate(0, -cameraY);
-    for (let i = 0; i < m.trail.length; i++) {
-      const alpha = (i / m.trail.length) * 0.3;
-      const r     = m.radius * (i / m.trail.length) * 0.65;
-      ctx.beginPath();
-      ctx.arc(m.trail[i].x, m.trail[i].y, Math.max(r, 1), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${col.trail},${alpha})`;
-      ctx.fill();
-    }
 
     // Shadow
     ctx.beginPath();
