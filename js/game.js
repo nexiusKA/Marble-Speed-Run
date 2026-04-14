@@ -1313,37 +1313,40 @@ class Game {
       const { left, right } = this.track.getWallsAtY(y);
       const margin = 22;
       const x = left + margin + Math.random() * Math.max(0, right - left - margin * 2);
-      const type = _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
+      // In PvP mode only speed boost pickups are allowed
+      const type = this.pvpMode ? 'speed' : _weightedRandom(PICKUP_TYPES, PICKUP_WEIGHTS);
       this.pickups.push(new Pickup(x, y, type));
     }
 
-    // Coins (one per ~COIN_SPACING world-units on average)
-    const numCoins = Math.floor(segLen / COIN_SPACING) +
-                     (Math.random() < (segLen % COIN_SPACING) / COIN_SPACING ? 1 : 0);
-    for (let i = 0; i < numCoins; i++) {
-      const cy = fromY + Math.random() * segLen;
-      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
-      const margin = 14;
-      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
-      this.coins.push(new Coin(cx, cy));
-    }
+    if (!this.pvpMode) {
+      // Coins (one per ~COIN_SPACING world-units on average)
+      const numCoins = Math.floor(segLen / COIN_SPACING) +
+                       (Math.random() < (segLen % COIN_SPACING) / COIN_SPACING ? 1 : 0);
+      for (let i = 0; i < numCoins; i++) {
+        const cy = fromY + Math.random() * segLen;
+        const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+        const margin = 14;
+        const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+        this.coins.push(new Coin(cx, cy));
+      }
 
-    // Blue coins (rarer, worth 3)
-    if (Math.random() < segLen / BLUE_COIN_SPACING) {
-      const cy = fromY + Math.random() * segLen;
-      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
-      const margin = 14;
-      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
-      this.blueCoins.push(new BlueCoin(cx, cy));
-    }
+      // Blue coins (rarer, worth 3)
+      if (Math.random() < segLen / BLUE_COIN_SPACING) {
+        const cy = fromY + Math.random() * segLen;
+        const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+        const margin = 14;
+        const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+        this.blueCoins.push(new BlueCoin(cx, cy));
+      }
 
-    // Red coins (very rare, worth 5)
-    if (Math.random() < segLen / RED_COIN_SPACING) {
-      const cy = fromY + Math.random() * segLen;
-      const { left: cl, right: cr } = this.track.getWallsAtY(cy);
-      const margin = 14;
-      const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
-      this.redCoins.push(new RedCoin(cx, cy));
+      // Red coins (very rare, worth 5)
+      if (Math.random() < segLen / RED_COIN_SPACING) {
+        const cy = fromY + Math.random() * segLen;
+        const { left: cl, right: cr } = this.track.getWallsAtY(cy);
+        const margin = 14;
+        const cx = cl + margin + Math.random() * Math.max(0, cr - cl - margin * 2);
+        this.redCoins.push(new RedCoin(cx, cy));
+      }
     }
   }
 
