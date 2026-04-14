@@ -21,6 +21,28 @@ class UI {
   showStart(onDifficulty, onPlay) {
     this._show(this.overlay);
     this._hide(this.gameOverOvl);
+
+    // ── Panel navigation ────────────────────────────────────
+    const PANELS = ['menu-panel-main', 'menu-panel-endless', 'menu-panel-pvp'];
+    const showPanel = (id) => {
+      PANELS.forEach(p => {
+        const el = document.getElementById(p);
+        if (el) el.classList.toggle('active', p === id);
+      });
+    };
+    showPanel('menu-panel-main');
+
+    const endlessBtn    = document.getElementById('endless-btn');
+    const pvpNavBtn     = document.getElementById('pvp-btn');
+    const backEndlessBtn = document.getElementById('back-endless-btn');
+    const backPvpBtn    = document.getElementById('back-pvp-btn');
+
+    if (endlessBtn)     endlessBtn.onclick     = () => showPanel('menu-panel-endless');
+    if (pvpNavBtn)      pvpNavBtn.onclick      = () => showPanel('menu-panel-pvp');
+    if (backEndlessBtn) backEndlessBtn.onclick = () => showPanel('menu-panel-main');
+    if (backPvpBtn)     backPvpBtn.onclick     = () => showPanel('menu-panel-main');
+
+    // ── Difficulty buttons ──────────────────────────────────
     const diffBtns = [this.easyBtn, this.normalBtn, this.hardBtn];
     const selectDiff = (btn, pct) => {
       diffBtns.forEach(b => b.classList.remove('difficulty-selected'));
@@ -28,8 +50,8 @@ class UI {
       onDifficulty(pct);
     };
     this.easyBtn.onclick   = () => selectDiff(this.easyBtn,   125);
-    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 175);
-    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   200);
+    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 150);
+    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   175);
     this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
   }
 
