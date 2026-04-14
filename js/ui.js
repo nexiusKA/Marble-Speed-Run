@@ -28,8 +28,8 @@ class UI {
       onDifficulty(pct);
     };
     this.easyBtn.onclick   = () => selectDiff(this.easyBtn,   125);
-    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 150);
-    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   175);
+    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 175);
+    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   200);
     this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
   }
 
@@ -120,7 +120,7 @@ class UI {
     const ids = ['hud-dist', 'hud-coins', 'shop-btn', 'hud-void', 'hud-best'];
     for (const id of ids) {
       const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden', isPvp);
+      if (el) el.style.display = isPvp ? 'none' : '';
     }
   }
 

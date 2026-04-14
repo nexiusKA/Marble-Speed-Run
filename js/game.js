@@ -562,7 +562,7 @@ class Game {
       this._applyVoidRate(voidSpeedPct);
       // Map difficulty button value to PVP bot difficulty
       if (voidSpeedPct === 125) this._pvpDifficulty = 'easy';
-      else if (voidSpeedPct === 175) this._pvpDifficulty = 'hard';
+      else if (voidSpeedPct === 200) this._pvpDifficulty = 'hard';
       else this._pvpDifficulty = 'normal';
     }, () => { this.startRun(); });
     this.ui.updateBestDistance(this.bestDistance);
@@ -1699,6 +1699,7 @@ class Game {
       for (const bc of this.blueCoins) bc.render(ctx, this.cameraY);
       for (const rc of this.redCoins) rc.render(ctx, this.cameraY);
       if (!this.pvpMode) this._renderRushLine(ctx);
+      if (this.pvpMode)  this._renderPvpFinishLine(ctx);
     }
 
     // Particles (screen space – always rendered)
@@ -2455,6 +2456,76 @@ class Game {
     ctx.shadowColor  = '#ff8800';
     ctx.shadowBlur   = 10;
     ctx.fillText('⚡ RUSH ⚡', (left + right) / 2, screenY - 10);
+
+    ctx.restore();
+  }
+
+  // ── PVP finish line ────────────────────────────────────────────────────────
+  _renderPvpFinishLine(ctx) {
+    const worldY  = this.track.startY + this._pvpGoalDistance;
+    const screenY = worldY - this.cameraY;
+
+    // Only draw when approaching or at the finish (with some lead-in margin)
+    if (screenY < -60 || screenY > CANVAS_H + 60) return;
+
+    const { left, right } = this.track.getWallsAtY(worldY);
+    const width = right - left;
+    const t     = Date.now();
+    const sinP  = Math.sin(t / 300);
+    const pulse = 0.6 + 0.4 * sinP;
+
+    ctx.save();
+
+    // Glowing background band
+    const bandGrad = ctx.createLinearGradient(left, screenY - 28, left, screenY + 28);
+    const ba = 0.18 + 0.10 * sinP;
+    bandGrad.addColorStop(0,   'rgba(255,255,255,0)');
+    bandGrad.addColorStop(0.5, `rgba(255,255,255,${ba})`);
+    bandGrad.addColorStop(1,   'rgba(255,255,255,0)');
+    ctx.fillStyle = bandGrad;
+    ctx.fillRect(left, screenY - 28, width, 56);
+
+    // Checkered flag pattern across the finish line
+    const squareSize = 12;
+    const cols = Math.ceil(width / squareSize);
+    for (let c = 0; c < cols; c++) {
+      const x   = left + c * squareSize;
+      const row = 0; // single row of checkers centred on the line
+      const isBlack = (c % 2 === 0);
+      ctx.fillStyle = isBlack
+        ? `rgba(20,20,20,${0.85 * pulse})`
+        : `rgba(255,255,255,${0.85 * pulse})`;
+      const drawW = Math.min(squareSize, right - x);
+      if (drawW > 0) ctx.fillRect(x, screenY - squareSize / 2, drawW, squareSize);
+    }
+
+    // Glowing white centre line
+    ctx.shadowColor  = '#ffffff';
+    ctx.shadowBlur   = 18 + 8 * sinP;
+    ctx.strokeStyle  = `rgba(255,255,255,${0.7 + 0.3 * pulse})`;
+    ctx.lineWidth    = 2;
+    ctx.beginPath();
+    ctx.moveTo(left,  screenY);
+    ctx.lineTo(right, screenY);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Endpoint flag poles
+    ctx.fillStyle = `rgba(255,255,200,${0.8 + 0.2 * pulse})`;
+    for (const nx of [left, right]) {
+      ctx.beginPath();
+      ctx.arc(nx, screenY, 5 + sinP * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // "🏁 FINISH 🏁" label
+    ctx.font         = 'bold 13px monospace';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle    = `rgba(255,255,180,${0.75 + 0.25 * pulse})`;
+    ctx.shadowColor  = '#ffffff';
+    ctx.shadowBlur   = 12;
+    ctx.fillText('🏁 FINISH 🏁', (left + right) / 2, screenY - squareSize / 2 - 4);
 
     ctx.restore();
   }
