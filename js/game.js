@@ -1,6 +1,6 @@
 // ── Game ─────────────────────────────────────────────────────────────────────
 
-const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop', PVP_OVER: 'pvp_over' };
+const STATE = { MENU: 'menu', COUNTDOWN: 'countdown', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop', PVP_OVER: 'pvp_over' };
 
 // World-units between successive content-generation passes
 const GEN_SEGMENT = 500;
@@ -803,6 +803,10 @@ class Game {
     this.levelGenY       = this.track.startY;
     this.lastNormalDoorY = this.track.startY - NORMAL_DOOR_INTERVAL; // allow a door immediately at run start
 
+    // ── Start countdown state ──────────────────────────────────────────────
+    this.startCountdownTimer = 1;  // seconds until the next countdown number
+    this.startCountdownValue = 3;  // current displayed number (3, 2, 1)
+
     // ── Power Rush state ───────────────────────────────────────────────────
     this.powerRushActive    = false;
     this.powerRushTimer     = 0;   // seconds remaining in the rush phase
@@ -840,7 +844,7 @@ class Game {
   startRun() {
     this.pvpMode = false;
     this._init();
-    this.state = STATE.RUNNING;
+    this.state = STATE.COUNTDOWN;
     this.ui.setPvpHud(false);
     this.ui.updateDistance(0);
     this.ui.updateVoidDistance('--');
@@ -868,7 +872,7 @@ class Game {
       this.pvpBots.push(new BotMarble(sx + offsets[i], sy, i, sy, this._pvpDifficulty));
     }
 
-    this.state = STATE.RUNNING;
+    this.state = STATE.COUNTDOWN;
     this.ui.setPvpHud(true);
     this.ui.updateTimer(0);
     if (this.debugMode) console.log('[DEBUG] PVP run started');
@@ -967,6 +971,21 @@ class Game {
     // In shop state the game is paused; Escape/R closes the shop
     if (this.state === STATE.SHOP) {
       if (this.input.consumeRestart()) this.closeShop();
+      return;
+    }
+
+    // ── Start countdown ──────────────────────────────────────────────────────
+    if (this.state === STATE.COUNTDOWN) {
+      this.startCountdownTimer -= dt;
+      if (this.startCountdownTimer <= 0) {
+        this.startCountdownValue--;
+        if (this.startCountdownValue > 0) {
+          this.startCountdownTimer = 1;
+        } else {
+          // Countdown finished – begin the run
+          this.state = STATE.RUNNING;
+        }
+      }
       return;
     }
 
@@ -1853,6 +1872,22 @@ class Game {
         ctx.fillStyle = `rgba(255,215,0,${alpha})`;
         ctx.fillText(`${f.text} 💰`, f.x, sy);
       }
+      ctx.restore();
+    }
+
+    // Start countdown overlay
+    if (this.state === STATE.COUNTDOWN) {
+      const val   = this.startCountdownValue;
+      const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 150);
+      ctx.save();
+      ctx.font         = `bold ${Math.floor(100 + pulse * 14)}px monospace`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor  = '#00ccff';
+      ctx.shadowBlur   = 30 + pulse * 20;
+      ctx.fillStyle    = `rgba(255,255,255,${0.7 + pulse * 0.3})`;
+      ctx.fillText(String(val), CANVAS_W / 2, CANVAS_H / 2);
+      ctx.shadowBlur   = 0;
       ctx.restore();
     }
 
