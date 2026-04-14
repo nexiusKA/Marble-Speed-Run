@@ -1,6 +1,6 @@
 // ── Game ─────────────────────────────────────────────────────────────────────
 
-const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop' };
+const STATE = { MENU: 'menu', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop', PVP_OVER: 'pvp_over' };
 
 // World-units between successive content-generation passes
 const GEN_SEGMENT = 500;
@@ -24,6 +24,9 @@ const POWER_RUSH_BIG_COIN_SPACING = 350; // world-units between big coin spawns 
 const POWER_RUSH_INTERVAL            = 10000; // metres to the first power-rush trigger
 const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent power-rush
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
+
+// PVP mode
+const PVP_GOAL_DISTANCE = 10000; // metres – first racer to reach this wins
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
@@ -359,6 +362,142 @@ class LaserBeam {
   }
 }
 
+// ── BotMarble ─────────────────────────────────────────────────────────────────
+// An autonomous opponent marble for PVP mode. Uses the same physics as Marble
+// but has an AI steering controller. Rendered in a dark void-creature style.
+const BOT_NAMES        = ['Shadow', 'Gloom', 'Wraith'];
+const BOT_COLORS       = [
+  { body: '#1a0030', glow: '120,0,200',   trail: '80,0,160'   },
+  { body: '#001a20', glow: '0,180,160',   trail: '0,100,120'  },
+  { body: '#200010', glow: '200,0,80',    trail: '120,0,60'   },
+];
+
+class BotMarble {
+  constructor(x, y, index, startY) {
+    this.marble   = new Marble(x, y);
+    this.index    = index;
+    this.name     = BOT_NAMES[index % BOT_NAMES.length];
+    this.colors   = BOT_COLORS[index % BOT_COLORS.length];
+    this.startY   = startY;
+    this.finished = false;
+    this.finishDist = 0;
+
+    // AI state
+    this._steerTimer = 0;
+    this._steerDir   = 0;   // -1, 0, +1
+    this._downTimer  = 0;
+    this._downActive = false;
+
+    // Slight per-bot personality variation
+    this._aggression  = 0.5 + index * 0.15; // how often they boost
+    this._steerChange = 0.3 + index * 0.1;  // seconds between steering updates
+  }
+
+  get distance() {
+    return Math.max(0, Math.floor(this.marble.y - this.startY));
+  }
+
+  update(dt, track, steerMult, gravMult) {
+    if (this.finished) return;
+
+    // ── Steering AI ─────────────────────────────────────────────────────────
+    this._steerTimer -= dt;
+    if (this._steerTimer <= 0) {
+      this._steerTimer = this._steerChange + Math.random() * 0.4;
+      this._chooseSteer(track);
+    }
+
+    // ── Boost AI ─────────────────────────────────────────────────────────────
+    this._downTimer -= dt;
+    if (this._downTimer <= 0) {
+      this._downActive = Math.random() < this._aggression;
+      this._downTimer  = 0.2 + Math.random() * 0.5;
+    }
+
+    const input = {
+      left:  this._steerDir < 0,
+      right: this._steerDir > 0,
+      up:    false,
+      down:  this._downActive,
+    };
+
+    this.marble.update(dt, input, track, steerMult, gravMult);
+  }
+
+  _chooseSteer(track) {
+    const { left, right } = track.getWallsAtY(this.marble.y);
+    const margin = 35;
+    if (this.marble.x - left   < margin) { this._steerDir =  1; return; }
+    if (right - this.marble.x  < margin) { this._steerDir = -1; return; }
+    // Bias toward track centre
+    const centre = (left + right) / 2;
+    const bias   = (this.marble.x - centre) / (right - left); // -0.5..+0.5
+    const r      = Math.random() - 0.5 - bias * 0.6;
+    this._steerDir = r > 0.18 ? 1 : r < -0.18 ? -1 : 0;
+  }
+
+  render(ctx, cameraY) {
+    const m   = this.marble;
+    const col = this.colors;
+
+    // Trail
+    ctx.save();
+    ctx.translate(0, -cameraY);
+    for (let i = 0; i < m.trail.length; i++) {
+      const alpha = (i / m.trail.length) * 0.3;
+      const r     = m.radius * (i / m.trail.length) * 0.65;
+      ctx.beginPath();
+      ctx.arc(m.trail[i].x, m.trail[i].y, Math.max(r, 1), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${col.trail},${alpha})`;
+      ctx.fill();
+    }
+
+    // Shadow
+    ctx.beginPath();
+    ctx.ellipse(m.x, m.y + m.radius * 0.6, m.radius * 0.9, m.radius * 0.3, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fill();
+
+    // Dark body with void gradient
+    const grad = ctx.createRadialGradient(
+      m.x - m.radius * 0.3, m.y - m.radius * 0.35, m.radius * 0.08,
+      m.x, m.y, m.radius
+    );
+    grad.addColorStop(0,    '#3a005a');
+    grad.addColorStop(0.45, col.body);
+    grad.addColorStop(1,    '#000005');
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Glow ring
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.radius * 1.55, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(${col.glow},0.35)`;
+    ctx.lineWidth   = 2.5;
+    ctx.stroke();
+
+    // Two glowing eyes
+    const eyeY = m.y - m.radius * 0.18;
+    const eyeOff = m.radius * 0.28;
+    const pulse  = 0.6 + 0.4 * Math.sin(Date.now() / 300 + this.index * 1.3);
+    for (let s = -1; s <= 1; s += 2) {
+      const ex = m.x + s * eyeOff;
+      const ey = eyeY;
+      ctx.beginPath();
+      ctx.arc(ex, ey, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${col.glow},${pulse})`;
+      ctx.shadowColor = `rgba(${col.glow},0.8)`;
+      ctx.shadowBlur  = 6;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    ctx.restore();
+  }
+}
+
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
@@ -396,6 +535,7 @@ class Game {
     this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= 200 ? voidRateRaw : 100;
 
     this.state = STATE.MENU;
+    this.pvpMode = false;  // true while in PVP mode
     this._init();
 
     this.ui.showStart((voidSpeedPct) => { this._applyVoidRate(voidSpeedPct); }, () => { this.startRun(); });
@@ -421,6 +561,9 @@ class Game {
 
     // Wire up the achievements overlay accessible from the start menu
     this._initAchievementsUI();
+
+    // Wire up the PVP button
+    this._initPvpButton();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -645,11 +788,16 @@ class Game {
     this._rushLineBolts        = [];
     this._rushLineWorldY       = this.track.startY + POWER_RUSH_INTERVAL; // cached trigger Y
 
+    // ── PVP state ──────────────────────────────────────────────────────────
+    this.pvpBots         = [];  // BotMarble instances
+    this._pvpFinishers   = [];  // order in which racers finished {name, dist, isPlayer}
+
     // Pre-populate the first stretch of content
     this._extendLevel(this.track.startY + 1800);
   }
 
   startRun() {
+    this.pvpMode = false;
     this._init();
     this.state = STATE.RUNNING;
     this.ui.updateDistance(0);
@@ -663,6 +811,65 @@ class Game {
   restart() {
     this.ui.hideGameOver();
     this.startRun();
+  }
+
+  // ── PVP mode ───────────────────────────────────────────────────────────────
+  startPvpRun() {
+    this.pvpMode = true;
+    this._init();
+
+    // Spawn 3 bots spread slightly around the player start X
+    const sx = this.track.startX;
+    const sy = this.track.startY;
+    const offsets = [-28, 0, 28]; // horizontal offsets
+    for (let i = 0; i < 3; i++) {
+      this.pvpBots.push(new BotMarble(sx + offsets[i], sy, i, sy));
+    }
+
+    this.state = STATE.RUNNING;
+    this.ui.updateDistance(0);
+    this.ui.updateVoidDistance('RACE');
+    this.ui.updateTimer(0);
+    this.ui.updateCoinCount(0);
+    if (this.debugMode) console.log('[DEBUG] PVP run started');
+    this.sound.start();
+  }
+
+  _initPvpButton() {
+    const pvpBtn = document.getElementById('pvp-btn');
+    if (pvpBtn) {
+      pvpBtn.addEventListener('click', () => {
+        // Hide the start overlay then begin PVP
+        const overlay = document.getElementById('overlay');
+        if (overlay) { overlay.classList.remove('visible'); overlay.classList.add('hidden'); }
+        this.startPvpRun();
+      });
+    }
+  }
+
+  _pvpGameOver() {
+    this.state = STATE.PVP_OVER;
+
+    // Build rankings sorted by distance (descending)
+    const entries = [
+      { name: 'You', dist: this.distance, isPlayer: true },
+      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, isPlayer: false })),
+    ];
+    entries.sort((a, b) => b.dist - a.dist);
+
+    const playerWon = entries[0].isPlayer;
+    this.ui.showPvpResult(
+      playerWon,
+      entries,
+      () => { this.startPvpRun(); },
+      () => {
+        this.pvpMode = false;
+        this._init();
+        this.state = STATE.MENU;
+        const overlay = document.getElementById('overlay');
+        if (overlay) { overlay.classList.remove('hidden'); overlay.classList.add('visible'); }
+      }
+    );
   }
 
   // Distance in metres (1 world-unit = 1 m for display purposes)
@@ -686,13 +893,16 @@ class Game {
 
     if (this.state !== STATE.RUNNING) return;
 
-    if (this.input.consumeRestart()) { this.restart(); return; }
+    if (this.input.consumeRestart()) {
+      if (this.pvpMode) { this.startPvpRun(); } else { this.restart(); }
+      return;
+    }
 
     this.elapsed += dt * 1000;
 
-    // ── Power Rush Mode – runs its own update branch ────────────────────────
+    // ── Power Rush Mode – disabled in PVP ───────────────────────────────────
     // Auto-trigger every POWER_RUSH_INTERVAL metres instead of via a pickup
-    if (!this.powerRushActive && this.distance > 0 && this.distance >= this.nextPowerRushDist) {
+    if (!this.pvpMode && !this.powerRushActive && this.distance > 0 && this.distance >= this.nextPowerRushDist) {
       this.nextPowerRushDist += POWER_RUSH_SUBSEQUENT_INTERVAL;
       this._rushLineWorldY    = this.track.startY + this.nextPowerRushDist;
       this._enterPowerRush();
@@ -716,25 +926,49 @@ class Game {
     // Magnet timer
     if (this.magnetTimer > 0) this.magnetTimer -= dt;
 
-    // ── Fog ─────────────────────────────────────────────────────────────────
-    this.fog.update(dt, this.distance, this._voidRateMult());
+    // ── Fog (normal mode only) ───────────────────────────────────────────────
+    if (!this.pvpMode) {
+      this.fog.update(dt, this.distance, this._voidRateMult());
 
-    if (this.fog.isCatching(this.marble)) {
-      if (this.shieldTimer > 0) {
-        // Consume the shield and push the fog back
-        this.shieldTimer = 0;
-        this.fog.y = this.marble.y - 480;
-        this._showPickupMsg('SHIELD USED!');
-        if (!this._shieldUsed) {
-          this._shieldUsed = true;
-          this._grantAchievement('iron_shell');
+      if (this.fog.isCatching(this.marble)) {
+        if (this.shieldTimer > 0) {
+          // Consume the shield and push the fog back
+          this.shieldTimer = 0;
+          this.fog.y = this.marble.y - 480;
+          this._showPickupMsg('SHIELD USED!');
+          if (!this._shieldUsed) {
+            this._shieldUsed = true;
+            this._grantAchievement('iron_shell');
+          }
+        } else {
+          this._gameOver();
+          return;
         }
-      } else {
-        this._gameOver();
-        return;
       }
     }
     if (this.shieldTimer > 0) this.shieldTimer -= dt;
+
+    // ── Bot marbles (PVP mode) ───────────────────────────────────────────────
+    if (this.pvpMode) {
+      const steer = this._steerMult();
+      const grav  = this._fallMult();
+      for (const bot of this.pvpBots) {
+        bot.update(dt, this.track, steer, grav);
+        // Check if bot reached goal distance
+        if (!bot.finished && bot.distance >= PVP_GOAL_DISTANCE) {
+          bot.finished  = true;
+          bot.finishDist = bot.distance;
+        }
+      }
+
+      // Check if player reached the goal or any bot has finished (first to goal wins)
+      const playerDone = this.distance >= PVP_GOAL_DISTANCE;
+      const anyBotDone = this.pvpBots.some(b => b.finished);
+      if (playerDone || anyBotDone) {
+        this._pvpGameOver();
+        return;
+      }
+    }
 
     // ── Obstacles ───────────────────────────────────────────────────────────
     for (const obs of this.obstacles) {
@@ -795,26 +1029,36 @@ class Game {
 
     // ── HUD ─────────────────────────────────────────────────────────────────
     this.ui.updateDistance(this.distance);
-    this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
+    if (this.pvpMode) {
+      // Show leading bot distance in the void slot
+      const maxBotDist = this.pvpBots.reduce((m, b) => Math.max(m, b.distance), 0);
+      this.ui.updateVoidDistance(`${maxBotDist}m`);
+    } else {
+      this.ui.updateVoidDistance(Math.max(0, Math.floor(this.marble.y - this.marble.radius - this.fog.y)));
+    }
     this.ui.updateTimer(this.elapsed);
 
-    // ── Achievement checks ───────────────────────────────────────────────────
-    if (this.distance >= 1000)   this._grantAchievement('reach_1000m');
-    if (this.distance >= 5000)   this._grantAchievement('reach_5000m');
-    if (this.distance >= 10000)  this._grantAchievement('reach_10000m');
-    if (this.distance >= 25000)  this._grantAchievement('reach_25000m');
-    if (this.distance >= 50000)  this._grantAchievement('reach_50000m');
-    if (this.distance >= 75000)  this._grantAchievement('reach_75000m');
-    if (this.distance >= 100000) this._grantAchievement('reach_100000m');
-    if (this.distance >= 150000) this._grantAchievement('reach_150000m');
-    if (this.distance >= 200000) this._grantAchievement('reach_200000m');
-    if (this.distance >= 250000) this._grantAchievement('reach_250000m');
+    // ── Achievement checks (normal mode only) ────────────────────────────────
+    if (!this.pvpMode) {
+      if (this.distance >= 1000)   this._grantAchievement('reach_1000m');
+      if (this.distance >= 5000)   this._grantAchievement('reach_5000m');
+      if (this.distance >= 10000)  this._grantAchievement('reach_10000m');
+      if (this.distance >= 25000)  this._grantAchievement('reach_25000m');
+      if (this.distance >= 50000)  this._grantAchievement('reach_50000m');
+      if (this.distance >= 75000)  this._grantAchievement('reach_75000m');
+      if (this.distance >= 100000) this._grantAchievement('reach_100000m');
+      if (this.distance >= 150000) this._grantAchievement('reach_150000m');
+      if (this.distance >= 200000) this._grantAchievement('reach_200000m');
+      if (this.distance >= 250000) this._grantAchievement('reach_250000m');
+    }
 
-    // ── Rush-line bolt flicker (refresh every ~80 ms) ────────────────────────
-    this._rushLineFlickerTimer -= dt;
-    if (this._rushLineFlickerTimer <= 0) {
-      this._rushLineFlickerTimer = 0.08;
-      this._rebuildRushLineBolts();
+    // ── Rush-line bolt flicker (refresh every ~80 ms, normal mode only) ─────
+    if (!this.pvpMode) {
+      this._rushLineFlickerTimer -= dt;
+      if (this._rushLineFlickerTimer <= 0) {
+        this._rushLineFlickerTimer = 0.08;
+        this._rebuildRushLineBolts();
+      }
     }
   }
 
@@ -1251,8 +1495,8 @@ class Game {
   }
 
   openShop() {
-    // Only open during normal running (manual open via button is blocked during Power Rush)
-    if (this.state !== STATE.RUNNING || this.powerRushActive) return;
+    // Only open during normal running (manual open via button is blocked during Power Rush or PVP)
+    if (this.state !== STATE.RUNNING || this.powerRushActive || this.pvpMode) return;
     this.state = STATE.SHOP;
     const overlay = document.getElementById('shop-overlay');
     const coinEl  = document.getElementById('shop-coin-count');
@@ -1385,7 +1629,7 @@ class Game {
       for (const pu of this.powerRushPickups) pu.render(ctx, this.cameraY);
       for (const bc of this.powerRushBigCoins) bc.render(ctx, this.cameraY);
     } else {
-      // ── Normal rendering ─────────────────────────────────────────────────
+      // ── Normal / PVP rendering ───────────────────────────────────────────
       this._renderSynthwaveBg(ctx);
       this._renderStars(ctx);
       this.track.render(ctx, this.cameraY);
@@ -1394,7 +1638,7 @@ class Game {
       for (const coin of this.coins) coin.render(ctx, this.cameraY);
       for (const bc of this.blueCoins) bc.render(ctx, this.cameraY);
       for (const rc of this.redCoins) rc.render(ctx, this.cameraY);
-      this._renderRushLine(ctx);
+      if (!this.pvpMode) this._renderRushLine(ctx);
     }
 
     // Particles (screen space – always rendered)
@@ -1408,9 +1652,14 @@ class Game {
       ctx.fill();
     }
 
-    // Fog – hidden during Power Rush (it's paused; don't distract the player)
-    if (!this.powerRushActive) {
+    // Fog – hidden during Power Rush or PVP (it's paused/absent; don't distract the player)
+    if (!this.powerRushActive && !this.pvpMode) {
       this.fog.render(ctx, this.cameraY);
+    }
+
+    // Bot marbles (PVP mode – render before player marble so player is on top)
+    if (this.pvpMode) {
+      for (const bot of this.pvpBots) bot.render(ctx, this.cameraY);
     }
 
     // Marble (world space – translate by -cameraY)
@@ -1424,6 +1673,9 @@ class Game {
     if (this.powerRushActive) {
       // Power Rush HUD (timer bar, door count, 3-2-1 countdown)
       this._renderPowerRushOverlay(ctx);
+    } else if (this.pvpMode && this.state === STATE.RUNNING) {
+      // PVP race HUD – progress bar for all racers
+      this._renderPvpOverlay(ctx);
     } else if (this.state === STATE.RUNNING) {
       // Danger vignette when fog is close
       const danger = this.fog.dangerRatio(this.marble);
@@ -1722,6 +1974,62 @@ class Game {
       ctx.fillStyle    = `rgba(255,220,0,${0.7 + pulse * 0.3})`;
       ctx.fillText(String(this.powerRushCountdown), CANVAS_W / 2, CANVAS_H / 2);
       ctx.shadowBlur   = 0;
+    }
+
+    ctx.restore();
+  }
+
+  // ── PVP race HUD overlay ──────────────────────────────────────────────────
+  _renderPvpOverlay(ctx) {
+    const GOAL = PVP_GOAL_DISTANCE;
+    ctx.save();
+
+    // Title
+    ctx.font         = 'bold 14px monospace';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'top';
+    ctx.shadowColor  = '#ff2200';
+    ctx.shadowBlur   = 12;
+    ctx.fillStyle    = '#ff6644';
+    ctx.fillText(`⚔ RACE TO ${PVP_GOAL_DISTANCE.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
+    ctx.shadowBlur   = 0;
+
+    // Progress bars for each racer (player + 3 bots)
+    const racers = [
+      { name: 'YOU',          dist: this.distance, color: '#4488ee', isPlayer: true },
+      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, color: `rgb(${b.colors.glow})`, isPlayer: false })),
+    ];
+
+    const barX  = 20;
+    const barW  = CANVAS_W - 40;
+    const barH  = 7;
+    const startY = 30;
+    const gap    = 13;
+
+    for (let i = 0; i < racers.length; i++) {
+      const r    = racers[i];
+      const by   = startY + i * (barH + gap);
+      const frac = Math.min(r.dist / GOAL, 1);
+
+      // Background
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(barX, by, barW, barH);
+
+      // Fill
+      ctx.fillStyle = r.color;
+      ctx.fillRect(barX, by, barW * frac, barH);
+
+      // Border
+      ctx.strokeStyle = r.isPlayer ? '#88aaff' : r.color;
+      ctx.lineWidth   = 1;
+      ctx.strokeRect(barX, by, barW, barH);
+
+      // Label
+      ctx.font         = `bold 10px monospace`;
+      ctx.textAlign    = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle    = r.isPlayer ? '#ccddff' : '#cccccc';
+      ctx.fillText(`${r.name}  ${r.dist}m`, barX + 2, by + barH + 2);
     }
 
     ctx.restore();
