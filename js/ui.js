@@ -173,7 +173,7 @@ class UI {
 
   /** Show/hide HUD elements that are only relevant in normal (non-PvP) mode. */
   setPvpHud(isPvp) {
-    const ids = ['hud-dist', 'hud-coins', 'shop-btn', 'hud-void', 'hud-best', 'hud-timer'];
+    const ids = ['hud-dist', 'hud-coins', 'shop-btn', 'hud-void', 'hud-best'];
     for (const id of ids) {
       const el = document.getElementById(id);
       if (el) el.style.display = isPvp ? 'none' : '';

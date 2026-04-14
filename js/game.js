@@ -2376,6 +2376,20 @@ class Game {
     ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
+    // Position badge – top-right corner
+    const posColor  = playerPos === 1 ? '#ffe066' : playerPos <= 3 ? '#88ddff' : '#cccccc';
+    const posGlow   = playerPos === 1 ? '#ffaa00' : playerPos <= 3 ? '#4488ff' : '#888888';
+    ctx.font        = 'bold 20px monospace';
+    ctx.textAlign   = 'right';
+    ctx.shadowColor = posGlow;
+    ctx.shadowBlur  = 14;
+    ctx.fillStyle   = posColor;
+    ctx.fillText(posLabel, CANVAS_W - 6, 6);
+    ctx.font        = 'bold 10px monospace';
+    ctx.fillStyle   = 'rgba(200,200,200,0.8)';
+    ctx.shadowBlur  = 0;
+    ctx.fillText(`/ ${totalRacers}`, CANVAS_W - 6, 26);
+
     // Progress bars: always show the player + top 3 bots by current distance
     const allBots  = this.pvpBots.slice().sort((a, b) => b.distance - a.distance);
     const topBots  = allBots.slice(0, 3);
@@ -2415,32 +2429,6 @@ class Game {
       ctx.fillStyle    = r.isPlayer ? '#ccddff' : '#cccccc';
       ctx.fillText(`${r.name}  ${r.dist}m`, barX + 2, by + barH + 2);
     }
-
-    // Timer (left) and Position (right) – below the progress bars
-    const belowY   = startY + racers.length * (barH + gap) + 4;
-    const totalS   = this.elapsed / 1000;
-    const mins     = Math.floor(totalS / 60);
-    const secs     = (totalS % 60).toFixed(1).padStart(4, '0');
-    const timeStr  = `${mins}:${secs}`;
-
-    ctx.font         = 'bold 13px monospace';
-    ctx.textBaseline = 'top';
-    ctx.shadowBlur   = 8;
-
-    // Timer – bottom-left
-    ctx.textAlign   = 'left';
-    ctx.shadowColor = '#1a4a7a';
-    ctx.fillStyle   = '#7de8ff';
-    ctx.fillText(`Time: ${timeStr}`, barX, belowY);
-
-    // Position – bottom-right
-    const posColor  = playerPos === 1 ? '#ffe066' : playerPos <= 3 ? '#88ddff' : '#cccccc';
-    const posGlow   = playerPos === 1 ? '#ffaa00' : playerPos <= 3 ? '#4488ff' : '#888888';
-    ctx.textAlign   = 'right';
-    ctx.shadowColor = posGlow;
-    ctx.fillStyle   = posColor;
-    ctx.fillText(`Pos: ${posLabel}/${totalRacers}`, CANVAS_W - barX, belowY);
-    ctx.shadowBlur  = 0;
 
     ctx.restore();
   }
