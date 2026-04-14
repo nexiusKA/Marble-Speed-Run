@@ -2157,10 +2157,12 @@ class Game {
     ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
-    // Progress bars for each racer (player + 3 bots)
+    // Progress bars: always show the player + top 3 bots by current distance
+    const allBots  = this.pvpBots.slice().sort((a, b) => b.distance - a.distance);
+    const topBots  = allBots.slice(0, 3);
     const racers = [
       { name: 'YOU',          dist: this.distance, color: '#4488ee', isPlayer: true },
-      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, color: `rgb(${b.colors.glow})`, isPlayer: false })),
+      ...topBots.map(b => ({ name: b.name, dist: b.distance, color: `rgb(${b.colors.glow})`, isPlayer: false })),
     ];
 
     const barX  = 20;
