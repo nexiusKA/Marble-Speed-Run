@@ -386,17 +386,17 @@ class BotMarble {
     // Difficulty-based base parameters
     let baseAggression, baseSteerChange, gravFactor;
     if (difficulty === 'easy') {
-      baseAggression  = 0.20;
-      baseSteerChange = 0.60;
-      gravFactor      = 0.72;
+      baseAggression  = 0.32;
+      baseSteerChange = 0.45;
+      gravFactor      = 0.84;
     } else if (difficulty === 'hard') {
-      baseAggression  = 0.75;
-      baseSteerChange = 0.12;
-      gravFactor      = 1.15;
+      baseAggression  = 0.95;
+      baseSteerChange = 0.05;
+      gravFactor      = 1.55;
     } else { // normal
-      baseAggression  = 0.50;
-      baseSteerChange = 0.30;
-      gravFactor      = 0.90;
+      baseAggression  = 0.68;
+      baseSteerChange = 0.20;
+      gravFactor      = 1.10;
     }
     this._gravFactor = gravFactor;
 
