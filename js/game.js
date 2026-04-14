@@ -583,6 +583,9 @@ class Game {
     const voidRateRaw      = parseInt(localStorage.getItem('mrVoidRate') || '100', 10);
     this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= 200 ? voidRateRaw : 100;
 
+    // Optimal path display. Persisted across sessions.
+    this.showOptimalPath = localStorage.getItem('mrOptimalPath') === '1';
+
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
     this._pvpDifficulty   = 'normal'; // difficulty for PVP bot opponents
@@ -617,6 +620,9 @@ class Game {
 
     // Wire up void speed controls in the start overlay
     this._initVoidRateControls();
+
+    // Wire up optimal path toggle in the start overlay
+    this._initOptimalPathToggle();
 
     // Achievements – loaded once and persisted across runs
     this._achievements = this._loadAchievements();
@@ -803,6 +809,25 @@ class Game {
     const valueEl = document.getElementById('void-rate-value');
     if (slider)  { slider.value = voidSpeedPct; slider.style.setProperty('--val', `${(voidSpeedPct - 10) / 190 * 100}%`); }
     if (valueEl) { valueEl.textContent = voidSpeedPct; }
+  }
+
+  // ── Optimal path toggle wiring ────────────────────────────────────────────
+  _initOptimalPathToggle() {
+    const btn = document.getElementById('opt-path-btn');
+    if (!btn) return;
+
+    const update = () => {
+      btn.textContent = this.showOptimalPath ? 'ON' : 'OFF';
+      btn.classList.toggle('active', this.showOptimalPath);
+    };
+
+    update();
+
+    btn.addEventListener('click', () => {
+      this.showOptimalPath = !this.showOptimalPath;
+      localStorage.setItem('mrOptimalPath', this.showOptimalPath ? '1' : '0');
+      update();
+    });
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
@@ -1875,6 +1900,7 @@ class Game {
       this._renderSynthwaveBg(ctx);
       this._renderStars(ctx);
       this.track.render(ctx, this.cameraY);
+      if (this.showOptimalPath) this._renderOptimalPath(ctx);
       for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.pickups) pu.render(ctx, this.cameraY);
       for (const coin of this.coins) coin.render(ctx, this.cameraY);
@@ -2130,6 +2156,75 @@ class Game {
   }
 
   // ── Power Rush background ─────────────────────────────────────────────────
+  _renderOptimalPath(ctx) {
+    // Draw the track's centre-line (midpoint between left and right walls)
+    // as a fairy-dust sparkle effect ahead of the marble.
+    const t       = Date.now() / 1000;
+    const marbleY = this.marble.y;
+    const step    = 18;           // world-units between sample points
+    const lookahead = CANVAS_H;  // how far ahead to draw (one screen height)
+
+    ctx.save();
+    ctx.translate(0, -this.cameraY);
+
+    for (let i = 0; i < lookahead / step; i++) {
+      const wy = marbleY + i * step;
+      const { left, right } = this.track.getWallsAtY(wy);
+      const cx = (left + right) / 2;
+
+      // Oscillate alpha and size with a wave offset per sample
+      const wave    = Math.sin(t * 2.8 + i * 0.55) * 0.5 + 0.5;  // 0–1
+      const twinkle = Math.sin(t * 5.1 + i * 1.3)  * 0.5 + 0.5;  // 0–1
+
+      // Fade in from the marble position and fade out at the lookahead limit
+      const distFrac  = i / (lookahead / step);         // 0 near marble, 1 far
+      const nearFade  = Math.min(i / 4, 1);             // fade in over first 4 steps
+      const farFade   = 1 - distFrac * distFrac;        // quadratic fade-out
+      const baseAlpha = nearFade * farFade * (0.35 + wave * 0.3);
+
+      if (baseAlpha <= 0.01) continue;
+
+      // Large soft glow dot
+      const glowR = 6 + wave * 3;
+      const grad  = ctx.createRadialGradient(cx, wy, 0, cx, wy, glowR);
+      grad.addColorStop(0,   `rgba(220, 160, 255, ${baseAlpha * 0.9})`);
+      grad.addColorStop(0.4, `rgba(180, 80,  255, ${baseAlpha * 0.5})`);
+      grad.addColorStop(1,   `rgba(120, 0,   200, 0)`);
+      ctx.beginPath();
+      ctx.arc(cx, wy, glowR, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Tiny bright sparkle core
+      if (twinkle > 0.55) {
+        const sparkAlpha = (twinkle - 0.55) / 0.45 * baseAlpha * 1.8;
+        ctx.beginPath();
+        ctx.arc(cx, wy, 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 220, 255, ${Math.min(sparkAlpha, 0.9)})`;
+        ctx.fill();
+      }
+
+      // Cross-hair sparkle lines at peak twinkle moments
+      if (twinkle > 0.78) {
+        const len   = 4 + twinkle * 3;
+        const alpha = (twinkle - 0.78) / 0.22 * baseAlpha * 1.4;
+        ctx.save();
+        ctx.shadowBlur  = 6;
+        ctx.shadowColor = 'rgba(200, 100, 255, 0.9)';
+        ctx.strokeStyle = `rgba(240, 200, 255, ${Math.min(alpha, 0.85)})`;
+        ctx.lineWidth   = 0.8;
+        ctx.lineCap     = 'round';
+        ctx.beginPath();
+        ctx.moveTo(cx - len, wy); ctx.lineTo(cx + len, wy);
+        ctx.moveTo(cx, wy - len); ctx.lineTo(cx, wy + len);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    ctx.restore();
+  }
+
   _renderPowerRushBg(ctx) {
     // Deep electric-gold sky
     const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
