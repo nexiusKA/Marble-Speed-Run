@@ -1057,7 +1057,23 @@ body {
   color: #888899;
 }
 
-.pvp-rank-medal {
+.pvp-rank-separator {
+  text-align: center;
+  color: rgba(180, 180, 180, 0.5);
+  font-size: 18px;
+  letter-spacing: 4px;
+  line-height: 1;
+  padding: 2px 0;
+}
+
+.pvp-rank-row.rank-player {
+  background: rgba(68, 136, 238, 0.12);
+  border: 1px solid rgba(68, 136, 238, 0.4);
+  color: #aac4ff;
+}
+
+
+
   font-size: 18px;
   flex-shrink: 0;
 }

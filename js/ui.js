@@ -139,18 +139,32 @@ class UI {
     }
     if (rankEl) {
       rankEl.innerHTML = '';
-      const medals = ['🥇', '🥈', '🥉', '4️⃣'];
-      rankings.forEach((r, i) => {
+      const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+      const playerIdx = rankings.findIndex(r => r.isPlayer);
+      const top5      = rankings.slice(0, 5);
+
+      const makeRow = (r, i) => {
         const row = document.createElement('div');
-        row.className = `pvp-rank-row rank-${i + 1}`;
+        row.className = `pvp-rank-row rank-${Math.min(i + 1, 4)}${r.isPlayer && i >= 5 ? ' rank-player' : ''}`;
         const statText = r.finished ? UI._formatTime(r.time) : `${r.dist} m`;
-        const medal = i < medals.length ? medals[i] : `${i + 1}.`;
+        const medal    = i < medals.length ? medals[i] : `${i + 1}.`;
         row.innerHTML =
           `<span class="pvp-rank-medal">${medal}</span>` +
           `<span class="pvp-rank-name">${r.name}</span>` +
           `<span class="pvp-rank-dist">${statText}</span>`;
-        rankEl.appendChild(row);
-      });
+        return row;
+      };
+
+      top5.forEach((r, i) => rankEl.appendChild(makeRow(r, i)));
+
+      // If the player is outside the top 5, append a separator and their row
+      if (playerIdx >= 5) {
+        const sep = document.createElement('div');
+        sep.className   = 'pvp-rank-separator';
+        sep.textContent = '···';
+        rankEl.appendChild(sep);
+        rankEl.appendChild(makeRow(rankings[playerIdx], playerIdx));
+      }
     }
     if (retryBtn) retryBtn.onclick = () => { this._hide(overlay); onRetry(); };
     if (menuBtn)  menuBtn.onclick  = () => { this._hide(overlay); onMenu();  };
