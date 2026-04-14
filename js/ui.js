@@ -14,9 +14,11 @@ class UI {
     this.easyBtn     = document.getElementById('easy-btn');
     this.normalBtn   = document.getElementById('normal-btn');
     this.hardBtn     = document.getElementById('hard-btn');
-    this.pvpEasyBtn   = document.getElementById('pvp-easy-btn');
-    this.pvpNormalBtn = document.getElementById('pvp-normal-btn');
-    this.pvpHardBtn   = document.getElementById('pvp-hard-btn');
+    this.pvpEasyBtn    = document.getElementById('pvp-easy-btn');
+    this.pvpNormalBtn  = document.getElementById('pvp-normal-btn');
+    this.pvpHardBtn    = document.getElementById('pvp-hard-btn');
+    this.pvpExtremeBtn = document.getElementById('pvp-extreme-btn');
+    this.pvpInsaneBtn  = document.getElementById('pvp-insane-btn');
     this.playBtn     = document.getElementById('play-btn');
     this.retryBtn    = document.getElementById('retry-btn');
   }
@@ -58,15 +60,17 @@ class UI {
     this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
 
     // ── PvP difficulty buttons ──────────────────────────────
-    const pvpDiffBtns = [this.pvpEasyBtn, this.pvpNormalBtn, this.pvpHardBtn].filter(Boolean);
+    const pvpDiffBtns = [this.pvpEasyBtn, this.pvpNormalBtn, this.pvpHardBtn, this.pvpExtremeBtn, this.pvpInsaneBtn].filter(Boolean);
     const selectPvpDiff = (btn, diff) => {
       pvpDiffBtns.forEach(b => b.classList.remove('difficulty-selected'));
       btn.classList.add('difficulty-selected');
       if (onPvpDifficulty) onPvpDifficulty(diff);
     };
-    if (this.pvpEasyBtn)   this.pvpEasyBtn.onclick   = () => selectPvpDiff(this.pvpEasyBtn,   'easy');
-    if (this.pvpNormalBtn) this.pvpNormalBtn.onclick  = () => selectPvpDiff(this.pvpNormalBtn, 'normal');
-    if (this.pvpHardBtn)   this.pvpHardBtn.onclick    = () => selectPvpDiff(this.pvpHardBtn,   'hard');
+    if (this.pvpEasyBtn)    this.pvpEasyBtn.onclick    = () => selectPvpDiff(this.pvpEasyBtn,    'easy');
+    if (this.pvpNormalBtn)  this.pvpNormalBtn.onclick  = () => selectPvpDiff(this.pvpNormalBtn,  'normal');
+    if (this.pvpHardBtn)    this.pvpHardBtn.onclick    = () => selectPvpDiff(this.pvpHardBtn,    'hard');
+    if (this.pvpExtremeBtn) this.pvpExtremeBtn.onclick = () => selectPvpDiff(this.pvpExtremeBtn, 'extreme');
+    if (this.pvpInsaneBtn)  this.pvpInsaneBtn.onclick  = () => selectPvpDiff(this.pvpInsaneBtn,  'insane');
     // Default visual selection: normal
     if (this.pvpNormalBtn) {
       pvpDiffBtns.forEach(b => b.classList.remove('difficulty-selected'));

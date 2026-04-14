@@ -424,6 +424,14 @@ class BotMarble {
       baseAggression  = 0.76;
       baseSteerChange = 0.06;
       gravFactor      = 1.24;
+    } else if (difficulty === 'extreme') {
+      baseAggression  = 0.874;
+      baseSteerChange = 0.051;
+      gravFactor      = 1.426;
+    } else if (difficulty === 'insane') {
+      baseAggression  = 0.95;
+      baseSteerChange = 0.045;
+      gravFactor      = 1.55;
     } else { // normal
       baseAggression  = 0.68;
       baseSteerChange = 0.20;
