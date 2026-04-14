@@ -86,6 +86,12 @@
           <button id="hard-btn"   class="btn btn-hard">HARD</button>
         </div>
         <button id="play-btn" class="btn btn-play">PLAY</button>
+        <div class="steer-controls">
+          <div class="steer-label">Race Distance <span id="pvp-goal-value">10,000</span> m</div>
+          <div class="steer-row">
+            <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="PvP goal distance">
+          </div>
+        </div>
         <button id="pvp-btn" class="btn btn-pvp">⚔ PVP MODE</button>
         <button id="achievements-btn" class="btn btn-achievements">🏆 ACHIEVEMENTS</button>
         <details class="git-info" id="git-info" open>

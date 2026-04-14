@@ -26,7 +26,7 @@ const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent 
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // PVP mode
-const PVP_GOAL_DISTANCE = 10000; // metres – first racer to reach this wins
+const PVP_GOAL_DEFAULT  = 10000; // metres – default race distance
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
@@ -554,7 +554,8 @@ class Game {
 
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
-    this._pvpDifficulty = 'normal'; // difficulty for PVP bot opponents
+    this._pvpDifficulty   = 'normal'; // difficulty for PVP bot opponents
+    this._pvpGoalDistance = PVP_GOAL_DEFAULT; // metres – first racer to reach this wins
     this._init();
 
     this.ui.showStart((voidSpeedPct) => {
@@ -589,6 +590,9 @@ class Game {
 
     // Wire up the PVP button
     this._initPvpButton();
+
+    // Wire up the PVP goal distance slider
+    this._initPvpGoalSlider();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -871,10 +875,31 @@ class Game {
     }
   }
 
+  _initPvpGoalSlider() {
+    const slider  = document.getElementById('pvp-goal-slider');
+    const valueEl = document.getElementById('pvp-goal-value');
+    if (!slider || !valueEl) return;
+
+    const apply = (v) => {
+      this._pvpGoalDistance = v;
+      valueEl.textContent   = v.toLocaleString();
+      // CSS custom property drives the slider fill (0–100 %)
+      const pct = (v - 10000) / (50000 - 10000) * 100;
+      slider.style.setProperty('--val', `${pct}%`);
+    };
+
+    slider.value = this._pvpGoalDistance;
+    apply(this._pvpGoalDistance);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+  }
+
   _pvpGameOver() {
     this.state = STATE.PVP_OVER;
 
-    const playerFinished = this.distance >= PVP_GOAL_DISTANCE;
+    const playerFinished = this.distance >= this._pvpGoalDistance;
 
     // Build rankings with finish time for those who completed the race
     const entries = [
@@ -987,7 +1012,7 @@ class Game {
       for (const bot of this.pvpBots) {
         bot.update(dt, this.track, steer, grav);
         // Check if bot reached goal distance
-        if (!bot.finished && bot.distance >= PVP_GOAL_DISTANCE) {
+        if (!bot.finished && bot.distance >= this._pvpGoalDistance) {
           bot.finished   = true;
           bot.finishDist = bot.distance;
           bot.finishTime = this.elapsed;
@@ -995,7 +1020,7 @@ class Game {
       }
 
       // Check if player reached the goal or any bot has finished (first to goal wins)
-      const playerDone = this.distance >= PVP_GOAL_DISTANCE;
+      const playerDone = this.distance >= this._pvpGoalDistance;
       const anyBotDone = this.pvpBots.some(b => b.finished);
       if (playerDone || anyBotDone) {
         this._pvpGameOver();
@@ -2016,7 +2041,7 @@ class Game {
 
   // ── PVP race HUD overlay ──────────────────────────────────────────────────
   _renderPvpOverlay(ctx) {
-    const GOAL = PVP_GOAL_DISTANCE;
+    const GOAL = this._pvpGoalDistance;
     ctx.save();
 
     // Title
@@ -2026,7 +2051,7 @@ class Game {
     ctx.shadowColor  = '#ff2200';
     ctx.shadowBlur   = 12;
     ctx.fillStyle    = '#ff6644';
-    ctx.fillText(`⚔ RACE TO ${PVP_GOAL_DISTANCE.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
+    ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
     // Progress bars for each racer (player + 3 bots)
