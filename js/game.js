@@ -2243,6 +2243,17 @@ class Game {
     const GOAL = this._pvpGoalDistance;
     ctx.save();
 
+    // Current race position (1 = leading)
+    const totalRacers = this.pvpBots.length + 1;
+    const playerPos   = this.pvpBots.filter(b => b.distance > this.distance).length + 1;
+    const ordSuffix = n => {
+      const v = n % 100;
+      if (v >= 11 && v <= 13) return `${n}th`;
+      const s = ['th', 'st', 'nd', 'rd'];
+      return `${n}${s[n % 10] || 'th'}`;
+    };
+    const posLabel    = ordSuffix(playerPos);
+
     // Title
     ctx.font         = 'bold 14px monospace';
     ctx.textAlign    = 'center';
@@ -2252,6 +2263,20 @@ class Game {
     ctx.fillStyle    = '#ff6644';
     ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
+
+    // Position badge – top-right corner
+    const posColor  = playerPos === 1 ? '#ffe066' : playerPos <= 3 ? '#88ddff' : '#cccccc';
+    const posGlow   = playerPos === 1 ? '#ffaa00' : playerPos <= 3 ? '#4488ff' : '#888888';
+    ctx.font        = 'bold 20px monospace';
+    ctx.textAlign   = 'right';
+    ctx.shadowColor = posGlow;
+    ctx.shadowBlur  = 14;
+    ctx.fillStyle   = posColor;
+    ctx.fillText(posLabel, CANVAS_W - 6, 6);
+    ctx.font        = 'bold 10px monospace';
+    ctx.fillStyle   = 'rgba(200,200,200,0.8)';
+    ctx.shadowBlur  = 0;
+    ctx.fillText(`/ ${totalRacers}`, CANVAS_W - 6, 26);
 
     // Progress bars: always show the player + top 3 bots by current distance
     const allBots  = this.pvpBots.slice().sort((a, b) => b.distance - a.distance);
@@ -2264,7 +2289,7 @@ class Game {
     const barX  = 20;
     const barW  = CANVAS_W - 40;
     const barH  = 7;
-    const startY = 30;
+    const startY = 40;
     const gap    = 13;
 
     for (let i = 0; i < racers.length; i++) {
