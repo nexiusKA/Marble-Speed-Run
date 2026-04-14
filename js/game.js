@@ -26,7 +26,8 @@ const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent 
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
 // PVP mode
-const PVP_GOAL_DEFAULT  = 10000; // metres – default race distance
+const PVP_GOAL_DEFAULT   = 10000; // metres – default race distance
+const PVP_ENEMY_DEFAULT  = 3;     // default number of bot opponents
 
 // Coin system
 const SPEED_BOOST_ACCELERATION = 220;  // extra downward acceleration (units/s²) while speed boost is active
@@ -365,11 +366,18 @@ class LaserBeam {
 // ── BotMarble ─────────────────────────────────────────────────────────────────
 // An autonomous opponent marble for PVP mode. Uses the same physics as Marble
 // but has an AI steering controller. Rendered in a dark void-creature style.
-const BOT_NAMES        = ['Shadow', 'Gloom', 'Wraith'];
+const BOT_NAMES        = ['Shadow', 'Gloom', 'Wraith', 'Dusk', 'Phantom', 'Specter', 'Omen', 'Reaper', 'Abyss', 'Void'];
 const BOT_COLORS       = [
   { body: '#1a0030', glow: '120,0,200',   trail: '80,0,160'   },
   { body: '#001a20', glow: '0,180,160',   trail: '0,100,120'  },
   { body: '#200010', glow: '200,0,80',    trail: '120,0,60'   },
+  { body: '#1a1a00', glow: '180,180,0',   trail: '120,120,0'  },
+  { body: '#001020', glow: '0,120,220',   trail: '0,80,160'   },
+  { body: '#201000', glow: '220,100,0',   trail: '160,60,0'   },
+  { body: '#001800', glow: '0,200,80',    trail: '0,140,40'   },
+  { body: '#200020', glow: '200,0,200',   trail: '140,0,140'  },
+  { body: '#201818', glow: '220,80,80',   trail: '160,40,40'  },
+  { body: '#001818', glow: '0,200,200',   trail: '0,140,140'  },
 ];
 
 class BotMarble {
@@ -556,6 +564,7 @@ class Game {
     this.pvpMode = false;  // true while in PVP mode
     this._pvpDifficulty   = 'normal'; // difficulty for PVP bot opponents
     this._pvpGoalDistance = PVP_GOAL_DEFAULT; // metres – first racer to reach this wins
+    this._pvpEnemyCount   = PVP_ENEMY_DEFAULT; // number of bot opponents in PVP mode
     this._init();
 
     this.ui.showStart((voidSpeedPct) => {
@@ -593,6 +602,9 @@ class Game {
 
     // Wire up the PVP goal distance slider
     this._initPvpGoalSlider();
+
+    // Wire up the PVP enemy count slider
+    this._initPvpEnemySlider();
   }
 
   // ── Sound control wiring ──────────────────────────────────────────────────
@@ -864,12 +876,14 @@ class Game {
     this.pvpMode = true;
     this._init();
 
-    // Spawn 3 bots spread slightly around the player start X
+    // Spawn bots spread slightly around the player start X
     const sx = this.track.startX;
     const sy = this.track.startY;
-    const offsets = [-28, 0, 28]; // horizontal offsets
-    for (let i = 0; i < 3; i++) {
-      this.pvpBots.push(new BotMarble(sx + offsets[i], sy, i, sy, this._pvpDifficulty));
+    const count = this._pvpEnemyCount;
+    const spread = 28;
+    for (let i = 0; i < count; i++) {
+      const offset = count === 1 ? 0 : (i - (count - 1) / 2) * spread;
+      this.pvpBots.push(new BotMarble(sx + offset, sy, i, sy, this._pvpDifficulty));
     }
 
     this.state = STATE.COUNTDOWN;
@@ -918,6 +932,34 @@ class Game {
       defaultBtn.addEventListener('click', () => {
         slider.value = PVP_GOAL_DEFAULT;
         apply(PVP_GOAL_DEFAULT);
+      });
+    }
+  }
+
+  _initPvpEnemySlider() {
+    const slider     = document.getElementById('pvp-enemy-slider');
+    const valueEl    = document.getElementById('pvp-enemy-value');
+    const defaultBtn = document.getElementById('pvp-enemy-default-btn');
+    if (!slider || !valueEl) return;
+
+    const apply = (v) => {
+      this._pvpEnemyCount = v;
+      valueEl.textContent = v;
+      const pct = (v - 1) / (10 - 1) * 100;
+      slider.style.setProperty('--val', `${pct}%`);
+    };
+
+    slider.value = this._pvpEnemyCount;
+    apply(this._pvpEnemyCount);
+
+    slider.addEventListener('input', () => {
+      apply(parseInt(slider.value, 10));
+    });
+
+    if (defaultBtn) {
+      defaultBtn.addEventListener('click', () => {
+        slider.value = PVP_ENEMY_DEFAULT;
+        apply(PVP_ENEMY_DEFAULT);
       });
     }
   }
@@ -2115,10 +2157,12 @@ class Game {
     ctx.fillText(`⚔ RACE TO ${this._pvpGoalDistance.toLocaleString()} m ⚔`, CANVAS_W / 2, 8);
     ctx.shadowBlur   = 0;
 
-    // Progress bars for each racer (player + 3 bots)
+    // Progress bars: always show the player + top 3 bots by current distance
+    const allBots  = this.pvpBots.slice().sort((a, b) => b.distance - a.distance);
+    const topBots  = allBots.slice(0, 3);
     const racers = [
       { name: 'YOU',          dist: this.distance, color: '#4488ee', isPlayer: true },
-      ...this.pvpBots.map(b => ({ name: b.name, dist: b.distance, color: `rgb(${b.colors.glow})`, isPlayer: false })),
+      ...topBots.map(b => ({ name: b.name, dist: b.distance, color: `rgb(${b.colors.glow})`, isPlayer: false })),
     ];
 
     const barX  = 20;
