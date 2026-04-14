@@ -2161,7 +2161,33 @@ class Game {
     for (let i = 0; i < lookahead / step; i++) {
       const wy = marbleY + i * step;
       const { left, right } = this.track.getWallsAtY(wy);
-      const cx = (left + right) / 2;
+      let cx = (left + right) / 2;
+
+      // Steer the path around static obstacles ahead of the marble
+      for (const obs of this.obstacles) {
+        if (obs instanceof DoorGate) {
+          // Gradually blend toward the open door centre as we approach the gate
+          const approachZone = 80;
+          const dy = obs.worldY - wy;
+          if (dy >= 0 && dy <= approachZone) {
+            const blend   = 1 - dy / approachZone;
+            const door    = obs.doors[obs.correctDoor];
+            const targetX = door.x + door.w / 2;
+            cx = cx + (targetX - cx) * blend;
+          }
+        } else if (obs instanceof WallBlocker) {
+          // Nudge path toward the open side of the track around the blocker
+          const influenceZone = step * 2;
+          const dy = Math.abs(obs.worldY - wy);
+          if (dy <= influenceZone) {
+            const blend = 1 - dy / influenceZone;
+            const targetX = obs.side === 'left'
+              ? (obs.bx + right) / 2   // open side is between tip and right wall
+              : (left + obs.ax) / 2;   // open side is between left wall and tip
+            cx = cx + (targetX - cx) * blend;
+          }
+        }
+      }
 
       // Oscillate alpha and size with a wave offset per sample
       const wave    = Math.sin(t * 2.8 + i * 0.55) * 0.5 + 0.5;  // 0–1
