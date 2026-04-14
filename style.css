@@ -836,6 +836,22 @@ body {
   flex-shrink: 0;
 }
 
+.ach-section-header {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #ffd700;
+  text-transform: uppercase;
+  padding: 10px 0 5px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.25);
+  margin-top: 2px;
+  text-align: left;
+}
+
+.ach-section-header:first-child {
+  padding-top: 2px;
+}
+
 /* ── Menu panels ─────────────────────────────────────────── */
 .menu-panel {
   display: none;

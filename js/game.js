@@ -43,7 +43,7 @@ const SHOP_ITEMS = {
 };
 
 // ── Achievements ─────────────────────────────────────────────────────────────
-const ACHIEVEMENT_DEFS = [
+const ENDLESS_ACHIEVEMENT_DEFS = [
   { id: 'reach_1000m',      icon: '🦶', name: 'First Steps',       desc: 'Reach 1,000m in a single run'                         },
   { id: 'reach_5000m',      icon: '🚀', name: 'Speed Seeker',      desc: 'Reach 5,000m in a single run'                         },
   { id: 'reach_10000m',     icon: '🏃', name: 'Marathon',          desc: 'Reach 10,000m in a single run'                        },
@@ -63,6 +63,29 @@ const ACHIEVEMENT_DEFS = [
   { id: 'combo_striker',    icon: '🎯', name: 'Combo Striker',     desc: 'Achieve a 3× door combo in Power Rush'                },
   { id: 'clean_power_rush', icon: '⚡', name: 'Untouchable Rush',  desc: 'Complete Power Rush without getting Blitzed'          },
 ];
+
+const PVP_ACHIEVEMENT_DEFS = [
+  { id: 'pvp_first_race',     icon: '🏁', name: 'Race Day',          desc: 'Complete your first PvP race'                              },
+  { id: 'pvp_first_win',      icon: '🥇', name: 'Victory Lap',       desc: 'Win your first PvP race'                                   },
+  { id: 'pvp_podium',         icon: '🎖️', name: 'Podium Finish',     desc: 'Finish in 1st or 2nd place in a PvP race'                  },
+  { id: 'pvp_5_wins',         icon: '⚔️', name: 'Rival',             desc: 'Win 5 PvP races'                                          },
+  { id: 'pvp_10_wins',        icon: '🏆', name: 'Champion',          desc: 'Win 10 PvP races'                                         },
+  { id: 'pvp_25_wins',        icon: '👑', name: 'Legend of the Track', desc: 'Win 25 PvP races'                                       },
+  { id: 'pvp_easy_win',       icon: '🐣', name: 'Warm-Up Win',       desc: 'Win a PvP race on Easy difficulty'                         },
+  { id: 'pvp_hard_win',       icon: '💀', name: 'Hard Knocks',       desc: 'Win a PvP race on Hard difficulty'                         },
+  { id: 'pvp_max_bots',       icon: '🌊', name: 'One vs Many',       desc: 'Win a PvP race against 5 or more bots'                     },
+  { id: 'pvp_long_race',      icon: '📏', name: 'Long Haul',         desc: 'Finish a PvP race of 25,000m or more'                      },
+  { id: 'pvp_ultra_race',     icon: '🌌', name: 'Endurance King',    desc: 'Finish a PvP race of 50,000m or more'                      },
+  { id: 'pvp_dominant',       icon: '💪', name: 'Untouchable',       desc: 'Win while none of the bots cross the finish line'           },
+  { id: 'pvp_speedster',      icon: '⚡', name: 'Blitz Victory',     desc: 'Win a PvP race in under 45 seconds'                        },
+  { id: 'pvp_landslide',      icon: '🚀', name: 'Landslide',         desc: 'Win by more than 5,000m ahead of 2nd place'                },
+  { id: 'pvp_close_call',     icon: '😅', name: 'Photo Finish',      desc: 'Win with 2nd place within 500m of you'                     },
+  { id: 'pvp_coin_collector', icon: '💰', name: 'Rich Racer',        desc: 'Collect 10 coins in a single PvP race'                     },
+  { id: 'pvp_triple_threat',  icon: '🔥', name: 'Hat-Trick',         desc: 'Win 3 PvP races in a row'                                  },
+  { id: 'pvp_comeback',       icon: '🔄', name: 'Never Say Die',     desc: 'Win a PvP race after being in last place'                  },
+];
+
+const ACHIEVEMENT_DEFS = [...ENDLESS_ACHIEVEMENT_DEFS, ...PVP_ACHIEVEMENT_DEFS];
 
 // ── PowerRushTrack ────────────────────────────────────────────────────────────
 // A simple fixed-width straight corridor used during Power Rush mode.
@@ -567,17 +590,20 @@ class Game {
     this._pvpEnemyCount   = PVP_ENEMY_DEFAULT; // number of bot opponents in PVP mode
     this._init();
 
+    // PvP win stats – persisted in localStorage
+    this._pvpTotalWins  = this._loadPvpWins();
+    this._pvpConsecWins = 0; // consecutive wins this session
+
     // Store callbacks so the menu can be re-shown after returning from PVP
     this._onMenuDifficulty = (voidSpeedPct) => {
       this._applyVoidRate(voidSpeedPct);
-      // Map difficulty button value to PVP bot difficulty
-      if (voidSpeedPct === 125) this._pvpDifficulty = 'easy';
-      else if (voidSpeedPct === 175) this._pvpDifficulty = 'hard';
-      else this._pvpDifficulty = 'normal';
+    };
+    this._onPvpDifficulty = (diff) => {
+      this._pvpDifficulty = diff;
     };
     this._onMenuPlay = () => { this.startRun(); };
 
-    this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay);
+    this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
     this.ui.updateBestDistance(this.bestDistance);
 
     // Wire up sound controls in the start overlay
@@ -814,6 +840,7 @@ class Game {
     this._maxDoorCombo       = 0;   // highest door combo reached this run
     this._pickupCollected    = false; // whether any pickup was collected this run
     this._shieldUsed         = false; // whether a shield block occurred this run
+    this._pvpWasLast         = false; // whether player was ever in last place during a PvP race
 
     // Level-generation cursor (last world Y for which content was generated)
     this.levelGenY       = this.track.startY;
@@ -986,6 +1013,46 @@ class Game {
     });
 
     const playerWon = entries[0].isPlayer;
+    const playerPos = entries.findIndex(e => e.isPlayer) + 1; // 1-based
+
+    // ── PvP achievement checks ────────────────────────────────────────────────
+    this._grantAchievement('pvp_first_race');
+    if (playerPos <= 2) this._grantAchievement('pvp_podium');
+    if (playerFinished && this._pvpGoalDistance >= 25000) this._grantAchievement('pvp_long_race');
+    if (playerFinished && this._pvpGoalDistance >= 50000) this._grantAchievement('pvp_ultra_race');
+    if (this.coinsCollected >= 10) this._grantAchievement('pvp_coin_collector');
+
+    if (playerWon) {
+      this._pvpConsecWins++;
+      this._pvpTotalWins++;
+      try { localStorage.setItem('mrPvpWins', String(this._pvpTotalWins)); } catch { /* ignore */ }
+
+      this._grantAchievement('pvp_first_win');
+      if (this._pvpTotalWins >= 5)  this._grantAchievement('pvp_5_wins');
+      if (this._pvpTotalWins >= 10) this._grantAchievement('pvp_10_wins');
+      if (this._pvpTotalWins >= 25) this._grantAchievement('pvp_25_wins');
+      if (this._pvpConsecWins >= 3) this._grantAchievement('pvp_triple_threat');
+
+      if (this._pvpDifficulty === 'easy') this._grantAchievement('pvp_easy_win');
+      if (this._pvpDifficulty === 'hard') this._grantAchievement('pvp_hard_win');
+      if (this.pvpBots.length >= 5)       this._grantAchievement('pvp_max_bots');
+
+      if (!this.pvpBots.some(b => b.finished)) this._grantAchievement('pvp_dominant');
+      if (this.elapsed < 45000)               this._grantAchievement('pvp_speedster');
+
+      const second = entries[1];
+      if (second) {
+        const gap = this.distance - second.dist;
+        if (gap > 5000)              this._grantAchievement('pvp_landslide');
+        if (gap >= 0 && gap <= 500)  this._grantAchievement('pvp_close_call');
+      }
+
+      if (this._pvpWasLast) this._grantAchievement('pvp_comeback');
+    } else {
+      this._pvpConsecWins = 0;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     this.ui.showPvpResult(
       playerWon,
       entries,
@@ -995,7 +1062,7 @@ class Game {
         this._init();
         this.state = STATE.MENU;
         this.ui.setPvpHud(false);
-        this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay);
+        this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
       }
     );
   }
@@ -1108,6 +1175,13 @@ class Game {
       // Check if player reached the goal or any bot has finished (first to goal wins)
       const playerDone = this.distance >= this._pvpGoalDistance;
       const anyBotDone = this.pvpBots.some(b => b.finished);
+
+      // Track whether the player is ever in last place (for comeback achievement)
+      if (!playerDone && this.pvpBots.length > 0 &&
+          this.pvpBots.every(b => b.distance > this.distance)) {
+        this._pvpWasLast = true;
+      }
+
       if (playerDone || anyBotDone) {
         this._pvpGameOver();
         return;
@@ -1612,6 +1686,15 @@ class Game {
     }
   }
 
+  _loadPvpWins() {
+    try {
+      const v = parseInt(localStorage.getItem('mrPvpWins') || '0', 10);
+      return Number.isFinite(v) && v >= 0 ? v : 0;
+    } catch {
+      return 0;
+    }
+  }
+
   _grantAchievement(id) {
     if (this._achievements.has(id)) return; // already unlocked
     this._achievements.add(id);
@@ -1701,16 +1784,26 @@ class Game {
       const achList = document.getElementById('achievements-list');
       if (achList) {
         achList.innerHTML = '';
-        for (const def of ACHIEVEMENT_DEFS) {
-          const unlocked = this._achievements.has(def.id);
-          const div = document.createElement('div');
-          div.className = `achievement-entry ${unlocked ? 'unlocked' : 'locked'}`;
-          div.innerHTML =
-            `<span class="ach-icon">${unlocked ? def.icon : '🔒'}</span>` +
-            `<div class="ach-info"><div class="ach-name">${def.name}</div>` +
-            `<div class="ach-desc">${def.desc}</div></div>` +
-            (unlocked ? '<span class="ach-check">✓</span>' : '');
-          achList.appendChild(div);
+        const sections = [
+          { label: '♾️ ENDLESS', defs: ENDLESS_ACHIEVEMENT_DEFS },
+          { label: '⚔️ PVP',     defs: PVP_ACHIEVEMENT_DEFS     },
+        ];
+        for (const section of sections) {
+          const header = document.createElement('div');
+          header.className = 'ach-section-header';
+          header.textContent = section.label;
+          achList.appendChild(header);
+          for (const def of section.defs) {
+            const unlocked = this._achievements.has(def.id);
+            const div = document.createElement('div');
+            div.className = `achievement-entry ${unlocked ? 'unlocked' : 'locked'}`;
+            div.innerHTML =
+              `<span class="ach-icon">${unlocked ? def.icon : '🔒'}</span>` +
+              `<div class="ach-info"><div class="ach-name">${def.name}</div>` +
+              `<div class="ach-desc">${def.desc}</div></div>` +
+              (unlocked ? '<span class="ach-check">✓</span>' : '');
+            achList.appendChild(div);
+          }
         }
       }
       if (achOverlay) { achOverlay.classList.remove('hidden'); achOverlay.classList.add('visible'); }
