@@ -78,6 +78,41 @@ class UI {
     }, delayMs);
   }
 
+  showPvpResult(playerWon, rankings, onRetry, onMenu) {
+    const overlay   = document.getElementById('pvp-overlay');
+    const titleEl   = document.getElementById('pvp-result-title');
+    const subEl     = document.getElementById('pvp-result-sub');
+    const rankEl    = document.getElementById('pvp-rankings');
+    const retryBtn  = document.getElementById('pvp-retry-btn');
+    const menuBtn   = document.getElementById('pvp-menu-btn');
+
+    if (titleEl) {
+      titleEl.textContent = playerWon ? '🏆 YOU WIN!' : '💀 YOU LOSE!';
+      titleEl.className   = `pvp-result-title ${playerWon ? 'win' : 'lose'}`;
+    }
+    if (subEl) {
+      subEl.textContent = playerWon
+        ? 'First to 10,000 m – you crushed the opposition!'
+        : 'Better luck next time!';
+    }
+    if (rankEl) {
+      rankEl.innerHTML = '';
+      const medals = ['🥇', '🥈', '🥉', '4️⃣'];
+      rankings.forEach((r, i) => {
+        const row = document.createElement('div');
+        row.className = `pvp-rank-row rank-${i + 1}`;
+        row.innerHTML =
+          `<span class="pvp-rank-medal">${medals[i]}</span>` +
+          `<span class="pvp-rank-name">${r.name}</span>` +
+          `<span class="pvp-rank-dist">${r.dist} m</span>`;
+        rankEl.appendChild(row);
+      });
+    }
+    if (retryBtn) retryBtn.onclick = () => { this._hide(overlay); onRetry(); };
+    if (menuBtn)  menuBtn.onclick  = () => { this._hide(overlay); onMenu();  };
+    if (overlay)  this._show(overlay);
+  }
+
   hideGameOver() {
     this._hide(this.gameOverOvl);
   }
