@@ -597,9 +597,12 @@ class Game {
 
   // ── Sound control wiring ──────────────────────────────────────────────────
   _initSoundControls() {
-    const toggleBtn = document.getElementById('sound-toggle');
-    const volSlider = document.getElementById('volume-slider');
+    const toggleBtn  = document.getElementById('sound-toggle');
+    const volSlider  = document.getElementById('volume-slider');
+    const defaultBtn = document.getElementById('volume-default-btn');
     if (!toggleBtn || !volSlider) return;
+
+    const VOLUME_DEFAULT = 70;
 
     volSlider.value = this.sound.volume;
     this._updateSoundUI(toggleBtn, volSlider);
@@ -615,6 +618,15 @@ class Game {
       localStorage.setItem('mrVolume', String(v));
       this._updateSoundUI(toggleBtn, volSlider);
     });
+
+    if (defaultBtn) {
+      defaultBtn.addEventListener('click', () => {
+        volSlider.value = VOLUME_DEFAULT;
+        this.sound.setVolume(VOLUME_DEFAULT);
+        localStorage.setItem('mrVolume', String(VOLUME_DEFAULT));
+        this._updateSoundUI(toggleBtn, volSlider);
+      });
+    }
   }
 
   _updateSoundUI(toggleBtn, volSlider) {
@@ -876,9 +888,12 @@ class Game {
   }
 
   _initPvpGoalSlider() {
-    const slider  = document.getElementById('pvp-goal-slider');
-    const valueEl = document.getElementById('pvp-goal-value');
+    const slider     = document.getElementById('pvp-goal-slider');
+    const valueEl    = document.getElementById('pvp-goal-value');
+    const defaultBtn = document.getElementById('pvp-goal-default-btn');
     if (!slider || !valueEl) return;
+
+    const PVP_GOAL_DEFAULT = 10000;
 
     const apply = (v) => {
       this._pvpGoalDistance = v;
@@ -894,6 +909,13 @@ class Game {
     slider.addEventListener('input', () => {
       apply(parseInt(slider.value, 10));
     });
+
+    if (defaultBtn) {
+      defaultBtn.addEventListener('click', () => {
+        slider.value = PVP_GOAL_DEFAULT;
+        apply(PVP_GOAL_DEFAULT);
+      });
+    }
   }
 
   _pvpGameOver() {
