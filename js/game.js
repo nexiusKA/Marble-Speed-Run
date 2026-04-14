@@ -421,9 +421,9 @@ class BotMarble {
       baseSteerChange = 0.45;
       gravFactor      = 0.84;
     } else if (difficulty === 'hard') {
-      baseAggression  = 0.95;
-      baseSteerChange = 0.05;
-      gravFactor      = 1.55;
+      baseAggression  = 0.76;
+      baseSteerChange = 0.06;
+      gravFactor      = 1.24;
     } else { // normal
       baseAggression  = 0.68;
       baseSteerChange = 0.20;
