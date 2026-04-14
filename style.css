@@ -480,6 +480,52 @@ body {
   cursor: pointer;
 }
 
+/* ── Optimal Path toggle row ─────────────────────────────────────── */
+.opt-path-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.opt-path-label {
+  color: #aaaadd;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.btn-toggle {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid #4040a0;
+  border-radius: 8px;
+  color: #666699;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+
+.btn-toggle:hover {
+  background: rgba(60, 0, 120, 0.7);
+  border-color: #8800ff;
+}
+
+.btn-toggle:active {
+  transform: scale(0.93);
+}
+
+.btn-toggle.active {
+  background: rgba(160, 0, 220, 0.35);
+  border-color: #cc44ff;
+  color: #ee99ff;
+  box-shadow: 0 0 8px rgba(200, 60, 255, 0.5);
+}
+
 .btn-small {
   background: rgba(51, 51, 187, 0.5);
   color: #ccccff;
