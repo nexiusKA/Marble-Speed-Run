@@ -58,6 +58,7 @@
         <div class="sound-controls">
           <button id="sound-toggle" class="sound-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
           <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
+          <button id="volume-default-btn" class="btn-small">Default</button>
         </div>
         <div class="steer-controls" style="display:none">
           <div class="steer-label">Steering <span id="steer-value">100</span></div>
@@ -76,6 +77,7 @@
         <div class="steer-controls">
           <div class="steer-label">Void Speed <span id="void-rate-value">100</span>%</div>
           <div class="steer-row">
+            <span class="slider-emoji">🌀</span>
             <input type="range" id="void-rate-slider" class="steer-slider" min="10" max="200" value="100" aria-label="Void speed">
             <button id="void-rate-default-btn" class="btn-small">Default</button>
           </div>
@@ -83,7 +85,9 @@
         <div class="steer-controls">
           <div class="steer-label">Race Distance <span id="pvp-goal-value">10,000</span> m</div>
           <div class="steer-row">
+            <span class="slider-emoji">🏁</span>
             <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="PvP goal distance">
+            <button id="pvp-goal-default-btn" class="btn-small">Default</button>
           </div>
         </div>
         <div class="difficulty-btns">
