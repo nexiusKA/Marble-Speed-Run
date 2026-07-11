@@ -599,9 +599,11 @@ class Game {
     // Store callbacks so the menu can be re-shown after returning from PVP
     this._onMenuDifficulty = (voidSpeedPct) => {
       this._applyVoidRate(voidSpeedPct);
+      this._trackEvent('difficulty_selected', { mode: 'endless', voidSpeedPct });
     };
     this._onPvpDifficulty = (diff) => {
       this._pvpDifficulty = diff;
+      this._trackEvent('difficulty_selected', { mode: 'pvp', difficulty: diff });
     };
     this._onMenuPlay = () => { this.startRun(); };
 
@@ -918,6 +920,7 @@ class Game {
     this.ui.updateTimer(0);
     this.ui.updateCoinCount(0);
     if (this.debugMode) console.log('[DEBUG] Run started');
+    this._trackEvent('session_start', { mode: 'endless' });
     this.sound.start();
   }
 
@@ -945,6 +948,7 @@ class Game {
     this.ui.setPvpHud(true);
     this.ui.updateTimer(0);
     if (this.debugMode) console.log('[DEBUG] PVP run started');
+    this._trackEvent('session_start', { mode: 'pvp', difficulty: this._pvpDifficulty, bots: this._pvpEnemyCount, goal: this._pvpGoalDistance });
     this.sound.start();
   }
 
@@ -1771,15 +1775,23 @@ class Game {
   _updateShopButtons() {
     const voidBtn   = document.getElementById('shop-buy-void');
     const magnetBtn = document.getElementById('shop-buy-magnet');
-    if (voidBtn)   voidBtn.disabled   = this.coinsCollected < SHOP_ITEMS.void_push.cost;
-    if (magnetBtn) magnetBtn.disabled = this.coinsCollected < SHOP_ITEMS.magnet.cost;
+    const useMonetization = window.MarbleNative && window.MarbleNative.isMonetizationEnabled && window.MarbleNative.isMonetizationEnabled();
+    if (voidBtn)   voidBtn.disabled   = !useMonetization && this.coinsCollected < SHOP_ITEMS.void_push.cost;
+    if (magnetBtn) magnetBtn.disabled = !useMonetization && this.coinsCollected < SHOP_ITEMS.magnet.cost;
   }
 
-  _buyShopItem(itemId) {
+  async _buyShopItem(itemId) {
     const item = SHOP_ITEMS[itemId];
-    if (!item || this.coinsCollected < item.cost) return;
-    this.coinsCollected -= item.cost;
-    this.ui.updateCoinCount(this.coinsCollected);
+    if (!item) return;
+    const useMonetization = window.MarbleNative && window.MarbleNative.isMonetizationEnabled && window.MarbleNative.isMonetizationEnabled();
+    if (!useMonetization && this.coinsCollected < item.cost) return;
+    if (useMonetization) {
+      const purchased = await window.MarbleNative.purchaseProduct(itemId);
+      if (!purchased) return;
+    } else {
+      this.coinsCollected -= item.cost;
+      this.ui.updateCoinCount(this.coinsCollected);
+    }
     if (itemId === 'void_push') {
       this.fog.y -= 1000;
       this._showPickupMsg('VOID PUSHED BACK!');
@@ -1787,6 +1799,12 @@ class Game {
       this.magnetTimer = 12;
       this._showPickupMsg('MAGNET ACTIVE!');
     }
+    this._trackEvent('shop_purchase', {
+      itemId,
+      cost: item.cost,
+      currency: useMonetization ? 'iap' : 'coins',
+      coinsRemaining: this.coinsCollected,
+    });
     // Update shop coin display and button states
     const coinEl = document.getElementById('shop-coin-count');
     if (coinEl) coinEl.textContent = this.coinsCollected;
@@ -1879,6 +1897,48 @@ class Game {
     }
     this.ui.updateBestDistance(this.bestDistance);
     this.ui.showGameOver(dist, totalDist, this.bestDistance, isNew, this.coinsCollected, coinBonus, () => this.restart());
+    if (window.MarbleNative) window.MarbleNative.heavyImpact();
+    this._trackEvent('game_over', {
+      mode: this.pvpMode ? 'pvp' : 'endless',
+      distance: dist,
+      coins: this.coinsCollected,
+      totalDistance: totalDist,
+      isNewBest: isNew,
+    });
+  }
+
+  _trackEvent(name, params) {
+    if (window.MarbleNative) window.MarbleNative.trackEvent(name, params);
+  }
+
+  handleBackButton() {
+    if (this.state === STATE.SHOP) {
+      this.closeShop();
+      return true;
+    }
+
+    if (this.state === STATE.RUNNING) {
+      if (this.pvpMode) {
+        this.state = STATE.MENU;
+        this.pvpMode = false;
+        this.ui.setPvpHud(false);
+        this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
+      } else {
+        this.openShop();
+      }
+      return true;
+    }
+
+    if (this.state === STATE.DEAD || this.state === STATE.PVP_OVER) {
+      this.state = STATE.MENU;
+      this.pvpMode = false;
+      this.ui.hideGameOver();
+      this.ui.setPvpHud(false);
+      this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
+      return true;
+    }
+
+    return false;
   }
 
   // ── Render ────────────────────────────────────────────────────────────────

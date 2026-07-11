@@ -101,11 +101,15 @@
 (function () {
   const canvas = document.getElementById('gameCanvas');
   const game   = new Game(canvas);
+  if (window.MarbleNative) window.MarbleNative.setGame(game);
 
   let lastTime  = null;
   let fpsAccum  = 0;   // seconds accumulated for FPS averaging
   let fpsCount  = 0;   // frames counted in this window
   let crashed   = false;
+  let rafId     = 0;
+  let lastState = game.state;
+  if (window.MarbleNative) window.MarbleNative.onGameStateChange(lastState);
 
   function showCrashScreen(err) {
     const ctx = game.ctx;
@@ -142,6 +146,11 @@
 
   function loop(timestamp) {
     if (crashed) return;
+    if (document.hidden) {
+      lastTime = null;
+      rafId = 0;
+      return;
+    }
 
     try {
       if (lastTime === null) lastTime = timestamp;
@@ -159,15 +168,32 @@
 
       game.update(dt);
       game.render();
+      if (game.state !== lastState) {
+        lastState = game.state;
+        if (window.MarbleNative) window.MarbleNative.onGameStateChange(lastState);
+      }
     } catch (err) {
       crashed = true;
       console.error('[Marble Rush] Fatal error in game loop:', err);
+      if (window.MarbleNative) window.MarbleNative.captureError(err, { scope: 'main.loop' });
       showCrashScreen(err);
       return; // stop the loop
     }
 
-    requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(loop);
   }
 
-  requestAnimationFrame(loop);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      lastTime = null;
+      return;
+    }
+    if (!crashed && !rafId) {
+      rafId = requestAnimationFrame(loop);
+    }
+  });
+
+  rafId = requestAnimationFrame(loop);
 })();

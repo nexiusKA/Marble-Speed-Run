@@ -1,0 +1,18 @@
+{
+  "appId": "com.nexiuska.marblerush",
+  "appName": "Marble Rush",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1800,
+      "launchAutoHide": true,
+      "backgroundColor": "#0d0a2a",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP",
+      "androidSplashResourceName": "splash"
+    },
+    "StatusBar": {
+      "overlaysWebView": true
+    }
+  }
+}

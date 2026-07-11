@@ -79,6 +79,10 @@ write(path.join(DIST, 'index.html'), stampedHtml(path.join(ROOT, 'index.html')))
 
 write(path.join(DIST, 'game.html'), stampedHtml(path.join(ROOT, 'index.html')));
 
+// ── privacy-policy.html ────────────────────────────────────────────────────
+
+copy(path.join(ROOT, 'privacy-policy.html'), path.join(DIST, 'privacy-policy.html'));
+
 // ── perk-library.html ──────────────────────────────────────────────────────
 
 write(path.join(DIST, 'perk-library.html'), `<!DOCTYPE html>
@@ -161,6 +165,7 @@ console.log('  dist/index.html');
 console.log('  dist/game.html');
 console.log('  dist/perk-library.html');
 console.log('  dist/showcase.html');
+console.log('  dist/privacy-policy.html');
 console.log('  dist/style.css');
 console.log('  dist/sounds/  (' + fs.readdirSync(path.join(ROOT, 'sounds')).length + ' tracks)');
 const jsDir = path.join(DIST, 'js');

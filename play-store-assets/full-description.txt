@@ -1,0 +1,17 @@
+Marble Rush is a fast, arcade-style speed-run game built for quick retries and long streaks.
+
+Stay ahead of the void, weave through obstacles, and use pickups to survive longer:
+- ⚡ Speed Boost
+- 🧲 Magnet
+- ❄ Void Slow
+- ◆ Shield
+- ⚡⚡ Power Rush
+
+Features:
+- Endless run mode with rising pressure
+- PvP race mode against AI marbles
+- Touch controls optimized for Android
+- Achievements, shop upgrades, and replay-friendly runs
+- Smooth neon visuals and soundtrack
+
+How far can you go before the void catches you?
