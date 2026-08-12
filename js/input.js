@@ -68,6 +68,7 @@ class Input {
         activePointers.add(e.pointerId);
         this[flag] = true;
         el.classList.add('pressed');
+        if (window.MarbleNative) window.MarbleNative.lightImpact();
       };
 
       const release = (e) => {

@@ -144,8 +144,8 @@ body {
   pointer-events: auto;
   transition: background 0.1s, border-color 0.1s;
   outline: none;
-  width: 28px;
-  height: 28px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -684,12 +684,12 @@ body {
   pointer-events: auto;
   transition: background 0.1s, border-color 0.1s;
   outline: none;
-  height: 36px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 0 14px;
+  padding: 0 16px;
   font-size: 18px;
   align-self: flex-start;
 }
