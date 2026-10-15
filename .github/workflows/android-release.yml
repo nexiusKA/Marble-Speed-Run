@@ -29,11 +29,29 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Check tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "${PKG_VERSION}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package.json version ${PKG_VERSION}"
+            exit 1
+          fi
+
       - name: Install dependencies
         run: npm ci
 
       - name: Run regression tests
         run: npm run test:regression
+        env:
+          RELEASE_CHECK: ${{ startsWith(github.ref, 'refs/tags/') && '1' || '0' }}
+
+      - name: Run browser tests (E2E)
+        run: |
+          npm run build
+          npm install --no-save playwright@1.56.0
+          npx playwright install --with-deps chromium
+          npm run test:e2e
 
       - name: Build web assets and sync Android
         run: npm run cap:sync:android
@@ -66,6 +84,7 @@ jobs:
           cd android
           ./gradlew bundleRelease
         env:
+          BUILD_NUMBER: ${{ github.run_number }}
           ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}

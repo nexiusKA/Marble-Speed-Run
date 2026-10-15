@@ -6,6 +6,12 @@ def keyAlias = System.getenv('ANDROID_KEY_ALIAS')
 def keyPassword = System.getenv('ANDROID_KEY_PASSWORD')
 def hasSigningConfig = keystorePath && keystorePassword && keyAlias && keyPassword
 
+// versionName comes from package.json, versionCode from the CI run number
+// (BUILD_NUMBER). Google Play requires a higher versionCode for every upload.
+def packageJson = new groovy.json.JsonSlurper().parse(file('../../package.json'))
+def appVersionName = packageJson.version
+def appVersionCode = (System.getenv('BUILD_NUMBER') ?: '1') as Integer
+
 android {
     namespace = "com.nexiuska.marblerush"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -13,8 +19,8 @@ android {
         applicationId "com.nexiuska.marblerush"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -1,12 +1,8 @@
-# Marble Speed Run v0.1 - Initial Release
+# Marble Rush 1.0.0 – First Google Play release
 
-## Release Notes
-
-This is the initial release of the Marble Speed Run game. It features:
-
-- Engaging gameplay where players navigate a marble through various obstacles.
-- Beautifully designed levels with increasing difficulty.
-- Support for multiple platforms.
-- Basic sound effects and background music.
-
-We hope you enjoy playing Marble Speed Run!
+- Endless run mode: outrun the void, collect coins and pickups (Speed Boost, Magnet, Void Slow, Shield, Ghost) and survive Power Rush corridors
+- PvP race mode against up to 10 AI marbles
+- Coin shop, achievements and saved best distance
+- Touch controls, haptics and Android back-button support
+- Six original soundtrack tracks
+- No ads, no tracking, no in-app purchases

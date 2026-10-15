@@ -13,7 +13,8 @@
   set('gi-date',   BUILD_INFO.date);
   if (BUILD_INFO.run !== 'dev') {
     const tag = document.getElementById('version-tag');
-    if (tag) tag.textContent = `v0.3 #${BUILD_INFO.run} ${sha7}`;
+    // Keep the version stamped into the HTML by scripts/build.js (from package.json)
+    if (tag) tag.textContent = `${tag.textContent.trim().split(' ')[0]} #${BUILD_INFO.run} ${sha7}`;
   }
 })();
 
@@ -102,6 +103,8 @@
   const canvas = document.getElementById('gameCanvas');
   const game   = new Game(canvas);
   if (window.MarbleNative) window.MarbleNative.setGame(game);
+  // Exposed for automated browser tests (tests/e2e.test.js)
+  window.__marbleGame = game;
 
   let lastTime  = null;
   let fpsAccum  = 0;   // seconds accumulated for FPS averaging
@@ -175,7 +178,6 @@
     } catch (err) {
       crashed = true;
       console.error('[Marble Rush] Fatal error in game loop:', err);
-      if (window.MarbleNative) window.MarbleNative.captureError(err, { scope: 'main.loop' });
       showCrashScreen(err);
       return; // stop the loop
     }
