@@ -144,13 +144,17 @@ async function newPage(browser, baseUrl, errors, storage) {
     const page = await newPage(browser, baseUrl, errors);
     await page.evaluate(() => window.__marbleGame.startRun());
     await simulate(page, 60 * 6);
+    // Move the void onto the marble and advance one frame in the SAME evaluate
+    // call – otherwise the real-time game loop can roll the marble out of reach
+    // in between (timing-dependent flake on CI).
     const dist = await page.evaluate(() => {
       const g = window.__marbleGame;
       g.shieldTimer = 0;
+      const d = g.distance;
       g.fog.y = g.marble.y;                       // let the void catch the marble
-      return g.distance;
+      g.update(1 / 60);
+      return d;
     });
-    await simulate(page, 2);
     const after = await page.evaluate(() => ({
       state: window.__marbleGame.state,
       best: localStorage.getItem('mrBestDist'),
@@ -171,13 +175,13 @@ async function newPage(browser, baseUrl, errors, storage) {
     const page = await newPage(browser, baseUrl, errors);
     await page.evaluate(() => window.__marbleGame.startRun());
     await simulate(page, 60 * 4);
-    await page.evaluate(() => {
+    const s = await page.evaluate(() => {
       const g = window.__marbleGame;
       g.shieldTimer = 10;
-      g.fog.y = g.marble.y;
+      g.fog.y = g.marble.y;                       // same frame, see game-over test
+      g.update(1 / 60);
+      return { state: g.state, shield: g.shieldTimer };
     });
-    await simulate(page, 2);
-    const s = await page.evaluate(() => ({ state: window.__marbleGame.state, shield: window.__marbleGame.shieldTimer }));
     assert(s.state === 'running', `shield did not save the marble (state "${s.state}")`);
     assert(s.shield <= 0, 'shield was not consumed');
     assert(errors.length === 0, errors.join('\n'));
