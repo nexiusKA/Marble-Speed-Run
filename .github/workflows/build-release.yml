@@ -57,6 +57,13 @@ jobs:
       - name: Run regression tests
         run: npm run test:regression
 
+      - name: Run browser tests (E2E)
+        run: |
+          npm run build
+          npm install --no-save playwright@1.56.0
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+
       - name: Build
         run: npm run build
         env:

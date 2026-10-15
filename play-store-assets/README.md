@@ -8,6 +8,9 @@
 - `full-description.txt` — Play full description
 
 Before release:
-- Replace placeholder screenshots with real gameplay captures
-- Complete content rating questionnaire in Play Console
-- Link hosted privacy policy URL (`/privacy-policy.html`)
+- Replace placeholder screenshots with real gameplay captures (min. 2, portrait)
+- Fix the feature graphic: the title is cut off at the right edge
+- Fill in contact name and e-mail in `privacy-policy.html` (tag builds fail until done)
+- Privacy policy URL for Play Console: `https://nexiuska.github.io/Marble-Speed-Run/privacy-policy.html`
+- Play Console forms: content rating (IARC), Data safety ("no data collected"),
+  advertising ID ("no"), target audience, app access ("no restrictions")

@@ -84,6 +84,23 @@ assert(pkg.name === 'marble-speed-run',    'package name is marble-speed-run');
 assert(typeof pkg.scripts.build === 'string',          'build script defined');
 assert(typeof pkg.scripts['test:regression'] === 'string', 'test:regression script defined');
 
+// ── 6. Android release config ─────────────────────────────────────────────
+
+console.log('\n[6] Android release config');
+const gradle = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8');
+assert(/versionCode appVersionCode/.test(gradle), 'versionCode comes from the CI build number');
+assert(/versionName appVersionName/.test(gradle), 'versionName comes from package.json');
+const allDeps = Object.keys(pkg.dependencies || {}).concat(Object.keys(pkg.devDependencies || {}));
+const bannedSdks = ['@capacitor-firebase/analytics', '@sentry/capacitor', '@revenuecat/purchases-capacitor'];
+assert(!allDeps.some(d => bannedSdks.includes(d)),
+  'no analytics / crash-reporting / IAP SDKs (privacy policy says no data is collected)');
+
+// Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
+if (process.env.RELEASE_CHECK === '1') {
+  const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');
+  assert(!/PLACEHOLDER/.test(policy), 'privacy policy has real contact name and e-mail (no PLACEHOLDER left)');
+}
+
 // ── summary ───────────────────────────────────────────────────────────────
 
 console.log(`\nResults: ${passed} passed, ${failed} failed`);
