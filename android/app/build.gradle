@@ -1,10 +1,13 @@
 apply plugin: 'com.android.application'
 
-def keystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
-def keystorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
-def keyAlias = System.getenv('ANDROID_KEY_ALIAS')
-def keyPassword = System.getenv('ANDROID_KEY_PASSWORD')
-def hasSigningConfig = keystorePath && keystorePassword && keyAlias && keyPassword
+// Signing values come from CI secrets. The variable names must differ from the
+// signingConfig properties (keyAlias, keyPassword, ...) – otherwise Groovy tries
+// to call the String variable as a method and the build fails.
+def releaseStoreFile     = System.getenv('ANDROID_KEYSTORE_PATH')
+def releaseStorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
+def releaseKeyAlias      = System.getenv('ANDROID_KEY_ALIAS')
+def releaseKeyPassword   = System.getenv('ANDROID_KEY_PASSWORD')
+def hasSigningConfig = releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
 
 // versionName comes from package.json, versionCode from the CI run number
 // (BUILD_NUMBER). Google Play requires a higher versionCode for every upload.
@@ -31,10 +34,10 @@ android {
     signingConfigs {
         if (hasSigningConfig) {
             release {
-                storeFile file(keystorePath)
-                storePassword keystorePassword
-                keyAlias keyAlias
-                keyPassword keyPassword
+                storeFile = file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
             }
         }
     }

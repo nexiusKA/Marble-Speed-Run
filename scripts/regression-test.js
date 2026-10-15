@@ -90,6 +90,8 @@ console.log('\n[6] Android release config');
 const gradle = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8');
 assert(/versionCode appVersionCode/.test(gradle), 'versionCode comes from the CI build number');
 assert(/versionName appVersionName/.test(gradle), 'versionName comes from package.json');
+assert(!/^\s*(keyAlias|keyPassword|storePassword)\s+(keyAlias|keyPassword|storePassword)\s*$/m.test(gradle),
+  'signingConfig does not call a same-named variable (Groovy String.call() error)');
 const allDeps = Object.keys(pkg.dependencies || {}).concat(Object.keys(pkg.devDependencies || {}));
 const bannedSdks = ['@capacitor-firebase/analytics', '@sentry/capacitor', '@revenuecat/purchases-capacitor'];
 assert(!allDeps.some(d => bannedSdks.includes(d)),
