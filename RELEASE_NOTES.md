@@ -1,4 +1,4 @@
-# Marble Rush 1.0.1 – First Google Play release
+# Marble Rush 1.0.2 – First Google Play release
 
 - Endless run mode: outrun the void, collect coins and pickups (Speed Boost, Magnet, Void Slow, Shield, Ghost) and survive Power Rush corridors
 - PvP race mode against up to 10 AI marbles
