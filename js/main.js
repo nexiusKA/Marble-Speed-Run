@@ -175,7 +175,6 @@
     } catch (err) {
       crashed = true;
       console.error('[Marble Rush] Fatal error in game loop:', err);
-      if (window.MarbleNative) window.MarbleNative.captureError(err, { scope: 'main.loop' });
       showCrashScreen(err);
       return; // stop the loop
     }
