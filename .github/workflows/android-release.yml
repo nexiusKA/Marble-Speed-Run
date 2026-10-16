@@ -72,23 +72,45 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: Prepare keystore
+      - name: Prepare keystore and build signed AAB
         run: |
-          echo "${ANDROID_KEYSTORE_BASE64}" | base64 --decode > /tmp/release-key.jks
-          echo "ANDROID_KEYSTORE_PATH=/tmp/release-key.jks" >> "$GITHUB_ENV"
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          set -euo pipefail
+          # Strip stray spaces / line breaks that sneak in when pasting secrets.
+          trim() { printf '%s' "$1" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'; }
+          STORE_PW="$(trim "$RAW_KEYSTORE_PASSWORD")"
+          KEY_PW="$(trim "$RAW_KEY_PASSWORD")"
+          ALIAS="$(trim "$RAW_KEY_ALIAS")"
+          echo "::add-mask::$STORE_PW"
+          echo "::add-mask::$KEY_PW"
 
-      - name: Build signed AAB
-        run: |
+          printf '%s' "$RAW_KEYSTORE_BASE64" | tr -d ' \r\n' | base64 --decode > /tmp/release-key.jks
+
+          # Check keystore + password + alias before the long Gradle build,
+          # and report problems as a readable annotation.
+          if ! keytool -list -keystore /tmp/release-key.jks -storepass "$STORE_PW" -alias "$ALIAS" > /dev/null 2>/tmp/keytool.err; then
+            echo "::error title=Signing key check failed::$(grep -v '^Picked up' /tmp/keytool.err | head -3 | tr '\n' ' ') – check ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD and ANDROID_KEY_ALIAS secrets."
+            exit 1
+          fi
+          echo "Signing key check passed (alias: $ALIAS)"
+
+          export ANDROID_KEYSTORE_PATH=/tmp/release-key.jks
+          export ANDROID_KEYSTORE_PASSWORD="$STORE_PW"
+          export ANDROID_KEY_ALIAS="$ALIAS"
+          export ANDROID_KEY_PASSWORD="$KEY_PW"
+
           cd android
-          ./gradlew bundleRelease
+          if ! ./gradlew bundleRelease 2>&1 | tee /tmp/gradle.log; then
+            # Surface Gradle's "What went wrong" block as an annotation
+            msg="$(sed -n '/What went wrong/,/\* Try/p' /tmp/gradle.log | grep -v -e 'What went wrong' -e '\* Try' -e 'Deprecated Gradle' -e 'warning-mode' -e 'For more on this' | head -8 | tr '\n' ' ')"
+            echo "::error title=Gradle build failed::${msg:-see log}"
+            exit 1
+          fi
         env:
           BUILD_NUMBER: ${{ github.run_number }}
-          ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          RAW_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          RAW_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          RAW_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          RAW_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
