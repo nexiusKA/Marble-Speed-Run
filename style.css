@@ -16,6 +16,9 @@ body {
   height: 100vh;
   /* Use dvh on browsers that support it so the address bar is excluded */
   height: 100dvh;
+  /* Keep the game clear of the status bar, notch and gesture bar
+     (the WebView draws edge-to-edge); main.js subtracts this when scaling. */
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
   font-family: 'Segoe UI', Arial, sans-serif;
   overflow: hidden;
 }
@@ -23,7 +26,7 @@ body {
 #game-container {
   position: relative;
   width: 480px;
-  height: 792px;
+  height: 792px; /* set by main.js to CANVAS_H + CONTROLS_H (taller on tall phones) */
   border-radius: 18px 18px 26px 26px;
   border: 3px solid #8800ff;
   box-shadow:
@@ -39,7 +42,7 @@ body {
 #gameCanvas {
   display: block;
   width: 480px;
-  height: 700px;
+  height: 700px; /* set by main.js to CANVAS_H */
   border: none;
   border-radius: 15px 15px 0 0;
   background: #07071a;
@@ -222,6 +225,11 @@ body {
   background: rgba(255,255,255,0.04);
   padding: 8px 16px;
   border-radius: 8px;
+}
+
+/* Keyboard hints are useless on phones – the on-screen buttons explain themselves */
+@media (hover: none) and (pointer: coarse) {
+  .controls-info { display: none; }
 }
 
 .finish-title {

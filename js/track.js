@@ -2,11 +2,24 @@
 // Endless procedurally generated track.  Wall positions are defined by a
 // rolling list of knots [worldY, leftX, rightX] interpolated linearly.
 //
-// World coordinates: canvas width = 480, canvas height = 700 (logical).
+// World coordinates: canvas width = 480, canvas height = 700–1000 (logical).
 // The camera scrolls vertically so the marble stays near the upper-third.
 
 const CANVAS_W = 480;
-const CANVAS_H = 700;
+// Height of the touch-control strip below the canvas (part of #game-container)
+const CONTROLS_H = 92;
+// The logical height follows the screen's aspect ratio so tall phones (20:9 and
+// up) are filled instead of letterboxed. Desktop and 16:9 screens keep 700.
+// Fixed once at load: all game coordinates are derived from it.
+const CANVAS_H = (function () {
+  const sw = screen.width, sh = screen.height;
+  let w = window.innerWidth, h = window.innerHeight;
+  // In the Android WebView the viewport is sometimes not final yet when the
+  // scripts run, so fall back to the screen size if it looks implausible.
+  if (!w || !h || (sw && w > sw)) { w = sw; h = sh; }
+  if (!w || !h) return 700;
+  return Math.round(clamp(CANVAS_W * h / w - CONTROLS_H, 700, 1000));
+})();
 
 const START_X = 240;
 const START_Y = 60;
