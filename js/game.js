@@ -25,6 +25,11 @@ const POWER_RUSH_INTERVAL            = 10000; // metres to the first power-rush 
 const POWER_RUSH_SUBSEQUENT_INTERVAL = 15000; // metres between each subsequent power-rush
 const NORMAL_DOOR_INTERVAL      = 5000;  // min world-units between normal-mode door gates
 
+// Endless difficulty = void speed in % (presets: Easy 75, Normal 100, Hard 150, Insane 200)
+const VOID_RATE_MIN     = 50;
+const VOID_RATE_MAX     = 200;
+const VOID_RATE_DEFAULT = 100;
+
 // PVP mode
 const PVP_GOAL_DEFAULT   = 10000; // metres – default race distance
 const PVP_ENEMY_DEFAULT  = 10;     // default number of bot opponents
@@ -579,12 +584,11 @@ class Game {
     const fallRaw         = parseInt(localStorage.getItem('mrFallSpeed') || '100', 10);
     this._fallSpeedSetting = Number.isFinite(fallRaw) && fallRaw >= 1 && fallRaw <= 100 ? fallRaw : 100;
 
-    // Void speed (10–200, default 100). Persisted across sessions.
+    // Void speed (VOID_RATE_MIN–VOID_RATE_MAX %, default 100). Persisted across
+    // sessions; values saved by older versions (10–49) are raised to the new minimum.
     const voidRateRaw      = parseInt(localStorage.getItem('mrVoidRate') || '100', 10);
-    this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= 200 ? voidRateRaw : 100;
-
-    // Optimal path display. Persisted across sessions.
-    this.showOptimalPath = localStorage.getItem('mrOptimalPath') === '1';
+    this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= VOID_RATE_MAX
+      ? Math.max(VOID_RATE_MIN, voidRateRaw) : VOID_RATE_DEFAULT;
 
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
@@ -620,9 +624,6 @@ class Game {
 
     // Wire up void speed controls in the start overlay
     this._initVoidRateControls();
-
-    // Wire up optimal path toggle in the start overlay
-    this._initOptimalPathToggle();
 
     // Achievements – loaded once and persisted across runs
     this._achievements = this._loadAchievements();
@@ -766,68 +767,33 @@ class Game {
 
   // ── Void speed control wiring ─────────────────────────────────────────────
   _initVoidRateControls() {
-    const slider     = document.getElementById('void-rate-slider');
-    const valueEl    = document.getElementById('void-rate-value');
-    const defaultBtn = document.getElementById('void-rate-default-btn');
-    if (!slider || !valueEl || !defaultBtn) return;
-
-    const VOID_RATE_DEFAULT = 100;
-
-    const apply = (v) => {
-      v = Math.max(10, Math.min(200, v));
-      this._voidRateSetting = v;
-      valueEl.textContent = v;
-      slider.style.setProperty('--val', `${(v - 10) / 190 * 100}%`);
-      localStorage.setItem('mrVoidRate', String(v));
-    };
-
-    // Restore saved value
-    slider.value = this._voidRateSetting;
-    apply(this._voidRateSetting);
-
-    slider.addEventListener('input', () => {
-      apply(parseInt(slider.value, 10));
-    });
-
-    defaultBtn.addEventListener('click', () => {
-      slider.value = VOID_RATE_DEFAULT;
-      apply(VOID_RATE_DEFAULT);
-    });
+    const slider = document.getElementById('void-rate-slider');
+    if (!slider) return;
+    this._applyVoidRate(this._voidRateSetting); // restore saved value
+    slider.addEventListener('input', () => this._applyVoidRate(parseInt(slider.value, 10)));
   }
 
-  // Maps the 10–200 void-rate setting to a speed multiplier.
-  // At 100 (default) the void moves at normal speed.
+  // Maps the void-rate setting to a speed multiplier.
+  // At 100 (Normal, the default) the void moves at normal speed.
   _voidRateMult() {
     return this._voidRateSetting / 100;
   }
 
-  // Applies a void rate value (e.g. from a difficulty button) and syncs the slider UI.
+  // Applies a void rate (from the slider or a difficulty preset), saves it and
+  // syncs the slider, the % readout and the highlighted preset (none = custom).
   _applyVoidRate(voidSpeedPct) {
-    voidSpeedPct = Math.max(10, Math.min(200, voidSpeedPct));
+    voidSpeedPct = Math.max(VOID_RATE_MIN, Math.min(VOID_RATE_MAX, voidSpeedPct));
     this._voidRateSetting = voidSpeedPct;
     localStorage.setItem('mrVoidRate', String(voidSpeedPct));
     const slider  = document.getElementById('void-rate-slider');
     const valueEl = document.getElementById('void-rate-value');
-    if (slider)  { slider.value = voidSpeedPct; slider.style.setProperty('--val', `${(voidSpeedPct - 10) / 190 * 100}%`); }
-    if (valueEl) { valueEl.textContent = voidSpeedPct; }
-  }
-
-  // ── Optimal path toggle wiring ────────────────────────────────────────────
-  _initOptimalPathToggle() {
-    const btn = document.getElementById('opt-path-btn');
-    if (!btn) return;
-
-    const update = () => {
-      btn.textContent = this.showOptimalPath ? 'ON' : 'OFF';
-      btn.classList.toggle('active', this.showOptimalPath);
-    };
-
-    update();
-
-    btn.addEventListener('click', () => {
-      this.showOptimalPath = !this.showOptimalPath;
-      localStorage.setItem('mrOptimalPath', this.showOptimalPath ? '1' : '0');
-      update();
+    if (slider) {
+      slider.value = voidSpeedPct;
+      slider.style.setProperty('--val', `${(voidSpeedPct - VOID_RATE_MIN) / (VOID_RATE_MAX - VOID_RATE_MIN) * 100}%`);
+    }
+    if (valueEl) valueEl.textContent = voidSpeedPct;
+    document.querySelectorAll('#menu-panel-endless [data-void-rate]').forEach((btn) => {
+      btn.classList.toggle('difficulty-selected', parseInt(btn.dataset.voidRate, 10) === voidSpeedPct);
     });
   }
 
@@ -1859,7 +1825,7 @@ class Game {
       const earned  = this._achievements.size;
       const total   = ACHIEVEMENT_DEFS.length;
       const achTitleEl = achOverlay ? achOverlay.querySelector('.achievements-title') : null;
-      if (achTitleEl) achTitleEl.textContent = `🏆 ACHIEVEMENTS (${earned}/${total})`;
+      if (achTitleEl) achTitleEl.innerHTML = `🏆 Achievements<span class="achievements-count">${earned}/${total}</span>`;
       const achList = document.getElementById('achievements-list');
       if (achList) {
         achList.innerHTML = '';
@@ -2020,7 +1986,6 @@ class Game {
       this._renderSynthwaveBg(ctx);
       this._renderStars(ctx);
       this.track.render(ctx, this.cameraY);
-      if (this.showOptimalPath) this._renderOptimalPath(ctx);
       for (const obs of this.obstacles) obs.render(ctx, this.cameraY);
       for (const pu of this.pickups) pu.render(ctx, this.cameraY);
       for (const coin of this.coins) coin.render(ctx, this.cameraY);
@@ -2276,101 +2241,6 @@ class Game {
   }
 
   // ── Power Rush background ─────────────────────────────────────────────────
-  _renderOptimalPath(ctx) {
-    // Draw the track's centre-line (midpoint between left and right walls)
-    // as a fairy-dust sparkle effect ahead of the marble.
-    const t       = Date.now() / 1000;
-    const marbleY = this.marble.y;
-    const step    = 18;           // world-units between sample points
-    const lookahead = CANVAS_H;  // how far ahead to draw (one screen height)
-
-    ctx.save();
-    ctx.translate(0, -this.cameraY);
-
-    for (let i = 0; i < lookahead / step; i++) {
-      const wy = marbleY + i * step;
-      const { left, right } = this.track.getWallsAtY(wy);
-      let cx = (left + right) / 2;
-
-      // Steer the path around static obstacles ahead of the marble
-      for (const obs of this.obstacles) {
-        if (obs instanceof DoorGate) {
-          // Gradually blend toward the open door centre as we approach the gate
-          const approachZone = 80;
-          const dy = obs.worldY - wy;
-          if (dy >= 0 && dy <= approachZone) {
-            const blend   = 1 - dy / approachZone;
-            const door    = obs.doors[obs.correctDoor];
-            const targetX = door.x + door.w / 2;
-            cx = cx + (targetX - cx) * blend;
-          }
-        } else if (obs instanceof WallBlocker) {
-          // Nudge path toward the open side of the track around the blocker
-          const influenceZone = step * 2;
-          const dy = Math.abs(obs.worldY - wy);
-          if (dy <= influenceZone) {
-            const blend = 1 - dy / influenceZone;
-            const targetX = obs.side === 'left'
-              ? (obs.bx + right) / 2   // open side is between tip and right wall
-              : (left + obs.ax) / 2;   // open side is between left wall and tip
-            cx = cx + (targetX - cx) * blend;
-          }
-        }
-      }
-
-      // Oscillate alpha and size with a wave offset per sample
-      const wave    = Math.sin(t * 2.8 + i * 0.55) * 0.5 + 0.5;  // 0–1
-      const twinkle = Math.sin(t * 5.1 + i * 1.3)  * 0.5 + 0.5;  // 0–1
-
-      // Fade in from the marble position and fade out at the lookahead limit
-      const distFrac  = i / (lookahead / step);         // 0 near marble, 1 far
-      const nearFade  = Math.min(i / 4, 1);             // fade in over first 4 steps
-      const farFade   = 1 - distFrac * distFrac;        // quadratic fade-out
-      const baseAlpha = nearFade * farFade * (0.35 + wave * 0.3);
-
-      if (baseAlpha <= 0.01) continue;
-
-      // Large soft glow dot
-      const glowR = 6 + wave * 3;
-      const grad  = ctx.createRadialGradient(cx, wy, 0, cx, wy, glowR);
-      grad.addColorStop(0,   `rgba(220, 160, 255, ${baseAlpha * 0.9})`);
-      grad.addColorStop(0.4, `rgba(180, 80,  255, ${baseAlpha * 0.5})`);
-      grad.addColorStop(1,   `rgba(120, 0,   200, 0)`);
-      ctx.beginPath();
-      ctx.arc(cx, wy, glowR, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Tiny bright sparkle core
-      if (twinkle > 0.55) {
-        const sparkAlpha = (twinkle - 0.55) / 0.45 * baseAlpha * 1.8;
-        ctx.beginPath();
-        ctx.arc(cx, wy, 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 220, 255, ${Math.min(sparkAlpha, 0.9)})`;
-        ctx.fill();
-      }
-
-      // Cross-hair sparkle lines at peak twinkle moments
-      if (twinkle > 0.78) {
-        const len   = 4 + twinkle * 3;
-        const alpha = (twinkle - 0.78) / 0.22 * baseAlpha * 1.4;
-        ctx.save();
-        ctx.shadowBlur  = 6;
-        ctx.shadowColor = 'rgba(200, 100, 255, 0.9)';
-        ctx.strokeStyle = `rgba(240, 200, 255, ${Math.min(alpha, 0.85)})`;
-        ctx.lineWidth   = 0.8;
-        ctx.lineCap     = 'round';
-        ctx.beginPath();
-        ctx.moveTo(cx - len, wy); ctx.lineTo(cx + len, wy);
-        ctx.moveTo(cx, wy - len); ctx.lineTo(cx, wy + len);
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-
-    ctx.restore();
-  }
-
   _renderPowerRushBg(ctx) {
     // Deep electric-gold sky
     const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H);

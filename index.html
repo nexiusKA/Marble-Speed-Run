@@ -108,22 +108,18 @@
               <button id="fall-default-btn" class="btn-small">Default</button>
             </div>
           </div>
-          <div class="steer-controls">
-            <div class="steer-label">Void Speed <span id="void-rate-value">100</span>%</div>
-            <div class="steer-row">
-              <span class="slider-emoji">🌀</span>
-              <input type="range" id="void-rate-slider" class="steer-slider" min="10" max="200" value="100" aria-label="Void speed">
-              <button id="void-rate-default-btn" class="btn-small">Default</button>
+          <!-- Difficulty = how fast the void chases you. Presets set the slider;
+               the slider fine-tunes between them (50–200 %, Normal = 100 %). -->
+          <div class="steer-controls difficulty-card">
+            <div class="steer-label">Difficulty <span class="void-rate-readout">🌀 Void speed <span id="void-rate-value">100</span>%</span></div>
+            <div class="difficulty-btns">
+              <button id="easy-btn"   class="btn btn-easy"   data-void-rate="75">EASY</button>
+              <button id="normal-btn" class="btn btn-normal" data-void-rate="100">NORMAL</button>
+              <button id="hard-btn"   class="btn btn-hard"   data-void-rate="150">HARD</button>
+              <button id="insane-btn" class="btn btn-insane" data-void-rate="200">INSANE</button>
             </div>
-          </div>
-          <div class="opt-path-row">
-            <span class="opt-path-label">✨ Optimal Path</span>
-            <button id="opt-path-btn" class="btn-toggle" aria-label="Toggle optimal path display">OFF</button>
-          </div>
-          <div class="difficulty-btns">
-            <button id="easy-btn"   class="btn btn-easy">EASY</button>
-            <button id="normal-btn" class="btn btn-normal">NORMAL</button>
-            <button id="hard-btn"   class="btn btn-hard">HARD</button>
+            <input type="range" id="void-rate-slider" class="steer-slider" min="50" max="200" step="5" value="100" aria-label="Void speed">
+            <div class="void-rate-scale"><span>Slower</span><span>Faster</span></div>
           </div>
           <button id="play-btn" class="btn btn-play">PLAY</button>
           <button id="back-endless-btn" class="btn btn-back">← BACK</button>
@@ -196,8 +192,8 @@
         <h2 id="pvp-result-title" class="pvp-result-title">PVP</h2>
         <p id="pvp-result-sub" class="pvp-result-sub"></p>
         <div id="pvp-rankings" class="pvp-rankings"></div>
-        <button id="pvp-retry-btn" class="btn btn-pvp-sm">PLAY PVP AGAIN</button>
-        <button id="pvp-menu-btn" class="btn" style="margin-top:8px;font-size:14px;padding:9px 24px;">MAIN MENU</button>
+        <button id="pvp-retry-btn" class="btn btn-pvp-sm">RACE AGAIN</button>
+        <button id="pvp-menu-btn" class="btn">MAIN MENU</button>
       </div>
     </div>
 

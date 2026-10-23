@@ -208,6 +208,35 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('difficulty presets set the void speed and the slider highlights the matching preset', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrVoidRate: '20' });
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      const sel = () => [...document.querySelectorAll('#menu-panel-endless .difficulty-selected')].map(b => b.id);
+      const out = { oldLow: g._voidRateSetting };
+      document.getElementById('endless-btn').click();
+      for (const id of ['easy-btn', 'normal-btn', 'hard-btn', 'insane-btn']) {
+        document.getElementById(id).click();
+        out[id] = { rate: g._voidRateSetting, sel: sel() };
+      }
+      const slider = document.getElementById('void-rate-slider');
+      slider.value = '135'; slider.dispatchEvent(new Event('input'));
+      out.custom = { rate: g._voidRateSetting, sel: sel(), stored: localStorage.getItem('mrVoidRate') };
+      return out;
+    });
+    assert(r.oldLow === 50, `old low save not raised to the new minimum (got ${r.oldLow})`);
+    const want = { 'easy-btn': 75, 'normal-btn': 100, 'hard-btn': 150, 'insane-btn': 200 };
+    for (const [id, rate] of Object.entries(want)) {
+      assert(r[id].rate === rate, `${id}: void speed ${r[id].rate}, expected ${rate}`);
+      assert(r[id].sel.length === 1 && r[id].sel[0] === id, `${id}: highlighted ${r[id].sel.join(',')}`);
+    }
+    assert(r.custom.rate === 135 && r.custom.sel.length === 0 && r.custom.stored === '135',
+      `custom slider value not applied (${JSON.stringify(r.custom)})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('corrupted save data falls back to safe defaults', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, {

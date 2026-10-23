@@ -701,51 +701,6 @@ body {
   cursor: pointer;
 }
 
-/* ── Optimal Path toggle row ─────────────────────────────────────── */
-.opt-path-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.opt-path-label {
-  color: #aaaadd;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
-
-.btn-toggle {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1.5px solid #4040a0;
-  border-radius: 8px;
-  color: #666699;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 5px 14px;
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
-  outline: none;
-}
-
-.btn-toggle:hover {
-  background: rgba(60, 0, 120, 0.7);
-  border-color: #8800ff;
-}
-
-.btn-toggle:active {
-  transform: scale(0.93);
-}
-
-.btn-toggle.active {
-  background: rgba(160, 0, 220, 0.35);
-  border-color: #cc44ff;
-  color: #ee99ff;
-  box-shadow: 0 0 8px rgba(200, 60, 255, 0.5);
-}
 
 .btn-small {
   background: rgba(51, 51, 187, 0.5);
@@ -911,8 +866,7 @@ body {
 }
 
 #menu-panel-endless .steer-controls,
-#menu-panel-pvp .steer-controls,
-#menu-panel-endless .opt-path-row {
+#menu-panel-pvp .steer-controls {
   margin-bottom: 10px;
   padding: 12px 14px;
   border-radius: 14px;
@@ -920,23 +874,14 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-#menu-panel-endless .opt-path-row {
-  justify-content: space-between;
-}
-
 #menu-panel-endless .steer-label,
-#menu-panel-pvp .steer-label,
-#menu-panel-endless .opt-path-label {
+#menu-panel-pvp .steer-label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #8a8ac0;
   margin-bottom: 8px;
-}
-
-#menu-panel-endless .opt-path-label {
-  margin-bottom: 0;
 }
 
 #menu-panel-endless .steer-label span,
@@ -963,20 +908,12 @@ body {
 }
 
 #menu-panel-endless .btn-small,
-#menu-panel-pvp .btn-small,
-#menu-panel-endless .btn-toggle {
+#menu-panel-pvp .btn-small {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.06);
   color: #c8c8f0;
   padding: 5px 12px;
-}
-
-#menu-panel-endless .btn-toggle.active {
-  background: rgba(170, 80, 255, 0.3);
-  border-color: #c77dff;
-  color: #fff;
-  box-shadow: 0 0 10px rgba(200, 90, 255, 0.45);
 }
 
 /* Difficulty: tinted pills instead of loud gradients; the pick fills in */
@@ -1021,7 +958,54 @@ body {
 #menu-panel-endless .btn-normal,  #menu-panel-pvp .btn-normal  { --tint: 255, 210, 63; }
 #menu-panel-endless .btn-hard,    #menu-panel-pvp .btn-hard    { --tint: 255, 84, 112; }
 #menu-panel-pvp .btn-extreme { --tint: 199, 125, 255; }
-#menu-panel-pvp .btn-insane  { --tint: 255, 138, 61; }
+#menu-panel-endless .btn-insane, #menu-panel-pvp .btn-insane { --tint: 255, 138, 61; }
+
+/* Endless difficulty card: presets on top, fine-tune slider below */
+.difficulty-card .steer-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+#menu-panel-endless .void-rate-readout {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: #8a8ac0;
+}
+
+#menu-panel-endless .void-rate-readout span {
+  font-size: 13px;
+  color: #fff;
+}
+
+#menu-panel-endless .difficulty-card .difficulty-btns {
+  flex-wrap: nowrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+#menu-panel-endless .difficulty-card .difficulty-btns .btn {
+  flex: 1 1 0;
+  padding: 10px 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+#menu-panel-endless .difficulty-card .steer-slider {
+  display: block;
+  width: 100%;
+}
+
+.void-rate-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6a6aa0;
+}
 
 /* Start buttons match the mode cards on the start menu */
 #menu-panel-endless .btn-play,
@@ -1531,8 +1515,7 @@ body {
   color: #aac4ff;
 }
 
-
-
+.pvp-rank-medal {
   font-size: 18px;
   flex-shrink: 0;
 }
@@ -1545,6 +1528,260 @@ body {
 .pvp-rank-dist {
   font-size: 13px;
   opacity: 0.85;
+}
+
+/* ── In-game overlays (game over, PvP result, shop, achievements) ──────────
+   Same look as the start menu: calm cards, gradient primary button,
+   ghost secondary button. */
+#gameover-overlay .overlay-box,
+#pvp-overlay .overlay-box,
+.shop-box,
+#achievements-overlay .overlay-box {
+  width: 340px;
+  max-width: none;
+}
+
+.finish-title,
+.pvp-result-title {
+  font-size: 40px;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.pvp-result-title {
+  font-size: 32px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.finish-title,
+.pvp-result-title.win {
+  background: linear-gradient(90deg, #ffe066, #ff9a3d 60%, #ff5c8a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 14px rgba(255, 150, 60, 0.45));
+}
+
+.pvp-result-title.lose {
+  color: #ff6b81;
+  text-shadow: 0 0 22px rgba(255, 70, 100, 0.45);
+}
+
+.finish-time {
+  font-size: 34px;
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.finish-best {
+  color: #9ee6b0;
+  margin-bottom: 20px;
+}
+
+.coin-breakdown {
+  margin: 10px 0 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 200, 60, 0.25);
+}
+
+.pvp-result-sub {
+  color: #9a9ad6;
+  font-size: 14px;
+}
+
+.pvp-rankings {
+  gap: 6px;
+}
+
+.pvp-rank-row {
+  padding: 9px 14px;
+  border-radius: 12px;
+}
+
+/* Primary actions: full-width gradient (green/blue for runs, pink for PvP) */
+#retry-btn,
+#shop-close-btn,
+#pvp-retry-btn {
+  display: block;
+  width: 100%;
+  margin-top: 0;
+  padding: 15px 0;
+  border: none;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-shadow: none;
+  animation: none;
+  color: #fff;
+}
+
+#retry-btn,
+#shop-close-btn {
+  background: linear-gradient(135deg, #00b386, #00a0c8 60%, #3a6bff);
+  box-shadow: 0 8px 26px rgba(0, 190, 170, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+#pvp-retry-btn {
+  background: linear-gradient(135deg, #ff3d6e, #c2269f 60%, #7a2cff);
+  box-shadow: 0 8px 26px rgba(230, 40, 140, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+#retry-btn:hover,
+#shop-close-btn:hover,
+#pvp-retry-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+/* Secondary actions: quiet outline button */
+#pvp-menu-btn,
+#achievements-close-btn,
+#pvp-overlay .btn-back {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  box-shadow: none;
+  color: #9a9ad6;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+#pvp-menu-btn:hover,
+#achievements-close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ccccff;
+  transform: none;
+}
+
+/* Shop */
+.shop-title,
+.achievements-title {
+  color: #fff;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 22px rgba(120, 110, 255, 0.5);
+  margin-bottom: 10px;
+}
+
+.shop-coins-display {
+  display: inline-block;
+  padding: 6px 14px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  background: rgba(255, 200, 60, 0.1);
+  border: 1px solid rgba(255, 200, 60, 0.3);
+  color: #ffd76a;
+  font-size: 14px;
+}
+
+.shop-items {
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.shop-item {
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.shop-item-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 20px;
+}
+
+.shop-item-name {
+  font-size: 14px;
+  color: #fff;
+}
+
+.shop-item-desc {
+  color: #9a9ad6;
+}
+
+.shop-buy-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd23f, #ff9a3d);
+  color: #2a1600;
+}
+
+.shop-buy-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffe066, #ffab55);
+}
+
+.shop-buy-btn:disabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: #6a6a90;
+}
+
+/* Achievements */
+.achievements-list {
+  gap: 8px;
+  max-height: 420px;
+}
+
+.achievement-entry {
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.achievement-entry.unlocked {
+  background: rgba(255, 200, 60, 0.08);
+  border: 1px solid rgba(255, 200, 60, 0.3);
+}
+
+.achievement-entry.locked {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0.55;
+}
+
+.ach-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 19px;
+}
+
+.ach-section-header {
+  font-size: 11px;
+  color: #8a8ac0;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.achievements-title {
+  font-size: 22px;
+  white-space: nowrap;
+}
+
+.achievements-count {
+  color: #ffd76a;
+  margin-left: 4px;
 }
 
 

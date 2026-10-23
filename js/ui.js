@@ -12,9 +12,6 @@ class UI {
     this.gameOverOvl = document.getElementById('gameover-overlay');
     this.goDistEl    = document.getElementById('go-dist');
     this.goBestEl    = document.getElementById('go-best');
-    this.easyBtn     = document.getElementById('easy-btn');
-    this.normalBtn   = document.getElementById('normal-btn');
-    this.hardBtn     = document.getElementById('hard-btn');
     this.pvpEasyBtn    = document.getElementById('pvp-easy-btn');
     this.pvpNormalBtn  = document.getElementById('pvp-normal-btn');
     this.pvpHardBtn    = document.getElementById('pvp-hard-btn');
@@ -48,16 +45,11 @@ class UI {
     if (backEndlessBtn) backEndlessBtn.onclick = () => showPanel('menu-panel-main');
     if (backPvpBtn)     backPvpBtn.onclick     = () => showPanel('menu-panel-main');
 
-    // ── Difficulty buttons ──────────────────────────────────
-    const diffBtns = [this.easyBtn, this.normalBtn, this.hardBtn];
-    const selectDiff = (btn, pct) => {
-      diffBtns.forEach(b => b.classList.remove('difficulty-selected'));
-      btn.classList.add('difficulty-selected');
-      onDifficulty(pct);
-    };
-    this.easyBtn.onclick   = () => selectDiff(this.easyBtn,   125);
-    this.normalBtn.onclick = () => selectDiff(this.normalBtn, 150);
-    this.hardBtn.onclick   = () => selectDiff(this.hardBtn,   175);
+    // ── Difficulty presets (void speed %, from data-void-rate) ──
+    // The game highlights the matching preset whenever the void speed changes.
+    document.querySelectorAll('#menu-panel-endless [data-void-rate]').forEach((btn) => {
+      btn.onclick = () => onDifficulty(parseInt(btn.dataset.voidRate, 10));
+    });
     this.playBtn.onclick   = () => { this._hide(this.overlay); onPlay(); };
 
     // ── PvP difficulty buttons ──────────────────────────────
