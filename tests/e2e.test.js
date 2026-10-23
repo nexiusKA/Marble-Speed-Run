@@ -341,6 +341,46 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('PvP bots: harder bots drive better, and none is faster than the player could be', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      const race = (diff, playerSpeedPickup) => {
+        g._pvpDifficulty = diff; g._pvpEnemyCount = 10; g._pvpGoalDistance = 10000;
+        g.startPvpRun(); g.state = 'running';
+        let frames = 0, crashes = 0;
+        for (; frames < 60 * 120 && g.state === 'running'; frames++) {
+          // Park the player at the start so a bot always wins
+          g.marble.y = g.track.startY; g.marble.vy = 0;
+          if (playerSpeedPickup) g.speedBoostTimer = 10;
+          const vy = g.pvpBots.map((b) => b.marble.vy);
+          g.update(1 / 60);
+          // A crash = losing > 100 of the downward speed in one frame from at most top speed
+          g.pvpBots.forEach((b, i) => { if (vy[i] <= MAX_SPEED_Y + 5 && vy[i] - b.marble.vy > 100) crashes++; });
+        }
+        return { secs: frames / 60, crashesPerBotMin: crashes / 10 / (frames / 3600) };
+      };
+      const avg = (rs, k) => rs.reduce((s, x) => s + x[k], 0) / rs.length;
+      const easy   = [race('easy'), race('easy'), race('easy')];
+      const insane = [race('insane'), race('insane'), race('insane', true)];
+      return {
+        easySecs: avg(easy, 'secs'), insaneSecs: avg(insane, 'secs'),
+        easyCrash: avg(easy, 'crashesPerBotMin'), insaneCrash: avg(insane, 'crashesPerBotMin'),
+        fastest: Math.min(...insane.map((x) => x.secs)),
+        playerBest: 10000 / MAX_SPEED_Y,   // flat out at top speed, no obstacles
+      };
+    });
+    assert(r.insaneSecs < r.easySecs - 2,
+      `insane bots (${r.insaneSecs.toFixed(1)} s) should win clearly faster than easy bots (${r.easySecs.toFixed(1)} s)`);
+    assert(r.insaneCrash < r.easyCrash,
+      `insane bots crash more than easy ones (${r.insaneCrash.toFixed(1)} vs ${r.easyCrash.toFixed(1)} per bot per min)`);
+    assert(r.fastest > r.playerBest * 0.9,
+      `a bot won in ${r.fastest.toFixed(1)} s – faster than the player could ever be (~${r.playerBest.toFixed(1)} s)`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   // 6. PvP
   await test('PvP race finishes and shows a result', async () => {
     const errors = [];
