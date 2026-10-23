@@ -13,6 +13,8 @@
 
   container.style.height = logicalH + 'px';
   canvasEl.style.height  = CANVAS_H + 'px';
+  // Short screens (desktop, 16:9 phones) get a smaller void portal in the menu
+  container.classList.toggle('compact', CANVAS_H < 850);
 
   function updateScale() {
     // body padding holds the safe-area insets (status bar, notch, gesture bar)

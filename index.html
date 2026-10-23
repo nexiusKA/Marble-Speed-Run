@@ -47,7 +47,22 @@
         <!-- ── Main Menu Panel ─────────────────────────────── -->
         <div id="menu-panel-main" class="menu-panel active">
           <div class="menu-hero">
-            <div class="menu-orb" aria-hidden="true"></div>
+            <!-- The void: spinning accretion rings around a black core, specks of
+                 light being pulled in, and the marble orbiting the edge -->
+            <div class="void-portal" aria-hidden="true">
+              <div class="void-glow"></div>
+              <div class="void-ring void-ring-outer"></div>
+              <div class="void-ring void-ring-inner"></div>
+              <div class="void-core"></div>
+              <span class="void-speck" style="--a: 0deg;   --d: 0s"></span>
+              <span class="void-speck" style="--a: 50deg;  --d: -0.9s"></span>
+              <span class="void-speck" style="--a: 105deg; --d: -1.7s"></span>
+              <span class="void-speck" style="--a: 160deg; --d: -0.4s"></span>
+              <span class="void-speck" style="--a: 215deg; --d: -2.3s"></span>
+              <span class="void-speck" style="--a: 265deg; --d: -1.2s"></span>
+              <span class="void-speck" style="--a: 320deg; --d: -2.8s"></span>
+              <div class="void-orbit"><div class="menu-orb"></div></div>
+            </div>
             <h1 class="game-title">MARBLE<span class="game-title-accent">RUSH</span></h1>
             <p class="subtitle">Outrun the void. Survive forever.</p>
           </div>

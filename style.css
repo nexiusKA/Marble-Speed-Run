@@ -216,6 +216,25 @@ body {
   pointer-events: all;
 }
 
+/* Start screen: no card – the whole screen is the void */
+#overlay.overlay-main {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 30%, rgba(90, 20, 180, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse at 50% 40%, rgba(16, 2, 40, 0.9) 0%, rgba(4, 0, 12, 0.97) 75%);
+}
+
+#overlay.overlay-main .overlay-box {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Run HUD and touch controls are hidden while the start menu is open */
+#game-container.in-menu #hud,
+#game-container.in-menu #mobile-controls {
+  visibility: hidden;
+}
+
 .overlay.hidden {
   opacity: 0;
   pointer-events: none;
@@ -272,6 +291,103 @@ body {
   animation: orb-float 3.2s ease-in-out infinite;
 }
 
+/* ── The void portal (start menu hero) ──────────────────────
+   All motion is transform/opacity only, so it stays cheap on phones. */
+@keyframes void-spin     { to { transform: rotate(360deg); } }
+@keyframes void-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes void-breathe  {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+@keyframes void-pull {
+  0%   { transform: rotate(var(--a)) translateX(104px) scale(1);   opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: rotate(calc(var(--a) + 140deg)) translateX(18px) scale(0.2); opacity: 0; }
+}
+
+.void-portal {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  margin: -6px auto 6px;
+}
+
+#game-container.compact .void-portal {
+  transform: scale(0.68);
+  margin: -40px auto -28px;   /* give back the space the scale-down frees */
+}
+
+.void-portal > * {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.void-glow {
+  inset: -30px;
+  background: radial-gradient(circle, rgba(150, 50, 255, 0.45) 0%, rgba(90, 0, 180, 0.22) 38%, transparent 68%);
+  animation: void-breathe 4.5s ease-in-out infinite;
+}
+
+/* Accretion rings: a conic gradient cut into a ring with a radial mask */
+.void-ring {
+  -webkit-mask: radial-gradient(circle, transparent 52%, #000 56%, #000 64%, transparent 70%);
+  mask: radial-gradient(circle, transparent 52%, #000 56%, #000 64%, transparent 70%);
+}
+
+.void-ring-outer {
+  inset: 0;
+  background: conic-gradient(from 0deg,
+    transparent 0deg, rgba(150, 60, 255, 0.95) 50deg, transparent 120deg,
+    rgba(255, 50, 210, 0.9) 190deg, transparent 250deg,
+    rgba(60, 150, 255, 0.9) 310deg, transparent 360deg);
+  animation: void-spin 7s linear infinite;
+}
+
+.void-ring-inner {
+  inset: 30px;
+  background: conic-gradient(from 90deg,
+    transparent 0deg, rgba(0, 230, 255, 0.85) 70deg, transparent 150deg,
+    rgba(180, 80, 255, 0.95) 230deg, transparent 300deg);
+  animation: void-spin-rev 4.5s linear infinite;
+}
+
+/* The black hole itself */
+.void-core {
+  inset: 62px;
+  background: radial-gradient(circle, #000 0%, #000 52%, #12002a 72%, rgba(90, 20, 200, 0.6) 100%);
+  box-shadow: 0 0 30px 8px rgba(130, 40, 255, 0.55), 0 0 70px 20px rgba(80, 0, 170, 0.35), inset 0 0 18px #000;
+}
+
+/* Specks of light spiralling into the core */
+.void-speck {
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: #e8d8ff;
+  box-shadow: 0 0 6px 2px rgba(190, 140, 255, 0.9);
+  transform-origin: 2px 2px;
+  animation: void-pull 3.2s ease-in infinite;
+  animation-delay: var(--d);
+}
+
+/* The player's marble, circling the edge of the void */
+.void-orbit {
+  inset: 0;
+  animation: void-spin 9s linear infinite;
+}
+
+.void-orbit .menu-orb {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  margin: 0 0 0 -13px;
+  animation: none;
+}
+
 #menu-panel-main .game-title {
   font-size: 46px;
   line-height: 1;
@@ -280,15 +396,19 @@ body {
   margin-bottom: 10px;
 }
 
+@keyframes void-shimmer { to { background-position: 200% 0; } }
+
 .game-title-accent {
   display: block;
   margin-top: 4px;
-  background: linear-gradient(90deg, #00e5ff, #8a5cff 55%, #ff3df2);
+  background: linear-gradient(90deg, #00e5ff, #8a5cff 25%, #ff3df2 50%, #8a5cff 75%, #00e5ff);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: none;
-  filter: drop-shadow(0 0 14px rgba(140, 90, 255, 0.55));
+  filter: drop-shadow(0 0 16px rgba(160, 80, 255, 0.7));
+  animation: void-shimmer 6s linear infinite;
 }
 
 #menu-panel-main .subtitle {
