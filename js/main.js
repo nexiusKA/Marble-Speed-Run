@@ -12,6 +12,10 @@
   set('gi-branch', BUILD_INFO.branch);
   set('gi-date',   BUILD_INFO.date);
   if (BUILD_INFO.run !== 'dev') {
+    // Players don't need the build details; keep them reachable via ?debug
+    const showBuildInfo = new URLSearchParams(location.search).has('debug');
+    const gitInfo = document.getElementById('git-info');
+    if (gitInfo && !showBuildInfo) gitInfo.style.display = 'none';
     const tag = document.getElementById('version-tag');
     // Keep the version stamped into the HTML by scripts/build.js (from package.json)
     if (tag) tag.textContent = `${tag.textContent.trim().split(' ')[0]} #${BUILD_INFO.run} ${sha7}`;
@@ -20,15 +24,24 @@
 
 // ── Responsive scaling ───────────────────────────────────────────────────────
 // Scale the fixed-size game container to always fit the viewport.
-// The game uses a fixed 480×792 logical canvas, so we only need to scale the
+// The container is 480 × (CANVAS_H + CONTROLS_H) logical px, where CANVAS_H
+// follows the screen's aspect ratio (track.js), so we only need to scale the
 // outer container — no game-logic coordinates change.
 (function initScaleAndFullscreen() {
   const container = document.getElementById('game-container');
+  const canvasEl  = document.getElementById('gameCanvas');
   const fsBtn     = document.getElementById('fullscreen-btn');
+  const logicalH  = CANVAS_H + CONTROLS_H;
+
+  container.style.height = logicalH + 'px';
+  canvasEl.style.height  = CANVAS_H + 'px';
 
   function updateScale() {
+    // body padding holds the safe-area insets (status bar, notch, gesture bar)
+    const bodyStyle = getComputedStyle(document.body);
+    const padY   = (parseFloat(bodyStyle.paddingTop) || 0) + (parseFloat(bodyStyle.paddingBottom) || 0);
     const scaleX = window.innerWidth  / 480;
-    const scaleY = window.innerHeight / 792;
+    const scaleY = (window.innerHeight - padY) / logicalH;
     const scale  = Math.min(scaleX, scaleY, 1); // never upscale on desktop
     container.style.transform = `scale(${scale})`;
     container.style.visibility = 'visible'; // hidden in CSS until first scaled (no zoomed-in flash on slow devices)
@@ -162,11 +175,13 @@
       line += word + ' ';
     }
     if (line.trim()) ctx.fillText(line.trim(), CANVAS_W / 2, lineY);
-    ctx.fillStyle = '#888888';
-    ctx.font      = '12px monospace';
-    ctx.fillText('Open console (F12) for details', CANVAS_W / 2, CANVAS_H / 2 + 60);
-    ctx.fillText('Refresh the page to restart', CANVAS_W / 2, CANVAS_H / 2 + 78);
+    ctx.fillStyle = '#ffffff';
+    ctx.font      = 'bold 18px sans-serif';
+    ctx.fillText('Tap to restart', CANVAS_W / 2, CANVAS_H / 2 + 70);
     ctx.restore();
+    // Players can't open a console on a phone – a tap reloads the game.
+    // Progress (best distance, coins, achievements) lives in localStorage.
+    game.canvas.addEventListener('pointerdown', () => location.reload(), { once: true });
   }
 
   function loop(timestamp) {
