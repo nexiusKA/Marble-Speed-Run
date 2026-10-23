@@ -1,27 +1,5 @@
 // ── Main entry point ─────────────────────────────────────────────────────────
 
-// ── Build info display ───────────────────────────────────────────────────────
-// Populate the git-info <details> block and version tag from BUILD_INFO
-// (defined in js/version.js, which CI overwrites on each build).
-(function initBuildInfo() {
-  if (typeof BUILD_INFO === 'undefined') return;
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  const sha7 = BUILD_INFO.sha.length > 7 ? BUILD_INFO.sha.slice(0, 7) : BUILD_INFO.sha;
-  set('gi-run',    BUILD_INFO.run);
-  set('gi-sha',    sha7);
-  set('gi-branch', BUILD_INFO.branch);
-  set('gi-date',   BUILD_INFO.date);
-  if (BUILD_INFO.run !== 'dev') {
-    // Players don't need the build details; keep them reachable via ?debug
-    const showBuildInfo = new URLSearchParams(location.search).has('debug');
-    const gitInfo = document.getElementById('git-info');
-    if (gitInfo && !showBuildInfo) gitInfo.style.display = 'none';
-    const tag = document.getElementById('version-tag');
-    // Keep the version stamped into the HTML by scripts/build.js (from package.json)
-    if (tag) tag.textContent = `${tag.textContent.trim().split(' ')[0]} #${BUILD_INFO.run} ${sha7}`;
-  }
-})();
-
 // ── Responsive scaling ───────────────────────────────────────────────────────
 // Scale the fixed-size game container to always fit the viewport.
 // The container is 480 × (CANVAS_H + CONTROLS_H) logical px, where CANVAS_H

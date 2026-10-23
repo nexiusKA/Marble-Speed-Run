@@ -208,6 +208,35 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('difficulty presets set the void speed and the slider highlights the matching preset', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrVoidRate: '20' });
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      const sel = () => [...document.querySelectorAll('#menu-panel-endless .difficulty-selected')].map(b => b.id);
+      const out = { oldLow: g._voidRateSetting };
+      document.getElementById('endless-btn').click();
+      for (const id of ['easy-btn', 'normal-btn', 'hard-btn', 'insane-btn']) {
+        document.getElementById(id).click();
+        out[id] = { rate: g._voidRateSetting, sel: sel() };
+      }
+      const slider = document.getElementById('void-rate-slider');
+      slider.value = '135'; slider.dispatchEvent(new Event('input'));
+      out.custom = { rate: g._voidRateSetting, sel: sel(), stored: localStorage.getItem('mrVoidRate') };
+      return out;
+    });
+    assert(r.oldLow === 50, `old low save not raised to the new minimum (got ${r.oldLow})`);
+    const want = { 'easy-btn': 75, 'normal-btn': 100, 'hard-btn': 150, 'insane-btn': 200 };
+    for (const [id, rate] of Object.entries(want)) {
+      assert(r[id].rate === rate, `${id}: void speed ${r[id].rate}, expected ${rate}`);
+      assert(r[id].sel.length === 1 && r[id].sel[0] === id, `${id}: highlighted ${r[id].sel.join(',')}`);
+    }
+    assert(r.custom.rate === 135 && r.custom.sel.length === 0 && r.custom.stored === '135',
+      `custom slider value not applied (${JSON.stringify(r.custom)})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('corrupted save data falls back to safe defaults', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, {
@@ -268,6 +297,46 @@ async function newPage(browser, baseUrl, errors, storage) {
     });
     assert(r.consumed === true, 'back button was not handled by the game');
     assert(r.state === 'running', `expected "running" after back, got "${r.state}"`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('pause menu: back pauses, nothing moves, resume counts down, menu returns to start', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(() => window.__marbleGame.startRun());
+    await simulate(page, 60 * 5);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      const consumed = g.handleBackButton();
+      const paused = g.state;
+      const pauseShown = document.getElementById('pause-overlay').classList.contains('visible');
+      const y = g.marble.y;
+      for (let i = 0; i < 120; i++) g.update(1 / 60);
+      const moved = g.marble.y !== y;
+      g.handleBackButton();
+      const resumed = g.state;
+      g.pauseRun();
+      document.getElementById('pause-menu-btn').click();
+      const final = g.state;
+      // In the menu: back leaves a sub-menu first, and only quits on the start screen
+      document.getElementById('endless-btn').click();
+      const subBack    = g.handleBackButton();
+      const mainActive = document.getElementById('menu-panel-main').classList.contains('active');
+      const quitOnMain = !g.handleBackButton();
+      return {
+        consumed, paused, pauseShown, moved, resumed, final, subBack, mainActive, quitOnMain,
+        menuShown: document.getElementById('overlay').classList.contains('visible'),
+        pauseHidden: document.getElementById('pause-overlay').classList.contains('hidden'),
+      };
+    });
+    assert(r.subBack && r.mainActive, 'back in a sub-menu did not return to the start menu');
+    assert(r.quitOnMain, 'back on the start menu should leave the app');
+    assert(r.consumed === true, 'back button was not handled by the game');
+    assert(r.paused === 'paused' && r.pauseShown, `expected pause menu, got state "${r.paused}"`);
+    assert(!r.moved, 'marble moved while paused');
+    assert(r.resumed === 'countdown', `expected "countdown" after resume, got "${r.resumed}"`);
+    assert(r.final === 'menu' && r.menuShown && r.pauseHidden, `expected start menu, got "${r.final}"`);
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
   });
