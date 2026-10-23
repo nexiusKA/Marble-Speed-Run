@@ -16,10 +16,27 @@ for t in 10 20 30 40; do
   sleep 10
   adb exec-out screencap -p > "$OUT/screen-${t}s.png"
 done
-# tap roughly where the PLAY / ENDLESS RUN button sits, then capture again
-adb shell input tap 540 1250 || true
-sleep 6
+# Tap the ENDLESS RUN button (position relative to the screen size), then capture
+SIZE=$(adb shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
+W=${SIZE%x*}; H=${SIZE#*x}
+adb shell input tap $((W / 2)) $((H * 56 / 100)) || true
+sleep 8
 adb exec-out screencap -p > "$OUT/screen-after-tap.png"
+
+# Background test: is the app still playing audio after pressing HOME?
+UID_APP=$(adb shell dumpsys package "$PKG" | grep -m1 -o 'userId=[0-9]*' | cut -d= -f2)
+echo "uid=$UID_APP" > "$OUT/audio.txt"
+echo "--- playing (foreground)" >> "$OUT/audio.txt"
+adb shell dumpsys audio | grep -iE "AudioPlaybackConfiguration.*u/pid:${UID_APP}" >> "$OUT/audio.txt" || true
+adb shell input keyevent KEYCODE_HOME
+sleep 4
+echo "--- after HOME (background)" >> "$OUT/audio.txt"
+adb shell dumpsys audio | grep -iE "AudioPlaybackConfiguration.*u/pid:${UID_APP}" >> "$OUT/audio.txt" || true
+adb shell am start -n "$PKG/.MainActivity" > /dev/null 2>&1
+sleep 2
+adb exec-out screencap -p > "$OUT/screen-after-resume.png"
+echo "--- after resume" >> "$OUT/audio.txt"
+adb shell dumpsys audio | grep -iE "AudioPlaybackConfiguration.*u/pid:${UID_APP}" >> "$OUT/audio.txt" || true
 adb logcat -d > "$OUT/logcat-full.txt"
 grep -iE "Capacitor|chromium|Console|AndroidRuntime|FATAL|WebView|$PKG" "$OUT/logcat-full.txt" > "$OUT/logcat-app.txt" || true
 adb shell pidof "$PKG" > "$OUT/pid.txt" 2>&1 || echo "NOT RUNNING" > "$OUT/pid.txt"
