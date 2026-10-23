@@ -31,6 +31,7 @@
     const scaleY = window.innerHeight / 792;
     const scale  = Math.min(scaleX, scaleY, 1); // never upscale on desktop
     container.style.transform = `scale(${scale})`;
+    container.style.visibility = 'visible'; // hidden in CSS until first scaled (no zoomed-in flash on slow devices)
   }
 
   // Fullscreen helpers with Safari prefix support
@@ -83,7 +84,14 @@
   document.addEventListener('fullscreenchange',       onFullscreenChange);
   document.addEventListener('webkitfullscreenchange', onFullscreenChange);
   window.addEventListener('resize',                   updateScale);
-  screen.orientation?.addEventListener('change', updateScale);
+  // No optional chaining here: older Android WebViews (Chrome < 80) reject
+  // the syntax and the whole script would fail to load (black screen).
+  if (screen.orientation && screen.orientation.addEventListener) {
+    screen.orientation.addEventListener('change', updateScale);
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateScale);
+  }
 
   // Block browser zoom (Ctrl+scroll and Ctrl++/-/0) so the page layout
   // doesn't break the fixed-size game container.
@@ -97,6 +105,11 @@
   });
 
   updateScale();
+  // In the Android WebView the viewport size is sometimes not final when the
+  // scripts run (the game showed up zoomed in until the first resize), so
+  // re-measure once the page has loaded and shortly after.
+  window.addEventListener('load', updateScale);
+  [100, 500, 1500].forEach((ms) => setTimeout(updateScale, ms));
 })();
 
 (function () {

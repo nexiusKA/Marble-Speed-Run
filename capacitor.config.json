@@ -14,5 +14,12 @@
     "StatusBar": {
       "overlaysWebView": true
     }
-  }
+  },
+  "server": {
+    "errorPath": "webview-outdated.html"
+  },
+  "android": {
+    "minWebViewVersion": 90
+  },
+  "backgroundColor": "#0d0a2a"
 }

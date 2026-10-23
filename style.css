@@ -33,6 +33,7 @@ body {
     inset 0 0 24px rgba(130,0,255,0.08);
   background: #07071a;
   transform-origin: center center;
+  visibility: hidden; /* shown by main.js once scaled to the screen */
 }
 
 #gameCanvas {
@@ -161,7 +162,12 @@ body {
 /* ── Overlays ────────────────────────────────── */
 .overlay {
   position: absolute;
-  inset: 0;
+  /* top/right/bottom/left instead of `inset` – older Android WebViews
+     (Chrome < 87) ignore `inset` and the menu overlay collapses to 0×0 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;

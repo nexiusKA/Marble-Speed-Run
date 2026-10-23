@@ -83,6 +83,10 @@ write(path.join(DIST, 'game.html'), stampedHtml(path.join(ROOT, 'index.html')));
 
 copy(path.join(ROOT, 'privacy-policy.html'), path.join(DIST, 'privacy-policy.html'));
 
+// ── webview-outdated.html (Capacitor server.errorPath) ─────────────────────
+
+copy(path.join(ROOT, 'webview-outdated.html'), path.join(DIST, 'webview-outdated.html'));
+
 // ── perk-library.html ──────────────────────────────────────────────────────
 
 write(path.join(DIST, 'perk-library.html'), `<!DOCTYPE html>
