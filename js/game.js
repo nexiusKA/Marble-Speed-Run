@@ -408,6 +408,24 @@ const BOT_COLORS       = [
   { body: '#001818', glow: '0,200,200',   trail: '0,140,140'  },
 ];
 
+// Bot driving skill per PvP difficulty. Every bot has the same physics and top
+// speed as the player – difficulty only changes how well it drives:
+//   reaction  – seconds between re-planning its line (and so how late it reacts)
+//   lookahead – how far ahead (world units) it sees obstacles
+//   aimNoise  – how far (px) it misses the line it planned
+//   mistake   – chance per plan to misjudge (ignores the nearest hazard)
+//   boost     – how eagerly it holds boost when the way ahead is clear
+//   brake     – whether it brakes for hazards it cannot steer around
+//   pace      – share of the top speed it dares to go (cautious drivers hold back)
+const BOT_SKILL = {
+  easy:    { reaction: 0.42, lookahead: 170, aimNoise: 34, mistake: 0.30,  boost: 0.25, brake: false, pace: 0.80 },
+  normal:  { reaction: 0.24, lookahead: 260, aimNoise: 18, mistake: 0.12,  boost: 0.55, brake: true,  pace: 0.86 },
+  hard:    { reaction: 0.13, lookahead: 360, aimNoise: 9,  mistake: 0.04,  boost: 0.85, brake: true,  pace: 0.92 },
+  extreme: { reaction: 0.08, lookahead: 440, aimNoise: 5,  mistake: 0.015, boost: 0.95, brake: true,  pace: 0.96 },
+  insane:  { reaction: 0.05, lookahead: 520, aimNoise: 2,  mistake: 0,     boost: 1,    brake: true,  pace: 1    },
+};
+const BOT_LANES = 11; // candidate lines across the track the AI chooses from
+
 class BotMarble {
   constructor(x, y, index, startY, difficulty = 'normal') {
     this.marble   = new Marble(x, y);
@@ -419,83 +437,154 @@ class BotMarble {
     this.finishDist = 0;
     this.finishTime = 0;
 
-    // Difficulty-based base parameters
-    let baseAggression, baseSteerChange, gravFactor;
-    if (difficulty === 'easy') {
-      baseAggression  = 0.32;
-      baseSteerChange = 0.45;
-      gravFactor      = 0.84;
-    } else if (difficulty === 'hard') {
-      baseAggression  = 0.76;
-      baseSteerChange = 0.06;
-      gravFactor      = 1.24;
-    } else if (difficulty === 'extreme') {
-      baseAggression  = 0.874;
-      baseSteerChange = 0.051;
-      gravFactor      = 1.426;
-    } else if (difficulty === 'insane') {
-      baseAggression  = 0.95;
-      baseSteerChange = 0.045;
-      gravFactor      = 1.55;
-    } else { // normal
-      baseAggression  = 0.68;
-      baseSteerChange = 0.20;
-      gravFactor      = 1.10;
-    }
-    this._gravFactor = gravFactor;
+    // Per-bot personality: ±15 % around the difficulty's skill, so a field of
+    // bots spreads out a little instead of driving identically.
+    const base = BOT_SKILL[difficulty] || BOT_SKILL.normal;
+    const vary = () => 0.85 + Math.random() * 0.3;
+    this._skill = {
+      reaction:  base.reaction * vary(),
+      lookahead: base.lookahead * vary(),
+      aimNoise:  base.aimNoise * vary(),
+      mistake:   base.mistake * vary(),
+      boost:     Math.min(1, base.boost * vary()),
+      brake:     base.brake,
+      pace:      Math.min(1, base.pace * (0.98 + Math.random() * 0.04)),
+    };
 
     // AI state
-    this._steerTimer = 0;
-    this._steerDir   = 0;   // -1, 0, +1
-    this._downTimer  = 0;
-    this._downActive = false;
-
-    // Slight per-bot personality variation within the difficulty band
-    this._aggression  = baseAggression  + index * 0.05;
-    this._steerChange = baseSteerChange + index * 0.05;
+    this._planTimer = Math.random() * this._skill.reaction; // stagger bots
+    // Each bot has a favourite line it drifts back to when nothing is in the
+    // way, so a field spreads across the track instead of driving single file
+    this._prefLane  = 1 + Math.random() * (BOT_LANES - 3);
+    this._lane      = Math.round(this._prefLane);
+    this._aimOffset = 0;                    // px this plan misses the line by
+    this._boost     = false;
+    this._brake     = false;
   }
 
   get distance() {
     return Math.max(0, Math.floor(this.marble.y - this.startY));
   }
 
-  update(dt, track, steerMult, gravMult) {
+  update(dt, track, steerMult, gravMult, obstacles = []) {
     if (this.finished) return;
 
-    // ── Steering AI ─────────────────────────────────────────────────────────
-    this._steerTimer -= dt;
-    if (this._steerTimer <= 0) {
-      this._steerTimer = this._steerChange + Math.random() * 0.4;
-      this._chooseSteer(track);
+    this._planTimer -= dt;
+    if (this._planTimer <= 0) {
+      this._planTimer = this._skill.reaction;
+      this._plan(track, obstacles);
     }
 
-    // ── Boost AI ─────────────────────────────────────────────────────────────
-    this._downTimer -= dt;
-    if (this._downTimer <= 0) {
-      this._downActive = Math.random() < this._aggression;
-      this._downTimer  = 0.2 + Math.random() * 0.5;
-    }
-
+    // Steer onto the planned lane a little ahead of the marble: aim for a
+    // lateral speed proportional to the error, so it settles instead of zig-zagging.
+    const m = this.marble;
+    const targetX   = this._laneX(track, this._lane, m.y + 40) + this._aimOffset;
+    const desiredVx = clamp((targetX - m.x) * 5, -380, 380);
+    // Never faster than the player's top speed; cautious bots stay below it
+    const overPace  = m.vy > MAX_SPEED_Y * gravMult * this._skill.pace;
     const input = {
-      left:  this._steerDir < 0,
-      right: this._steerDir > 0,
-      up:    false,
-      down:  this._downActive,
+      left:  m.vx > desiredVx + 30,
+      right: m.vx < desiredVx - 30,
+      up:    this._brake || overPace,
+      down:  this._boost && !this._brake && !overPace,
     };
 
-    this.marble.update(dt, input, track, steerMult, gravMult * this._gravFactor);
+    m.update(dt, input, track, steerMult, gravMult);
   }
 
-  _chooseSteer(track) {
-    const { left, right } = track.getWallsAtY(this.marble.y);
-    const margin = 35;
-    if (this.marble.x - left   < margin) { this._steerDir =  1; return; }
-    if (right - this.marble.x  < margin) { this._steerDir = -1; return; }
-    // Bias toward track centre
-    const centre = (left + right) / 2;
-    const bias   = (this.marble.x - centre) / (right - left); // -0.5..+0.5
-    const r      = Math.random() - 0.5 - bias * 0.6;
-    this._steerDir = r > 0.18 ? 1 : r < -0.18 ? -1 : 0;
+  // World X of lane `i` (0 = hugging the left wall, BOT_LANES-1 = right wall) at world Y `y`.
+  _laneX(track, i, y) {
+    const { left, right } = track.getWallsAtY(y);
+    const pad = this.marble.radius + 6;
+    return left + pad + (i / (BOT_LANES - 1)) * Math.max(0, right - left - pad * 2);
+  }
+
+  // Pick the lane with the fewest, furthest-away hazards and decide on boost/brake.
+  _plan(track, obstacles) {
+    const m   = this.marble;
+    const sk  = this._skill;
+    const vy  = Math.max(m.vy, 120);
+    const r   = m.radius + 4;
+    const hazards = [];
+    let ignore = null; // a misjudged hazard (skill-based mistake)
+
+    for (const obs of obstacles) {
+      const dy = obs.worldY - m.y;
+      if (dy < -30 || dy > sk.lookahead) continue;
+      hazards.push({ obs, dy });
+    }
+    if (hazards.length && Math.random() < sk.mistake) {
+      ignore = hazards.reduce((a, b) => (Math.abs(a.dy) < Math.abs(b.dy) ? a : b)).obs;
+    }
+
+    let bestLane = this._lane, bestCost = Infinity, bestNearHit = Infinity;
+    for (let lane = 0; lane < BOT_LANES; lane++) {
+      let cost = Math.abs(lane - this._lane) * 0.15    // prefer keeping the line
+               + Math.abs(lane - this._prefLane) * 0.06; // and drifting to its favourite
+      let nearHit = Infinity;                          // closest hazard on this lane
+      for (const { obs, dy } of hazards) {
+        if (obs === ignore) continue;
+        const x = this._laneX(track, lane, obs.worldY);
+        const t = Math.max(0, dy) / vy;                // time until we get there
+        const danger = BotMarble._danger(obs, x, r, t);
+        if (danger > 0) {
+          // Nearer hazards matter more; ones too close to dodge matter most
+          cost += danger * (1 + 2 * (1 - Math.max(0, dy) / sk.lookahead));
+          nearHit = Math.min(nearHit, dy);
+        } else if (danger < 0) {
+          cost += danger * 0.5;                        // boost pad on this lane
+        }
+        // Can we even get to this lane before reaching the hazard?
+        const reach = 0.5 * STEER_FORCE * t * t + 40;
+        if (danger > 0 && Math.abs(x - m.x) > reach) cost += 2;
+      }
+      if (cost < bestCost) { bestCost = cost; bestLane = lane; bestNearHit = nearHit; }
+    }
+
+    this._lane      = bestLane;
+    this._aimOffset = (Math.random() * 2 - 1) * sk.aimNoise;
+    // Boost when the chosen line is clear for a good stretch; brake when it
+    // runs into something close that could not be avoided.
+    const clearAhead = bestNearHit > Math.min(220, sk.lookahead);
+    this._boost = clearAhead && Math.random() < sk.boost;
+    this._brake = sk.brake && bestNearHit < 90 && bestCost > 1.5;
+  }
+
+  // How bad it is to pass obstacle `obs` at lane position `x` in `t` seconds:
+  // > 0 = hazard (1 = certain hit), < 0 = worth taking (boost pad), 0 = nothing.
+  static _danger(obs, x, r, t) {
+    const inside = (a, b) => (x > a - r && x < b + r ? 1 : 0);
+    if (obs instanceof DoorGate) {
+      const d = obs.doors[obs.correctDoor];
+      // Inside the open door with room to spare is safe; anywhere else is a red door
+      return x > d.x + r * 0.6 && x < d.x + d.w - r * 0.6 ? 0 : 1.5;
+    }
+    if (obs instanceof RotatingBar || obs instanceof ElectricSpinner) {
+      // Spinning arms sweep a whole disc; treat the disc as blocked
+      return inside(obs.cx - obs.halfLen, obs.cx + obs.halfLen);
+    }
+    if (obs instanceof MovingBlocker) {
+      // Predict where it will be when we arrive (it bounces between minX and maxX)
+      const lo = obs.minX + obs.w / 2, hi = obs.maxX - obs.w / 2, span = Math.max(1, hi - lo);
+      let p = (obs.x - lo) + obs.dir * obs.speed * t;
+      p = ((p % (2 * span)) + 2 * span) % (2 * span);
+      const px = lo + (p > span ? 2 * span - p : p);
+      const slack = Math.min(30, obs.speed * t * 0.15); // later = less certain
+      return inside(px - obs.w / 2 - slack, px + obs.w / 2 + slack);
+    }
+    if (obs instanceof WallBlocker) {
+      return inside(obs.ax, obs.bx);
+    }
+    if (obs instanceof Flipper) {
+      // The arm sweeps from the wall out to its full length
+      return obs.side === 'left'
+        ? inside(obs.wallX, obs.wallX + obs.length)
+        : inside(obs.wallX - obs.length, obs.wallX);
+    }
+    if (obs instanceof BoostPad) {
+      return x > obs.cx - obs.w / 2 && x < obs.cx + obs.w / 2 ? -1 : 0;
+    }
+    return 0;
   }
 
   render(ctx, cameraY) {
@@ -1203,9 +1292,10 @@ class Game {
     // ── Bot marbles (PVP mode) ───────────────────────────────────────────────
     if (this.pvpMode) {
       const steer = this._steerMult();
-      const grav  = this._fallMult();
+      // Base fall speed only: the player's Speed pickup must not speed up the bots too
+      const grav  = this._fallSpeedSetting / 100;
       for (const bot of this.pvpBots) {
-        bot.update(dt, this.track, steer, grav);
+        bot.update(dt, this.track, steer, grav, this.obstacles);
         // Check if bot reached goal distance
         if (!bot.finished && bot.distance >= this._pvpGoalDistance) {
           bot.finished   = true;
