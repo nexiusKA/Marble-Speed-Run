@@ -12,8 +12,10 @@ adb shell dumpsys package com.google.android.webview | grep -m1 versionName > "$
 adb install -r "$APK" > "$OUT/install.txt" 2>&1
 adb logcat -c
 adb shell am start -W -n "$PKG/.MainActivity" > "$OUT/start.txt" 2>&1
-sleep 20
-adb exec-out screencap -p > "$OUT/screen-20s.png"
+for t in 10 20 30 40; do
+  sleep 10
+  adb exec-out screencap -p > "$OUT/screen-${t}s.png"
+done
 # tap roughly where the PLAY / ENDLESS RUN button sits, then capture again
 adb shell input tap 540 1250 || true
 sleep 6
