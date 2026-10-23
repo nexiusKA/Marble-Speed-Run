@@ -10,7 +10,8 @@
     "android:open": "npx cap open android",
     "android:bundle": "cd android && ./gradlew bundleRelease",
     "test:e2e": "node tests/e2e.test.js",
-    "test": "npm run test:regression && npm run build && npm run test:e2e"
+    "test": "npm run test:regression && npm run build && npm run test:e2e",
+    "test:syntax": "node scripts/check-syntax.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

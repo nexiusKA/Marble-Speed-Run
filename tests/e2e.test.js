@@ -151,7 +151,7 @@ async function newPage(browser, baseUrl, errors, storage) {
       const g = window.__marbleGame;
       g.shieldTimer = 0;
       const d = g.distance;
-      g.fog.y = g.marble.y;                       // let the void catch the marble
+      g.fog.y = g.marble.y + 1000;                // void well past the marble (a speed boost can move it > radius per frame)
       g.update(1 / 60);
       return d;
     });
@@ -178,7 +178,7 @@ async function newPage(browser, baseUrl, errors, storage) {
     const s = await page.evaluate(() => {
       const g = window.__marbleGame;
       g.shieldTimer = 10;
-      g.fog.y = g.marble.y;                       // same frame, see game-over test
+      g.fog.y = g.marble.y + 1000;                // same frame + margin, see game-over test
       g.update(1 / 60);
       return { state: g.state, shield: g.shieldTimer };
     });
