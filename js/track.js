@@ -141,11 +141,16 @@ class Track {
     for (let i = rightPts.length - 1; i >= 0; i--) ctx.lineTo(rightPts[i][0], rightPts[i][1]);
     ctx.closePath();
 
-    const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    grad.addColorStop(0,   '#0a0024');
-    grad.addColorStop(0.5, '#08001e');
-    grad.addColorStop(1,   '#060016');
-    ctx.fillStyle = grad;
+    // Gradient is identical every frame – create it once per context
+    if (!this._fillGrad || this._fillGradCtx !== ctx) {
+      const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+      grad.addColorStop(0,   '#0a0024');
+      grad.addColorStop(0.5, '#08001e');
+      grad.addColorStop(1,   '#060016');
+      this._fillGrad = grad;
+      this._fillGradCtx = ctx;
+    }
+    ctx.fillStyle = this._fillGrad;
     ctx.fill();
 
     // Subtle diagonal grid lines inside the track
@@ -164,24 +169,34 @@ class Track {
     }
     ctx.restore();
 
-    // Narrow-section warning tint
-    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
-      const { left, right } = this.getWallsAtY(wy);
-      if (right - left < 140) {
-        const sy = wy - cameraY;
-        ctx.fillStyle = 'rgba(255,40,80,0.07)';
-        ctx.fillRect(left, sy, right - left, step * 2);
-      }
+    // Narrow-section warning tint and wide-section (boost zone) tint.
+    // Reuses the wall samples from above (every 2nd = step*2 spacing, same
+    // rows as before) and batches all rows into one path per tint, so it is
+    // two fill() calls instead of up to ~150 fillRect() calls per frame.
+    let hasNarrow = false;
+    let hasWide   = false;
+    for (let i = 0; i < leftPts.length; i += 2) {
+      const w = rightPts[i][0] - leftPts[i][0];
+      if (w < 140) hasNarrow = true;
+      else if (w > 260) hasWide = true;
     }
-
-    // Wide-section (boost zone) tint
-    for (let wy = visTop; wy <= visBottom; wy += step * 2) {
-      const { left, right } = this.getWallsAtY(wy);
-      if (right - left > 260) {
-        const sy = wy - cameraY;
-        ctx.fillStyle = 'rgba(0,255,180,0.04)';
-        ctx.fillRect(left, sy, right - left, step * 2);
+    if (hasNarrow) {
+      ctx.beginPath();
+      for (let i = 0; i < leftPts.length; i += 2) {
+        const left = leftPts[i][0], right = rightPts[i][0];
+        if (right - left < 140) ctx.rect(left, leftPts[i][1], right - left, step * 2);
       }
+      ctx.fillStyle = 'rgba(255,40,80,0.07)';
+      ctx.fill();
+    }
+    if (hasWide) {
+      ctx.beginPath();
+      for (let i = 0; i < leftPts.length; i += 2) {
+        const left = leftPts[i][0], right = rightPts[i][0];
+        if (right - left > 260) ctx.rect(left, leftPts[i][1], right - left, step * 2);
+      }
+      ctx.fillStyle = 'rgba(0,255,180,0.04)';
+      ctx.fill();
     }
 
     // ── Neon wall glow (pinball bumper rails) ─────────────────────────────────

@@ -116,6 +116,15 @@
   const canvas = document.getElementById('gameCanvas');
   const game   = new Game(canvas);
   if (window.MarbleNative) window.MarbleNative.setGame(game);
+
+  // Pause sound / gameplay when the page is hidden (tab switch, app in
+  // background). Android additionally reports this via native.js.
+  const onVisibility = () => {
+    if (document.hidden) game.onAppHidden(); else game.onAppVisible();
+  };
+  document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('pagehide', () => game.onAppHidden());
+  window.addEventListener('pageshow', () => { if (!document.hidden) game.onAppVisible(); });
   // Exposed for automated browser tests (tests/e2e.test.js)
   window.__marbleGame = game;
 
@@ -170,8 +179,10 @@
 
     try {
       if (lastTime === null) lastTime = timestamp;
-      const dt = Math.min((timestamp - lastTime) / 1000, 0.05); // cap at 50ms
+      const rawDt = (timestamp - lastTime) / 1000;
+      const dt = Math.min(rawDt, 0.05); // cap at 50ms
       lastTime  = timestamp;
+      if (game.quality) game.quality.sample(rawDt, game.state === 'running');
 
       // Rolling FPS — update display every 0.5 s
       fpsAccum += dt;

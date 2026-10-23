@@ -46,7 +46,7 @@ class SoundManager {
     this._trackIndex = next;
     this._audio.src  = MUSIC_TRACKS[this._trackIndex];
     this._audio.volume = this._effectiveVolume();
-    if (!this._muted && this._volume > 0) {
+    if (!this._muted && this._volume > 0 && !this._inBackground) {
       this._audio.play().catch(() => {});
     }
   }
@@ -64,7 +64,7 @@ class SoundManager {
 
   // Short electric-zap burst (played on each gate pass)
   playZap() {
-    if (this._muted || this._volume === 0) return;
+    if (this._muted || this._volume === 0 || this._inBackground) return;
     try {
       const ac  = this._getAudioCtx();
       const vol = (this._volume / 100) * 0.35;
@@ -97,7 +97,7 @@ class SoundManager {
 
   // Dramatic power-rush start whoosh
   playPowerRushStart() {
-    if (this._muted || this._volume === 0) return;
+    if (this._muted || this._volume === 0 || this._inBackground) return;
     try {
       const ac  = this._getAudioCtx();
       const vol = (this._volume / 100) * 0.5;
@@ -133,7 +133,7 @@ class SoundManager {
 
   // Electrified crackle played when the marble is hit by a blitz strike.
   playBlitz() {
-    if (this._muted || this._volume === 0) return;
+    if (this._muted || this._volume === 0 || this._inBackground) return;
     try {
       const ac  = this._getAudioCtx();
       const vol = (this._volume / 100) * 0.55;
@@ -193,7 +193,7 @@ class SoundManager {
     this._audio.loop = MUSIC_TRACKS.length === 1;
     this._audio.currentTime = 0;
     this._audio.volume = this._effectiveVolume();
-    if (!this._muted && this._volume > 0) {
+    if (!this._muted && this._volume > 0 && !this._inBackground) {
       this._audio.play().catch(err => {
         console.warn('[Audio] play() failed:', err);
       });
@@ -204,7 +204,7 @@ class SoundManager {
     this._volume = Math.max(0, Math.min(100, v));
     this._audio.volume = this._effectiveVolume();
     // Resume if the music was silenced by dragging volume to zero and back
-    if (this._started && !this._muted && this._volume > 0 && this._audio.paused) {
+    if (this._started && !this._muted && this._volume > 0 && this._audio.paused && !this._inBackground) {
       this._audio.play().catch(() => {});
     }
   }
@@ -212,10 +212,36 @@ class SoundManager {
   setMuted(muted) {
     this._muted = !!muted;
     this._audio.volume = this._effectiveVolume();
-    if (this._started && !this._muted && this._volume > 0 && this._audio.paused) {
+    if (this._started && !this._muted && this._volume > 0 && this._audio.paused && !this._inBackground) {
       this._audio.play().catch(() => {});
     }
   }
+
+  // ── App lifecycle ───────────────────────────────────────────────────────
+  // Called when the app/tab goes to the background (home button, app switch,
+  // screen off, incoming call). Pauses music and suspends sound effects and
+  // remembers whether music was playing, so resume() only restarts it then.
+  pauseForBackground() {
+    if (this._inBackground) return;
+    this._inBackground = true;
+    this._resumeMusic = this._started && !this._audio.paused;
+    try { this._audio.pause(); } catch (_) { /* ignore */ }
+    if (this._audioCtx && this._audioCtx.state === 'running') {
+      this._audioCtx.suspend().catch(() => {});
+    }
+  }
+
+  resumeFromBackground() {
+    if (!this._inBackground) return;
+    this._inBackground = false;
+    if (this._resumeMusic && !this._muted && this._volume > 0) {
+      this._audio.play().catch(() => {});
+    }
+    this._resumeMusic = false;
+    // AudioContext is resumed lazily by _getAudioCtx() on the next effect
+  }
+
+  get inBackground() { return !!this._inBackground; }
 
   get volume() { return this._volume; }
   get muted()  { return this._muted;  }
