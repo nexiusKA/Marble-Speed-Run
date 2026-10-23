@@ -1,4 +1,14 @@
-# Marble Rush 1.0.4 – First Google Play release
+# Marble Rush 1.1.0
+
+New in 1.1.0:
+- Fills the whole screen on tall phones (no more black bars)
+- New look: a void start screen and modern menus everywhere
+- Pause menu (resume, restart, main menu) and a Main Menu button after a run
+- Back button now pauses a run and leaves sub-menus instead of closing the app
+- Clearer difficulty: Easy, Normal, Hard and the new Insane, with a fine-tune slider
+- PvP: smarter rivals that steer around obstacles – fair speed, difficulty is pure skill
+- Fixed: picking up Speed in PvP also made every rival faster
+- Removed the Optimal Path option
 
 Fixes in 1.0.4:
 - Smoother gameplay: adaptive glow quality on slower phones, cheaper background/track rendering
@@ -16,5 +26,5 @@ Fixes in 1.0.3:
 - PvP race mode against up to 10 AI marbles
 - Coin shop, achievements and saved best distance
 - Touch controls, haptics and Android back-button support
-- Six original soundtrack tracks
+- Original synthwave soundtrack
 - No ads, no tracking, no in-app purchases
