@@ -31,11 +31,7 @@
     const scaleY = window.innerHeight / 792;
     const scale  = Math.min(scaleX, scaleY, 1); // never upscale on desktop
     container.style.transform = `scale(${scale})`;
-    // TEMP-DIAG (remove before merge)
-    console.log('[SCALEDIAG] ' + JSON.stringify({ t: Math.round(performance.now()), iw: window.innerWidth, ih: window.innerHeight,
-      cw: document.documentElement.clientWidth, ch: document.documentElement.clientHeight,
-      vv: window.visualViewport ? [Math.round(window.visualViewport.width), Math.round(window.visualViewport.height), window.visualViewport.scale] : null,
-      dpr: window.devicePixelRatio, sw: screen.width, sh: screen.height, scale: scale }));
+    container.style.visibility = 'visible'; // hidden in CSS until first scaled (no zoomed-in flash on slow devices)
   }
 
   // Fullscreen helpers with Safari prefix support

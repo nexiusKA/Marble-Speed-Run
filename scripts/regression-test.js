@@ -118,6 +118,9 @@ const chainsCatchOnAddListener = (src) => {
 assert(!chainsCatchOnAddListener(nativeJs),
   'native.js does not chain .catch() on App.addListener() (crashes on Capacitor 8)');
 
+assert(capCfg.android && capCfg.android.minWebViewVersion >= 87,
+  'android.minWebViewVersion >= 87 (older WebViews crash or break the layout -> update page instead)');
+
 // Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
 if (process.env.RELEASE_CHECK === '1') {
   const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');

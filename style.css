@@ -33,6 +33,7 @@ body {
     inset 0 0 24px rgba(130,0,255,0.08);
   background: #07071a;
   transform-origin: center center;
+  visibility: hidden; /* shown by main.js once scaled to the screen */
 }
 
 #gameCanvas {
