@@ -1054,8 +1054,7 @@ class Game {
     if (pvpPlayBtn) {
       pvpPlayBtn.addEventListener('click', () => {
         // Hide the start overlay then begin PVP
-        const overlay = document.getElementById('overlay');
-        if (overlay) { overlay.classList.remove('visible'); overlay.classList.add('hidden'); }
+        this.ui.hideStart();
         this.startPvpRun();
       });
     }

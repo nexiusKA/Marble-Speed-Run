@@ -32,6 +32,8 @@ class UI {
         const el = document.getElementById(p);
         if (el) el.classList.toggle('active', p === id);
       });
+      // The start screen is the full-screen void; sub-menus keep their card
+      this.overlay.classList.toggle('overlay-main', id === 'menu-panel-main');
     };
     showPanel('menu-panel-main');
 
@@ -222,13 +224,27 @@ class UI {
     if (this.coinEl) this.coinEl.textContent = n;
   }
 
+  /** Hide the start menu (when a run or race begins). */
+  hideStart() {
+    this._hide(this.overlay);
+  }
+
   _show(el) {
     el.classList.remove('hidden');
     el.classList.add('visible');
+    if (el === this.overlay) this._setInMenu(true);
   }
 
   _hide(el) {
     el.classList.remove('visible');
     el.classList.add('hidden');
+    if (el === this.overlay) this._setInMenu(false);
+  }
+
+  // While the start menu is open the run's HUD and touch controls are hidden,
+  // so the menu isn't cluttered with the last run's numbers.
+  _setInMenu(inMenu) {
+    const container = document.getElementById('game-container');
+    if (container) container.classList.toggle('in-menu', inMenu);
   }
 }
