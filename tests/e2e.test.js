@@ -150,10 +150,11 @@ async function newPage(browser, baseUrl, errors, storage) {
     const dist = await page.evaluate(() => {
       const g = window.__marbleGame;
       g.shieldTimer = 0;
-      const d = g.distance;
       g.fog.y = g.marble.y + 1000;                // void well past the marble (a speed boost can move it > radius per frame)
       g.update(1 / 60);
-      return d;
+      // Read the distance after the final frame: a bounce in that frame can
+      // move the marble back a metre (used to make this test flaky)
+      return g.distance;
     });
     const after = await page.evaluate(() => ({
       state: window.__marbleGame.state,
@@ -304,10 +305,14 @@ async function newPage(browser, baseUrl, errors, storage) {
   await test('pause menu: back pauses, nothing moves, resume counts down, menu returns to start', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors);
-    await page.evaluate(() => window.__marbleGame.startRun());
-    await simulate(page, 60 * 5);
     const r = await page.evaluate(() => {
       const g = window.__marbleGame;
+      // Get through the 3-2-1 into a running game; the shield keeps the void
+      // from ending the run on an unlucky level (it would make back go to the menu)
+      g.startRun();
+      for (let i = 0; i < 60 * 5 && !(g.state === 'running' && g.distance > 100); i++) {
+        g.shieldTimer = 5; g.update(1 / 60);
+      }
       const consumed = g.handleBackButton();
       const paused = g.state;
       const pauseShown = document.getElementById('pause-overlay').classList.contains('visible');
