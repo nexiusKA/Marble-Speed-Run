@@ -26,6 +26,7 @@
 
     _init() {
       this._initBackButtonHandler();
+      this._initAppLifecycle();
       this._hideStatusBar();
 
       document.addEventListener('visibilitychange', () => {
@@ -96,6 +97,25 @@
         });
         Promise.resolve(handle).catch(() => {});
       } catch (_) { /* back button falls back to default behaviour */ }
+    }
+
+    // Android: the app going to the background (home button, app switcher,
+    // screen off, phone call) is reported by Capacitor's App plugin. The
+    // WebView alone does not reliably fire visibilitychange, which is why the
+    // music kept playing in the background.
+    _initAppLifecycle() {
+      if (!this._isNative || !App || typeof App.addListener !== 'function') return;
+      const hidden  = () => { if (this._game && this._game.onAppHidden) this._game.onAppHidden(); };
+      const visible = () => { if (this._game && this._game.onAppVisible) this._game.onAppVisible(); };
+      const listen = (event, fn) => {
+        try { Promise.resolve(App.addListener(event, fn)).catch(() => {}); } catch (_) { /* ignore */ }
+      };
+      listen('pause', hidden);
+      listen('resume', visible);
+      listen('appStateChange', (state) => {
+        if (state && state.isActive === false) hidden();
+        else if (state && state.isActive) visible();
+      });
     }
 
     _hideStatusBar() {

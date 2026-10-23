@@ -66,6 +66,7 @@ jobs:
           step npm run test:syntax
           step npx playwright install --with-deps chromium
           step npm run test:e2e
+          step npm run test:perf
 
       - name: Build web assets and sync Android
         run: npm run cap:sync:android

@@ -318,6 +318,90 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  // 8. Sound & app lifecycle
+  // Simulate the page going to the background the way the browser does it.
+  const setHidden = (page, hidden) => page.evaluate((hidden) => {
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden });
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (hidden ? 'hidden' : 'visible') });
+    document.dispatchEvent(new Event('visibilitychange'));
+  }, hidden);
+
+  await test('music pauses when the app goes to the background and resumes after', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(() => window.__marbleGame.startRun());
+    await page.waitForFunction(() => !window.__marbleGame.sound._audio.paused, null, { timeout: 5000 });
+    await setHidden(page, true);
+    const bg = await page.evaluate(() => ({ paused: window.__marbleGame.sound._audio.paused, inBg: window.__marbleGame.sound.inBackground }));
+    assert(bg.paused, 'music still playing in the background');
+    assert(bg.inBg, 'sound manager not in background state');
+    await setHidden(page, false);
+    const fg = await page.evaluate(() => ({ paused: window.__marbleGame.sound._audio.paused, inBg: window.__marbleGame.sound.inBackground }));
+    assert(!fg.paused, 'music did not resume when the app came back');
+    assert(!fg.inBg, 'sound manager still in background state');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('muted music stays off after returning from the background', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(() => { const g = window.__marbleGame; g.startRun(); g.sound.setMuted(true); g.sound._audio.pause(); });
+    await setHidden(page, true);
+    await setHidden(page, false);
+    const paused = await page.evaluate(() => window.__marbleGame.sound._audio.paused);
+    assert(paused, 'music started although it was muted');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('no sound effects and no new music while in the background', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      g.startRun();
+      g.onAppHidden();
+      g.sound._audioCtx = null;
+      g.sound.playZap(); g.sound.playBlitz(); g.sound.playPowerRushStart();
+      const ctxCreated = !!g.sound._audioCtx;
+      g.sound.setVolume(50);           // must not restart music in background
+      g.startRun();                    // neither must a new run
+      return { ctxCreated, paused: g.sound._audio.paused };
+    });
+    assert(!r.ctxCreated, 'a sound effect was played while in the background');
+    assert(r.paused, 'music started while in the background');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('returning mid-run starts a 3-2-1 countdown instead of continuing instantly', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(() => window.__marbleGame.startRun());
+    await simulate(page, 60 * 4);
+    await setHidden(page, true);
+    await setHidden(page, false);
+    const r = await page.evaluate(() => ({ state: window.__marbleGame.state, n: window.__marbleGame.startCountdownValue }));
+    assert(r.state === 'countdown' && r.n === 3, `expected countdown 3, got ${r.state} ${r.n}`);
+    await simulate(page, 60 * 4);
+    const after = await page.evaluate(() => window.__marbleGame.state);
+    assert(after === 'running', `run did not continue after the countdown (state "${after}")`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('going to the background in the menu does not start a run', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await setHidden(page, true);
+    await setHidden(page, false);
+    const state = await page.evaluate(() => window.__marbleGame.state);
+    assert(state === 'menu', `state changed to "${state}"`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await browser.close();
   server.close();
 

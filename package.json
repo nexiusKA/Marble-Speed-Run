@@ -1,6 +1,6 @@
 {
   "name": "marble-speed-run",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Marble Rush – a vanilla JS canvas speed-run game. Outrun the fog. Survive forever.",
   "private": true,
   "scripts": {
@@ -10,8 +10,9 @@
     "android:open": "npx cap open android",
     "android:bundle": "cd android && ./gradlew bundleRelease",
     "test:e2e": "node tests/e2e.test.js",
-    "test": "npm run test:regression && npm run build && npm run test:e2e",
-    "test:syntax": "node scripts/check-syntax.js"
+    "test": "npm run test:regression && npm run build && npm run test:e2e && npm run test:perf",
+    "test:syntax": "node scripts/check-syntax.js",
+    "test:perf": "node tests/perf.test.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

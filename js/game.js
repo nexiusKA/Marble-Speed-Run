@@ -550,6 +550,7 @@ class Game {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx    = canvas.getContext('2d');
+    this.quality = new RenderQuality(this.ctx);
     canvas.width  = CANVAS_W;
     canvas.height = CANVAS_H;
 
@@ -1883,6 +1884,27 @@ class Game {
     if (window.MarbleNative) window.MarbleNative.heavyImpact();
   }
 
+  // ── App lifecycle (background / foreground) ───────────────────────────────
+  onAppHidden() {
+    if (this._appHidden) return;
+    this._appHidden = true;
+    this.sound.pauseForBackground();
+    this.input.left = this.input.right = this.input.up = this.input.down = false;
+  }
+
+  onAppVisible() {
+    if (!this._appHidden) return;
+    this._appHidden = false;
+    this.sound.resumeFromBackground();
+    // Coming back mid-run: give the player a 3-2-1 countdown instead of
+    // dropping them straight back into the action.
+    if (this.state === STATE.RUNNING) {
+      this.state = STATE.COUNTDOWN;
+      this.startCountdownValue = 3;
+      this.startCountdownTimer = 1;
+    }
+  }
+
   handleBackButton() {
     if (this.state === STATE.SHOP) {
       this.closeShop();
@@ -2625,6 +2647,31 @@ class Game {
 
   // ── Synthwave background ──────────────────────────────────────────────────────
   _renderSynthwaveBg(ctx) {
+    // The sky, sun and stripe bands never change: draw them once into an
+    // offscreen canvas and copy that each frame (gradients + many fills per
+    // frame were one of the biggest costs on phones).
+    if (!this._bgCache) this._bgCache = this._buildSynthwaveBgCache();
+    ctx.drawImage(this._bgCache, 0, 0);
+
+    // ── Neon scan-lines (lower half, scroll with camera for motion feel) ────
+    // Thin fillRects instead of stroked paths – same look, much cheaper.
+    const gridTop  = CANVAS_H * 0.60;
+    const scroll   = (this.cameraY % 52) / 52;
+    const nLines   = 14;
+    for (let i = 0; i < nLines; i++) {
+      const t     = (i + scroll) / nLines;
+      const ly    = gridTop + t * (CANVAS_H - gridTop);
+      const alpha = 0.04 + (1 - t) * 0.22;
+      ctx.fillStyle = `rgba(255,0,200,${alpha.toFixed(3)})`;
+      ctx.fillRect(0, ly - 0.4, CANVAS_W, 0.8);
+    }
+  }
+
+  _buildSynthwaveBgCache() {
+    const canvas = document.createElement('canvas');
+    canvas.width  = CANVAS_W;
+    canvas.height = CANVAS_H;
+    const ctx = canvas.getContext('2d');
     // Deep space → violet → magenta gradient sky
     const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
     sky.addColorStop(0,    '#06001a');
@@ -2671,26 +2718,29 @@ class Game {
       ctx.fillRect(sunCX - sunR, bY + bH * 0.6, sunR * 2, bH);
     }
 
-    // ── Neon scan-lines (lower half, scroll with camera for motion feel) ────
-    const gridTop  = CANVAS_H * 0.60;
-    const scroll   = (this.cameraY % 52) / 52;
-    const nLines   = 14;
-    for (let i = 0; i < nLines; i++) {
-      const t     = (i + scroll) / nLines;
-      const ly    = gridTop + t * (CANVAS_H - gridTop);
-      const alpha = 0.04 + (1 - t) * 0.22;
-      ctx.beginPath();
-      ctx.moveTo(0,        ly);
-      ctx.lineTo(CANVAS_W, ly);
-      ctx.strokeStyle = `rgba(255,0,200,${alpha.toFixed(3)})`;
-      ctx.lineWidth   = 0.8;
-      ctx.stroke();
-    }
+    return canvas;
   }
 
   // ── Background stars / pinball light dots (seeded per camera bucket) ─────────
   _renderStars(ctx) {
+    // Stars only change when the camera enters a new bucket: draw them once
+    // per bucket into an offscreen canvas instead of 76 arcs every frame.
     const bucket = Math.floor(this.cameraY / CANVAS_H);
+    if (!this._starsCache || this._starsCacheBucket !== bucket) {
+      if (!this._starsCache) {
+        this._starsCache = document.createElement('canvas');
+        this._starsCache.width  = CANVAS_W;
+        this._starsCache.height = CANVAS_H;
+      }
+      const sctx = this._starsCache.getContext('2d');
+      sctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+      this._drawStars(sctx, bucket);
+      this._starsCacheBucket = bucket;
+    }
+    ctx.drawImage(this._starsCache, 0, 0);
+  }
+
+  _drawStars(ctx, bucket) {
     const seed   = bucket * 1234567;
 
     // Pinball neon light colors

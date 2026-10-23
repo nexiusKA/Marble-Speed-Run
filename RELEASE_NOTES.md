@@ -1,4 +1,10 @@
-# Marble Rush 1.0.3 – First Google Play release
+# Marble Rush 1.0.4 – First Google Play release
+
+Fixes in 1.0.4:
+- Smoother gameplay: adaptive glow quality on slower phones, cheaper background/track rendering
+- Music and sound effects pause when the app goes to the background
+- 3-2-1 countdown when returning to a run from the background
+
 
 Fixes in 1.0.3:
 - White/black screen on phones with an outdated Android System WebView (now shows an update hint)
