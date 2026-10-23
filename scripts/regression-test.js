@@ -97,6 +97,27 @@ const bannedSdks = ['@capacitor-firebase/analytics', '@sentry/capacitor', '@reve
 assert(!allDeps.some(d => bannedSdks.includes(d)),
   'no analytics / crash-reporting / IAP SDKs (privacy policy says no data is collected)');
 
+const capCfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'capacitor.config.json'), 'utf8'));
+assert(capCfg.server && capCfg.server.errorPath && fs.existsSync(path.join(ROOT, capCfg.server.errorPath)),
+  'Capacitor errorPath page exists (shown instead of a white screen on outdated WebViews)');
+const nativeJs = fs.readFileSync(path.join(ROOT, 'js/native.js'), 'utf8');
+// find the end of every addListener( … ) call and make sure no .catch follows it
+const chainsCatchOnAddListener = (src) => {
+  let i = 0;
+  while ((i = src.indexOf('addListener(', i)) !== -1) {
+    let depth = 0, j = i + 'addListener'.length;
+    for (; j < src.length; j++) {
+      if (src[j] === '(') depth++;
+      else if (src[j] === ')' && --depth === 0) break;
+    }
+    if (/^\s*\.catch/.test(src.slice(j + 1))) return true;
+    i = j;
+  }
+  return false;
+};
+assert(!chainsCatchOnAddListener(nativeJs),
+  'native.js does not chain .catch() on App.addListener() (crashes on Capacitor 8)');
+
 // Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
 if (process.env.RELEASE_CHECK === '1') {
   const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');

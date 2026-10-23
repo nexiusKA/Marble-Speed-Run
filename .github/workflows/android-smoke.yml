@@ -1,8 +1,8 @@
 name: Android Smoke Test
 
 # Builds a debug APK, launches it on an Android emulator, and records a
-# screenshot plus the app log. Results are pushed to the `smoke-results`
-# branch so they can be inspected without downloading artifacts.
+# screenshot plus the app log. Results are pushed to the `smoke-results-api<level>`
+# branches so they can be inspected without downloading artifacts.
 on:
   push:
     branches: ['diag/**']
@@ -15,6 +15,10 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [24, 29, 34, 36]
     steps:
       - uses: actions/checkout@v4
 
@@ -51,8 +55,8 @@ jobs:
       - name: Run app on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
-          target: google_apis
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.api-level >= 34 && 'google_apis' || 'default' }}
           arch: x86_64
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
@@ -65,11 +69,11 @@ jobs:
           cp -r android/app/src/main/assets /tmp/out/assets-listing 2>/dev/null && find /tmp/out/assets-listing -type f | sed 's#/tmp/out/assets-listing/##' > /tmp/out/assets.txt && rm -rf /tmp/out/assets-listing || true
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout --orphan smoke-results
+          git checkout --orphan smoke-results-api${{ matrix.api-level }}
           git rm -rf -q . || true
           rm -rf ./* .github 2>/dev/null || true
           cp -r /tmp/out/. .
-          echo "run: ${{ github.run_id }} sha: ${{ github.sha }}" > RUN.txt
+          echo "run: ${{ github.run_id }} sha: ${{ github.sha }} api: ${{ matrix.api-level }}" > RUN.txt
           git add -A
           git commit -q -m "Smoke results for ${{ github.sha }}"
-          git push -f origin smoke-results
+          git push -f origin smoke-results-api${{ matrix.api-level }}

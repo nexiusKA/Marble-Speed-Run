@@ -10,6 +10,11 @@
   const Haptics = plugins.Haptics;
   const StatusBar = plugins.StatusBar;
 
+  // Call a plugin method and swallow errors, whether it returns a Promise or not.
+  const safe = (fn) => {
+    try { Promise.resolve(fn()).catch(() => {}); } catch (_) { /* ignore */ }
+  };
+
   class MarbleNativeBridge {
     constructor() {
       this._game = null;
@@ -51,12 +56,12 @@
 
     lightImpact() {
       if (!Haptics || typeof Haptics.impact !== 'function') return;
-      Haptics.impact({ style: 'LIGHT' }).catch(() => {});
+      safe(() => Haptics.impact({ style: 'LIGHT' }));
     }
 
     heavyImpact() {
       if (!Haptics || typeof Haptics.impact !== 'function') return;
-      Haptics.impact({ style: 'HEAVY' }).catch(() => {});
+      safe(() => Haptics.impact({ style: 'HEAVY' }));
     }
 
     async acquireWakeLock() {
@@ -79,23 +84,28 @@
 
     _initBackButtonHandler() {
       if (!this._isNative || !App || typeof App.addListener !== 'function') return;
-      App.addListener('backButton', () => {
-        if (this._game && typeof this._game.handleBackButton === 'function') {
-          const consumed = this._game.handleBackButton();
-          if (consumed) return;
-        }
-        if (App.exitApp) App.exitApp();
-      }).catch(() => {});
+      // Capacitor 8 returns a listener handle that is not always a Promise,
+      // so never chain .catch() directly on addListener().
+      try {
+        const handle = App.addListener('backButton', () => {
+          if (this._game && typeof this._game.handleBackButton === 'function') {
+            const consumed = this._game.handleBackButton();
+            if (consumed) return;
+          }
+          if (App.exitApp) App.exitApp();
+        });
+        Promise.resolve(handle).catch(() => {});
+      } catch (_) { /* back button falls back to default behaviour */ }
     }
 
     _hideStatusBar() {
       if (!this._isNative || !StatusBar || typeof StatusBar.hide !== 'function') return;
-      StatusBar.hide().catch(() => {});
+      safe(() => StatusBar.hide());
     }
 
     _showStatusBar() {
       if (!this._isNative || !StatusBar || typeof StatusBar.show !== 'function') return;
-      StatusBar.show().catch(() => {});
+      safe(() => StatusBar.show());
     }
   }
 
