@@ -1,6 +1,6 @@
 // ── Game ─────────────────────────────────────────────────────────────────────
 
-const STATE = { MENU: 'menu', COUNTDOWN: 'countdown', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop', PVP_OVER: 'pvp_over' };
+const STATE = { MENU: 'menu', COUNTDOWN: 'countdown', RUNNING: 'running', DEAD: 'dead', SHOP: 'shop', PVP_OVER: 'pvp_over', PAUSED: 'paused' };
 
 // World-units between successive content-generation passes
 const GEN_SEGMENT = 500;
@@ -629,6 +629,7 @@ class Game {
 
     // Wire up the in-game shop button and shop overlay
     this._initShop();
+    this._initPauseMenu();
 
     // Wire up the achievements overlay accessible from the start menu
     this._initAchievementsUI();
@@ -927,6 +928,50 @@ class Game {
     this.startRun();
   }
 
+  // ── Pause menu ────────────────────────────────────────────────────────────
+  pauseRun() {
+    if (this.state !== STATE.RUNNING && this.state !== STATE.COUNTDOWN) return;
+    this.state = STATE.PAUSED;
+    this.input.left = this.input.right = this.input.up = this.input.down = false;
+    this.ui.showPause();
+  }
+
+  resumeRun() {
+    if (this.state !== STATE.PAUSED) return;
+    this.ui.hidePause();
+    // Same 3-2-1 as returning from the background, so nobody resumes blind
+    this.state = STATE.COUNTDOWN;
+    this.startCountdownValue = 3;
+    this.startCountdownTimer = 1;
+  }
+
+  /** Leave a run (paused, finished or lost) and go back to the start menu. */
+  returnToMenu() {
+    this.ui.hidePause();
+    this.ui.hideGameOver();
+    this.pvpMode = false;
+    this._init();
+    this.state = STATE.MENU;
+    this.ui.setPvpHud(false);
+    this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
+  }
+
+  _initPauseMenu() {
+    const pauseBtn   = document.getElementById('pause-btn');
+    const resumeBtn  = document.getElementById('pause-resume-btn');
+    const restartBtn = document.getElementById('pause-restart-btn');
+    const menuBtn    = document.getElementById('pause-menu-btn');
+    const goMenuBtn  = document.getElementById('gameover-menu-btn');
+    if (pauseBtn)   pauseBtn.addEventListener('click',   () => this.pauseRun());
+    if (resumeBtn)  resumeBtn.addEventListener('click',  () => this.resumeRun());
+    if (restartBtn) restartBtn.addEventListener('click', () => {
+      this.ui.hidePause();
+      if (this.pvpMode) this.startPvpRun(); else this.startRun();
+    });
+    if (menuBtn)    menuBtn.addEventListener('click',    () => this.returnToMenu());
+    if (goMenuBtn)  goMenuBtn.addEventListener('click',  () => this.returnToMenu());
+  }
+
   // ── PVP mode ───────────────────────────────────────────────────────────────
   startPvpRun() {
     this.pvpMode = true;
@@ -1108,6 +1153,12 @@ class Game {
     // In shop state the game is paused; Escape/R closes the shop
     if (this.state === STATE.SHOP) {
       if (this.input.consumeRestart()) this.closeShop();
+      return;
+    }
+
+    // Pause menu is open – nothing moves; Escape/R resumes
+    if (this.state === STATE.PAUSED) {
+      if (this.input.consumeRestart()) this.resumeRun();
       return;
     }
 
@@ -1735,7 +1786,9 @@ class Game {
     const earned = this._achievements.size;
     const total  = ACHIEVEMENT_DEFS.length;
     const achBtn = document.getElementById('achievements-btn');
-    if (achBtn) achBtn.textContent = `🏆 ACHIEVEMENTS (${earned}/${total})`;
+    if (achBtn) achBtn.textContent = '🏆 Achievements';
+    const trophiesEl = document.getElementById('menu-trophies');
+    if (trophiesEl) trophiesEl.textContent = `${earned}/${total}`;
   }
 
   // ── Shop ─────────────────────────────────────────────────────────────────
@@ -1911,24 +1964,38 @@ class Game {
       return true;
     }
 
-    if (this.state === STATE.RUNNING) {
-      if (this.pvpMode) {
-        this.state = STATE.MENU;
-        this.pvpMode = false;
-        this.ui.setPvpHud(false);
-        this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
-      } else {
-        this.openShop();
-      }
+    // Back during a run opens the pause menu; back again resumes
+    if (this.state === STATE.RUNNING || this.state === STATE.COUNTDOWN) {
+      this.pauseRun();
       return true;
     }
 
+    if (this.state === STATE.PAUSED) {
+      this.resumeRun();
+      return true;
+    }
+
+    // In the menu, back closes the achievements list or a sub-menu first;
+    // only on the start screen itself does it leave the app
+    if (this.state === STATE.MENU) {
+      const achOverlay = document.getElementById('achievements-overlay');
+      if (achOverlay && achOverlay.classList.contains('visible')) {
+        achOverlay.classList.remove('visible');
+        achOverlay.classList.add('hidden');
+        return true;
+      }
+      for (const [panelId, backId] of [['menu-panel-endless', 'back-endless-btn'], ['menu-panel-pvp', 'back-pvp-btn']]) {
+        const panel = document.getElementById(panelId);
+        const back  = document.getElementById(backId);
+        if (panel && back && panel.classList.contains('active')) { back.click(); return true; }
+      }
+      return false;
+    }
+
     if (this.state === STATE.DEAD || this.state === STATE.PVP_OVER) {
-      this.state = STATE.MENU;
-      this.pvpMode = false;
-      this.ui.hideGameOver();
-      this.ui.setPvpHud(false);
-      this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
+      const pvpOverlay = document.getElementById('pvp-overlay');
+      if (pvpOverlay) { pvpOverlay.classList.remove('visible'); pvpOverlay.classList.add('hidden'); }
+      this.returnToMenu();
       return true;
     }
 

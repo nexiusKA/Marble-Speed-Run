@@ -4,6 +4,7 @@ class UI {
   constructor() {
     this.distEl      = document.getElementById('dist-display');
     this.bestEl      = document.getElementById('best-display');
+    this.menuBestEl  = document.getElementById('menu-best');
     this.voidDistEl  = document.getElementById('void-display');
     this.timerEl     = document.getElementById('timer-display');
     this.coinEl      = document.getElementById('coin-display');
@@ -196,6 +197,14 @@ class UI {
     this._hide(this.gameOverOvl);
   }
 
+  showPause() {
+    this._show(document.getElementById('pause-overlay'));
+  }
+
+  hidePause() {
+    this._hide(document.getElementById('pause-overlay'));
+  }
+
   updateDistance(m) {
     if (this.distEl) this.distEl.textContent = m;
   }
@@ -206,6 +215,7 @@ class UI {
 
   updateBestDistance(m) {
     if (this.bestEl) this.bestEl.textContent = m === 0 ? '--' : `${m} m`;
+    if (this.menuBestEl) this.menuBestEl.textContent = m === 0 ? '--' : `${m.toLocaleString('en-US')} m`;
   }
 
   updateTimer(ms) {
