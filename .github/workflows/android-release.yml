@@ -48,11 +48,24 @@ jobs:
 
       - name: Run browser tests (E2E)
         run: |
-          npm run build
-          npm install --no-save playwright@1.56.0 acorn@8.14.0
-          npm run test:syntax
-          npx playwright install --with-deps chromium
-          npm run test:e2e
+          # Run each command and surface the last lines of output as an
+          # annotation on failure (readable without opening the full log).
+          step() {
+            echo "::group::$*"
+            if ! "$@" > /tmp/step.log 2>&1; then
+              cat /tmp/step.log
+              echo "::endgroup::"
+              echo "::error title=Failed: $*::$(grep -v '^\s*$' /tmp/step.log | tail -6 | tr '\n' ' ' | cut -c1-900)"
+              exit 1
+            fi
+            cat /tmp/step.log
+            echo "::endgroup::"
+          }
+          step npm run build
+          step npm install --no-save playwright@1.56.0 acorn@8.14.0
+          step npm run test:syntax
+          step npx playwright install --with-deps chromium
+          step npm run test:e2e
 
       - name: Build web assets and sync Android
         run: npm run cap:sync:android
