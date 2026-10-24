@@ -1,0 +1,7 @@
+Starting: Intent { cmp=com.nexiuska.marblerush/.MainActivity }
+Status: ok
+Activity: com.nexiuska.marblerush/.MainActivity
+ThisTime: 2189
+TotalTime: 2189
+WaitTime: 2211
+Complete

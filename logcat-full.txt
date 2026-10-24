@@ -1,0 +1,757 @@
+--------- beginning of system
+10-24 15:26:07.295  1614  1818 I ActivityManager: Start proc 2632:com.svox.pico/u0a48 for broadcast com.svox.pico/.VoiceDataInstallerReceiver
+10-24 15:26:07.297  1614  1627 W VoiceInteractionManagerService: no available voice recognition services found for user 0
+10-24 15:26:07.297  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:07.298  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:07.298  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:07.298  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+--------- beginning of main
+10-24 15:26:07.376  2649  2649 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:26:07.377  2649  2649 D AndroidRuntime: CheckJNI is OFF
+10-24 15:26:07.388  2649  2649 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:26:07.390  2649  2649 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:26:07.398  2649  2649 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:26:07.398  2649  2649 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:26:07.398  2649  2649 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:26:07.401  2649  2649 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:26:07.415  1614  2075 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:26:07.428  2659  2659 I art     : Late-enabling -Xcheck:jni
+10-24 15:26:07.435  2659  2659 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:26:07.435  1614  1625 I ActivityManager: Start proc 2659:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:26:07.457  2659  2659 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:26:07.465  1305  2085 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:26:07.482  2200  2256 D EGL_emulation: eglMakeCurrent: 0x76c9b9e49140: ver 3 0 (tinfo 0x76c9b9e0c7a0)
+10-24 15:26:07.488  2659  2659 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+10-24 15:26:07.495  2659  2659 W art     : Before Android 4.1, method android.graphics.PorterDuffColorFilter androidx.vectordrawable.graphics.drawable.VectorDrawableCompat.updateTintFilter(android.graphics.PorterDuffColorFilter, android.content.res.ColorStateList, android.graphics.PorterDuff$Mode) would have incorrectly overridden the package-private method in android.graphics.drawable.Drawable
+10-24 15:26:07.508  2659  2659 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:26:07.509  2659  2659 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:26:07.523  2659  2659 I cr_LibraryLoader: Time to load native libraries: 2 ms (timestamps 1606-1608)
+10-24 15:26:07.523  2659  2659 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:26:07.527  2659  2659 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {4d7135f}
+10-24 15:26:07.527  2659  2659 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:26:07.528  2659  2659 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:26:07.536  2659  2659 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:26:07.542  2659  2659 D         : HostConnection::get() New Host Connection established 0x76c9a9f2a140, tid 2659
+10-24 15:26:07.543  2659  2659 D EGL_emulation: eglCreateContext: 0x76c9c087e100: maj 3 min 0 rcv 3
+10-24 15:26:07.544  2659  2659 D EGL_emulation: eglMakeCurrent: 0x76c9c087e100: ver 3 0 (tinfo 0x76c9a9ebbde0)
+10-24 15:26:07.544  2659  2659 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:26:07.544  2659  2659 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:26:07.556  2659  2685 W cr_media: Requires BLUETOOTH permission
+10-24 15:26:07.569  2659  2659 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:26:07.579  2659  2659 W cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+10-24 15:26:07.580  2659  2659 D Capacitor: Starting BridgeActivity
+10-24 15:26:07.590  2659  2659 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: WebView
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:26:07.593  2659  2659 D Capacitor: Registering plugin instance: App
+10-24 15:26:07.594  2659  2659 D Capacitor: Registering plugin instance: Haptics
+10-24 15:26:07.595  2659  2659 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:26:07.608  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:26:07.610  2659  2659 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:26:07.613  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:26:07.616  2659  2659 W Capacitor: Unable to read file at path public/plugins
+10-24 15:26:07.617  2659  2659 D Capacitor: Loading app at https://localhost
+10-24 15:26:07.621  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:26:07.623  2659  2659 I cr_Ime  : ImeThread is not enabled.
+10-24 15:26:07.629  2659  2659 D Capacitor: App started
+10-24 15:26:07.629  2659  2659 D Capacitor/AppPlugin: Firing change: true
+10-24 15:26:07.629  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:26:07.629  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:26:07.629  2659  2659 D Capacitor: App resumed
+10-24 15:26:07.633  1305  1342 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:26:07.654  2659  2702 E libEGL  : validate_display:99 error 3008 (EGL_BAD_DISPLAY)
+10-24 15:26:07.666  2659  2698 I OpenGLRenderer: Initialized EGL, version 1.4
+10-24 15:26:07.666  2659  2698 D OpenGLRenderer: Swap behavior 1
+10-24 15:26:07.666  2659  2698 D         : HostConnection::get() New Host Connection established 0x76c9a8b57180, tid 2698
+10-24 15:26:07.668  2659  2698 D EGL_emulation: eglCreateContext: 0x76c9a8a269c0: maj 3 min 0 rcv 3
+10-24 15:26:07.670  2659  2702 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+10-24 15:26:07.673  2659  2698 D EGL_emulation: eglMakeCurrent: 0x76c9a8a269c0: ver 3 0 (tinfo 0x76c9a8b4c260)
+10-24 15:26:07.673  2659  2698 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:26:07.673  2659  2698 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:26:07.684  2659  2702 D         : HostConnection::get() New Host Connection established 0x76c9a6e51060, tid 2702
+10-24 15:26:07.686  2659  2679 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:26:07.690  2659  2702 D EGL_emulation: eglCreateContext: 0x76c9b9e4b8a0: maj 3 min 0 rcv 3
+10-24 15:26:07.691  2659  2702 D EGL_emulation: eglMakeCurrent: 0x76c9b9e4b8a0: ver 3 0 (tinfo 0x76c9b9fff4e0)
+10-24 15:26:07.691  2659  2702 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:26:07.691  2659  2702 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:26:07.695  2659  2702 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008a34
+10-24 15:26:07.695  2659  2702 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008073
+10-24 15:26:07.695  2659  2702 E eglCodecCommon: glUtilsParamSize: unknow param 0x000088ff
+10-24 15:26:07.720  2659  2659 W cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 2659
+10-24 15:26:07.776  2659  2679 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:26:09.414  2458  2551 I GlobalDismissManager: no sender configured
+10-24 15:26:09.415  2458  2551 D AlertService: Beginning updateAlertNotification
+10-24 15:26:09.419  2458  2551 D AlertService: No fired or scheduled alerts
+10-24 15:26:09.422  2458  2551 D AlertService: Scheduling next alarm with AlarmScheduler. sEventReminderReceived: null
+10-24 15:26:09.425  2458  2551 D AlarmScheduler: No events found starting within 1 week.
+10-24 15:26:09.501  2659  2659 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:26:09.504  2659  2659 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:26:09.504  2659  2698 D EGL_emulation: eglMakeCurrent: 0x76c9a8a269c0: ver 3 0 (tinfo 0x76c9a8b4c260)
+10-24 15:26:09.613  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s189ms
+10-24 15:26:09.615  2649  2649 D AndroidRuntime: Shutting down VM
+10-24 15:26:09.631  1614  1635 I WindowManager: Destroying surface Surface(name=Starting com.nexiuska.marblerush) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704 
+10-24 15:26:09.634  1614  1625 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4456 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903 
+10-24 15:26:10.425  1614  1712 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+10-24 15:26:11.548  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.550  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.551  1614  1655 I InputReader: Reconfiguring input devices.  changes=0x00000010
+10-24 15:26:11.558  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.564  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.566  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.568  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.568  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.568  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.568  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.570  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.570  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.571  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.571  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.572  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.572  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.572  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.572  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.573  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.575  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.575  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.575  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.575  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.575  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.579  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:26:11.579  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.579  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.579  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.579  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.582  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.582  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.582  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.582  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.583  1614  1627 W LocationProviderProxy-network: Odd, no component found for service com.android.location.service.v3.NetworkLocationProvider
+10-24 15:26:11.583  1614  1627 W GeocoderProxy: Odd, no component found for service com.android.location.service.GeocodeProvider
+10-24 15:26:11.583  1614  1627 W GeofenceProxy: Odd, no component found for service com.android.location.service.GeofenceProvider
+10-24 15:26:11.583  1614  1627 W ActivityRecognitionProxy: Odd, no component found for service com.android.location.service.ActivityRecognitionProvider
+10-24 15:26:11.602  1614  2074 W BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+10-24 15:26:11.619  1614  1625 W BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+10-24 15:26:11.640  1614  1626 W BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+10-24 15:26:11.661  1614  1818 W BackupManagerService: dataChanged but no participant pkg='com.android.launcher3' uid=10014
+10-24 15:26:13.506  2659  2720 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:26:18.680  1614  1628 I ActivityManager: Waited long enough for: ServiceRecord{362edd0 u0 com.android.calendar/.alerts.InitAlarmsService}
+10-24 15:26:19.651  1305  1342 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:26:19.653  1305  1340 D PermissionCache: checking android.permission.READ_FRAME_BUFFER for uid=2000 => granted (488 us)
+10-24 15:26:19.654  1305  1340 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:26:19.658  2729  2729 D         : HostConnection::get() New Host Connection established 0x7abec062d4e0, tid 2729
+10-24 15:26:21.974  1614  2249 D AlarmManagerService: Kernel timezone updated to 0 minutes west of GMT
+10-24 15:26:21.975  1614  1818 D AlarmManagerService: Setting time of day to sec=1792855582
+10-24 15:26:22.002  1614  1818 W AlarmManagerService: Unable to set rtc to 1792855582: No such device
+10-24 15:26:24.458  1614  1688 D WifiStateMachine: CMD_AUTO_CONNECT sup state DisconnectedState my state DisconnectedState nid=0 roam=false
+10-24 15:26:24.458  1614  1688 D WifiStateMachine: CMD_AUTO_CONNECT will save config -> "AndroidWifi" nid=0
+10-24 15:26:24.472  1614  2732 D WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:1 nid:0 hasEverConnected: false
+10-24 15:26:24.472  1614  2732 V WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+10-24 15:26:24.481  1614  1688 D WifiStateMachine: CMD_AUTO_CONNECT did save config ->  nid=0
+10-24 15:26:24.483  1614  2733 D WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:1 nid:0 hasEverConnected: false
+10-24 15:26:24.483  1614  2733 V WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+10-24 15:26:24.492  1945  1945 I wpa_supplicant: wlan0: SME: Trying to authenticate with 02:00:00:00:01:00 (SSID='AndroidWifi' freq=2412 MHz)
+10-24 15:26:24.501  1608  1608 I hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: authenticated
+10-24 15:26:24.501  1608  1608 I hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: authenticated
+10-24 15:26:24.502  1945  1945 I wpa_supplicant: wlan0: Trying to associate with 02:00:00:00:01:00 (SSID='AndroidWifi' freq=2412 MHz)
+10-24 15:26:24.512  1608  1608 I hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: associated (aid 1)
+10-24 15:26:24.513  1608  1608 I hostapd : wlan1: STA 02:00:00:44:55:66 IEEE 802.11: associated (aid 1)
+10-24 15:26:24.513  1608  1608 I hostapd : wlan1: AP-STA-CONNECTED 02:00:00:44:55:66
+10-24 15:26:24.517  1945  1945 I wpa_supplicant: wlan0: Associated with 02:00:00:00:01:00
+10-24 15:26:24.517  1945  1945 I wpa_supplicant: wlan0: CTRL-EVENT-CONNECTED - Connection to 02:00:00:00:01:00 completed [id=0 id_str=%7B%22creatorUid%22%3A%22-1%22%2C%22configKey%22%3A%22%5C%22AndroidWifi%5C%22NONE%22%7D]
+10-24 15:26:24.517  1945  1945 I wpa_supplicant: wlan0: CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+10-24 15:26:24.519  1614  1688 E WifiScanner: listener cannot be found
+10-24 15:26:24.519  1614  1688 D ConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "AndroidWifi", failover: false, available: true, roaming: false, metered: false]}  network{101}  nethandle{433808132830}  lp{{LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} }
+10-24 15:26:24.519  1614  1692 D ConnectivityService: NetworkAgentInfo [WIFI () - 101] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+10-24 15:26:24.522  1614  1688 D WifiStateMachine: Start Dhcp Watchdog 1
+10-24 15:26:24.532  1614  1688 D WifiNative-wlan0: configureNeighborDiscoveryOffload(true)
+10-24 15:26:24.561  1614  2737 D DhcpClient: Receive thread started
+10-24 15:26:24.562  1614  2736 D DhcpClient: Broadcasting DHCPDISCOVER
+10-24 15:26:27.075  1610  1610 I dnsmasq : DHCPDISCOVER(wlan1) 02:00:00:44:55:66 
+10-24 15:26:27.075  1610  1610 I dnsmasq : DHCPOFFER(wlan1) 192.168.100.188 02:00:00:44:55:66 
+10-24 15:26:27.076  1614  2737 D DhcpClient: Received packet: 02:00:00:44:55:66 OFFER, ip /192.168.100.188, mask /255.255.255.0, DNS servers: /10.0.2.3 , gateways [/192.168.100.1] lease time 14400, domain null
+10-24 15:26:27.077  1614  2736 D DhcpClient: Got pending lease: IP address 192.168.100.188/24 Gateway 192.168.100.1  DNS servers: [ 10.0.2.3 ] Domains  DHCP server /192.168.100.1 Vendor info null lease 14400 seconds
+10-24 15:26:27.077  1614  2736 D DhcpClient: Broadcasting DHCPREQUEST ciaddr=0.0.0.0 request=192.168.100.188 serverid=192.168.100.1
+10-24 15:26:27.078  1610  1610 I dnsmasq : DHCPREQUEST(wlan1) 192.168.100.188 02:00:00:44:55:66 
+10-24 15:26:27.078  1610  1610 I dnsmasq : DHCPACK(wlan1) 192.168.100.188 02:00:00:44:55:66 android-1b93894e9d9a62c0
+10-24 15:26:27.079  1614  2737 D DhcpClient: Received packet: 02:00:00:44:55:66 ACK: your new IP /192.168.100.188, netmask /255.255.255.0, gateways [/192.168.100.1] DNS servers: /10.0.2.3 , lease time 14400
+10-24 15:26:27.079  1614  2736 D DhcpClient: Confirmed lease: IP address 192.168.100.188/24 Gateway 192.168.100.1  DNS servers: [ 10.0.2.3 ] Domains  DHCP server /192.168.100.1 Vendor info null lease 14400 seconds
+10-24 15:26:27.081  1320  1589 D CommandListener: Setting iface cfg
+10-24 15:26:27.083  1614  1688 E WifiNative-HAL: setBssidBlacklist cmd 0 size 0
+10-24 15:26:27.084  1614  1692 D ConnectivityService: NetworkAgentInfo [WIFI () - 101] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to CONNECTED
+10-24 15:26:27.084  1614  1692 D ConnectivityService: Adding iface wlan0 to network 101
+10-24 15:26:27.086  1614  1688 E WifiStateMachine: Did not find remoteAddress {192.168.100.1} in /proc/net/arp
+10-24 15:26:27.086  1614  1688 E WifiStateMachine: Did not find remoteAddress {192.168.100.1} in /proc/net/arp
+10-24 15:26:27.086  1614  1688 W AlarmManager: Unrecognized alarm listener com.android.server.wifi.WifiConnectivityManager$3@e802d29
+10-24 15:26:27.087  1614  1688 E WifiScanner: listener cannot be found
+10-24 15:26:27.092  1614  2736 D DhcpClient: Scheduling renewal in 7199s
+10-24 15:26:27.092  1614  2736 D DhcpClient: Scheduling rebind in 12599s
+10-24 15:26:27.092  1614  2736 D DhcpClient: Scheduling expiry in 14399s
+10-24 15:26:27.093  1320  1589 E Netd    : netlink response contains error (File exists)
+10-24 15:26:27.094  1614  1692 D ConnectivityService: Setting DNS servers for network 101 to [/10.0.2.3]
+10-24 15:26:27.104  1614  1707 I GnssLocationProvider: WakeLock acquired by sendMessage(5, 0, null)
+10-24 15:26:27.104  1614  1707 I GnssLocationProvider: WakeLock acquired by sendMessage(6, 0, null)
+10-24 15:26:27.104  1614  1627 I GnssLocationProvider: WakeLock acquired by handleInjectNtpTime()
+10-24 15:26:27.104  1614  1627 I GnssLocationProvider: WakeLock released by handleMessage(5, 0, null)
+10-24 15:26:27.104  1614  1627 I GnssLocationProvider: WakeLock released by handleMessage(6, 0, null)
+10-24 15:26:27.104  1614  1902 I GnssLocationProvider: WakeLock acquired by sendMessage(10, 0, null)
+10-24 15:26:27.104  1614  1902 I GnssLocationProvider: WakeLock released by handleInjectNtpTime()
+10-24 15:26:27.104  1614  1627 I GnssLocationProvider: WakeLock released by handleMessage(10, 0, null)
+10-24 15:26:27.110  1614  1688 D WifiNetworkAgent: NetworkAgent: Received signal strength thresholds: []
+10-24 15:26:27.111  1614  1688 D WifiNative-HAL: stopRssiMonitoring, cmdId 0
+10-24 15:26:27.159  1614  1692 D ConnectivityService: NetworkAgentInfo [WIFI () - 101] validation passed
+10-24 15:26:27.160  1614  1692 D ConnectivityService: Switching to new default network: NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "AndroidWifi", failover: false, available: true, roaming: false, metered: false]}  network{101}  nethandle{433808132830}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::ff:fe44:5566/64,fec0::ff:fe44:5566/64,fec0::78e0:29b6:93c9:4c4c/64,192.168.100.188/24,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::ff:fe00:100 wlan0,fec0::/64 -> :: wlan0,192.168.100.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 192.168.100.1 wlan0,] DnsAddresses: [10.0.2.3,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -50]}  Score{57}  everValidated{true}  lastValidated{true}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} }
+10-24 15:26:27.163  1320  1589 V IdletimerController: runCmd(/system/bin/ip6tables -w -t raw -A idletimer_raw_PREROUTING -i wlan0 -j IDLETIMER --timeout 15 --label 1 --send_nl_msg 1) res_ipv4=0, res_ipv6=0
+10-24 15:26:27.166  1320  1589 V IdletimerController: runCmd(/system/bin/ip6tables -w -t mangle -A idletimer_mangle_POSTROUTING -o wlan0 -j IDLETIMER --timeout 15 --label 1 --send_nl_msg 1) res_ipv4=0, res_ipv6=0
+10-24 15:26:27.167  1614  1692 D ConnectivityService: Sending DISCONNECTED broadcast for type 0 NetworkAgentInfo [MOBILE (LTE) - 100] isDefaultNetwork=true
+10-24 15:26:27.167  1614  1692 D ConnectivityService: Sending CONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 101] isDefaultNetwork=true
+10-24 15:26:27.175  1614  2749 D WifiNetworkHistory: saving network history: "AndroidWifi"NONE gw: null Network Selection-status: NETWORK_SELECTION_ENABLED ephemeral=false choice:null link:0 status:0 nid:0 hasEverConnected: true
+10-24 15:26:27.175  1614  2749 V WifiNetworkHistory: writeKnownNetworkHistory write config "AndroidWifi"NONE
+10-24 15:26:29.724  1305  1342 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:26:29.724  1305  1708 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:26:29.726  2812  2812 D         : HostConnection::get() New Host Connection established 0x76345402d4e0, tid 2812
+10-24 15:26:33.746  2458  2500 D InitAlarmsService: Clearing and rescheduling alarms.
+10-24 15:26:33.750  1614  1894 I ActivityManager: Killing 2133:com.android.keychain/1000 (adj 906): empty #17
+10-24 15:26:33.750  1614  1894 I ActivityManager: Killing 1876:com.android.settings:CryptKeeper/1000 (adj 906): empty #18
+10-24 15:26:33.751  1614  1847 I ActivityManager: Killing 2220:com.android.carrierconfig/u0a3 (adj 906): empty #17
+10-24 15:26:33.753  1614  1626 D ActivityManager: cleanUpApplicationRecord -- 1876
+10-24 15:26:33.801  1614  1625 D ActivityManager: cleanUpApplicationRecord -- 2220
+10-24 15:26:33.801  1614  1626 D ActivityManager: cleanUpApplicationRecord -- 2133
+10-24 15:26:39.765  1305  1340 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:26:39.766  1305  2085 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:26:39.768  2819  2819 D         : HostConnection::get() New Host Connection established 0x7629b922d4e0, tid 2819
+10-24 15:26:49.799  1305  1340 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:26:49.800  1305  1342 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:26:49.802  2825  2825 D         : HostConnection::get() New Host Connection established 0x7e42cfa2d4e0, tid 2825
+10-24 15:26:57.160  1614  1692 D ConnectivityService: handleLingerComplete for NetworkAgentInfo [MOBILE (LTE) - 100]
+10-24 15:26:57.160  1614  1692 D ConnectivityService: NetworkAgentInfo [MOBILE (LTE) - 100] got DISCONNECTED, was satisfying 3
+10-24 15:26:57.161  1856  2027 D DcNetworkAgent: NetworkAgent: NetworkAgent channel lost
+10-24 15:26:57.161  1856  2027 D DcNetworkAgent: NetworkAgent: DcNetworkAgent: [unwanted]: disconnect apnContext={mApnType=default mState=CONNECTED mWaitingApns={[[ApnSettingV3] T-Mobile US, 1, 310260, epc.tmobile.com, , http://mms.msg.eng.t-mobile.com/mms/wapenc, , , , -1, *, IP, IP, true, 0, 0, 0, false, 0, 0, 0, 0, , , false]} mApnSetting={[ApnSettingV3] T-Mobile US, 1, 310260, epc.tmobile.com, , http://mms.msg.eng.t-mobile.com/mms/wapenc, , , , -1, *, IP, IP, true, 0, 0, 0, false, 0, 0, 0, 0, , , false} mReason=dataDisabled mDataEnabled=false mDependencyMet=true}
+10-24 15:26:57.164  1614  1707 D DnsEventListenerService: Logging 3 results for netId 100
+10-24 15:26:57.174  1320  1589 E Netd    : netlink response contains error (No such file or directory)
+10-24 15:27:00.028  1614  1614 I ActivityManager: Killing 2040:com.android.cellbroadcastreceiver/u0a4 (adj 906): empty #17
+10-24 15:27:00.061  1614  2249 D ActivityManager: cleanUpApplicationRecord -- 2040
+10-24 15:27:20.096  3086  3086 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.098  3086  3086 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.108  3086  3086 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:27:20.110  3086  3086 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:27:20.117  3086  3086 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:27:20.117  3086  3086 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:27:20.118  3086  3086 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:27:20.121  3086  3086 D AndroidRuntime: Calling main entry com.android.commands.settings.SettingsCmd
+10-24 15:27:20.124  1614  1628 I ActivityManager: Config changes=40000000 {1.3 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v s.8}
+10-24 15:27:20.128  3086  3086 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.129  1305  1342 D PermissionCache: checking android.permission.READ_FRAME_BUFFER for uid=1000 => granted (34 us)
+10-24 15:27:20.129  1305  1342 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:27:20.133  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:27:20.133  2659  2659 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:27:20.133  2659  2659 D Capacitor: App paused
+10-24 15:27:20.134  2659  2659 D Capacitor: Saving instance state!
+10-24 15:27:20.134  2659  2698 D EGL_emulation: eglMakeCurrent: 0x76c9a8a269c0: ver 3 0 (tinfo 0x76c9a8b4c260)
+10-24 15:27:20.135  2659  2659 D Capacitor/AppPlugin: Firing change: false
+10-24 15:27:20.135  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.135  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.135  2659  2659 D Capacitor: App stopped
+10-24 15:27:20.136  2659  2659 D Capacitor: App destroyed
+10-24 15:27:20.139  1614  1847 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.WindowManagerService.removeWindow:2300 com.android.server.wm.Session.remove:193 
+10-24 15:27:20.152  2659  2659 W cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+10-24 15:27:20.153  2659  2659 D Capacitor: Starting BridgeActivity
+10-24 15:27:20.158  2659  2659 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:20.159  2659  2659 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:20.159  2659  2659 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:20.160  2659  2659 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:20.160  2659  2659 D Capacitor: Registering plugin instance: App
+10-24 15:27:20.161  2659  2659 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:20.162  2659  2659 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:20.162  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.163  2659  2659 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:20.163  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.167  2659  2659 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:20.167  2659  2659 D Capacitor: Loading app at https://localhost
+10-24 15:27:20.168  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.171  2659  2659 I cr_Ime  : ImeThread is not enabled.
+10-24 15:27:20.185  2659  2659 D Capacitor: App started
+10-24 15:27:20.191  2659  2659 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:20.191  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.191  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.191  2659  2659 D Capacitor: App resumed
+10-24 15:27:20.203  2659  2659 W cr_AwContents: Application attempted to call on a destroyed WebView
+10-24 15:27:20.203  2659  2659 W cr_AwContents: java.lang.Throwable
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at org.chromium.android_webview.AwContents.isDestroyed(AwContents.java:1215)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at org.chromium.android_webview.AwContents.evaluateJavaScript(AwContents.java:2200)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.android.webview.chromium.WebViewChromium.evaluateJavaScript(WebViewChromium.java:614)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.webkit.WebView.evaluateJavascript(WebView.java:1037)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.lambda$eval$0(MockCordovaWebViewImpl.java:189)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.$r8$lambda$4KdV8CYlWQxu6zbahMKlKsvDFpM(MockCordovaWebViewImpl.java)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.os.Handler.handleCallback(Handler.java:751)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.os.Handler.dispatchMessage(Handler.java:95)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.os.Looper.loop(Looper.java:154)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.app.ActivityThread.main(ActivityThread.java:6077)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at java.lang.reflect.Method.invoke(Native Method)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:866)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:756)
+10-24 15:27:20.203  2659  2659 W cr_ScreenOrientation: Removing an inexistent observer!
+10-24 15:27:20.214  2659  2679 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:27:20.220  2200  2200 D ConfigMonitor: Configuration changed, restarting launcher
+10-24 15:27:20.220  2200  2200 I Process : Sending signal. PID: 2200 SIG: 9
+10-24 15:27:20.242  2659  2659 W cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 2659
+10-24 15:27:20.251  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.251  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.252  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.252  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.262  2659  2702 D EGL_emulation: eglMakeCurrent: 0x76c9b9e4b8a0: ver 3 0 (tinfo 0x76c9b9fff4e0)
+10-24 15:27:20.264  2659  2679 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:20.281  1614  1625 D GraphicsStats: Buffer count: 3
+10-24 15:27:20.281  1614  1625 I WindowManager: WIN DEATH: Window{513d25b u0 com.android.launcher3/com.android.launcher3.Launcher}
+10-24 15:27:20.281  1614  1847 I ActivityManager: Process com.android.launcher3 (pid 2200) has died
+10-24 15:27:20.281  1614  1847 D ActivityManager: cleanUpApplicationRecord -- 2200
+10-24 15:27:20.285  3100  3100 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.286  3100  3100 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.300  3100  3100 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:27:20.302  3100  3100 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:27:20.311  3100  3100 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:27:20.311  3100  3100 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:27:20.312  3100  3100 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:27:20.315  3100  3100 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:27:20.317  1614  1626 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10062 user=0: from pid 3100
+10-24 15:27:20.317  1614  1626 I ActivityManager: Killing 2659:com.nexiuska.marblerush/u0a62 (adj 0): stop com.nexiuska.marblerush
+10-24 15:27:20.318  1614  1626 D ActivityManager: cleanUpApplicationRecord -- 2659
+10-24 15:27:20.318  1614  1626 W ActivityManager: Force removing ActivityRecord{d84bb8c u0 com.nexiuska.marblerush/.MainActivity t4}: app died, no saved state
+10-24 15:27:20.319  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326 
+10-24 15:27:20.323  3111  3111 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:27:20.331  1614  1626 I ActivityManager: Start proc 3111:com.android.launcher3/u0a14 for activity com.android.launcher3/.Launcher
+10-24 15:27:20.331  3100  3100 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.341  3111  3111 W System  : ClassLoader referenced unknown path: /system/priv-app/Launcher3/lib/x86_64
+10-24 15:27:20.343  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:27:20.352  1614  1847 D GraphicsStats: Buffer count: 2
+10-24 15:27:20.356  3111  3111 V Launcher: LauncherAppState inited
+10-24 15:27:20.359  3111  3111 D Launcher.Model: Old launcher provider: content://com.android.launcher2.settings/favorites?notify=true
+10-24 15:27:20.359  3111  3111 D Launcher.Model: Old launcher provider does not exist.
+10-24 15:27:20.383  3111  3111 W System  : ClassLoader referenced unknown path: 
+10-24 15:27:20.383  3111  3111 W System  : ClassLoader referenced unknown path: /system/app/QuickSearchBox/lib/x86_64
+10-24 15:27:20.393  1305  1342 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:27:20.402  3111  3111 D         : HostConnection::get() New Host Connection established 0x76c9aa47a3a0, tid 3111
+10-24 15:27:20.426  3111  3131 D         : HostConnection::get() New Host Connection established 0x76c9b9e12960, tid 3131
+10-24 15:27:20.429  3111  3131 I OpenGLRenderer: Initialized EGL, version 1.4
+10-24 15:27:20.429  3111  3131 D OpenGLRenderer: Swap behavior 1
+10-24 15:27:20.429  3111  3131 D EGL_emulation: eglCreateContext: 0x76c9b9e493c0: maj 3 min 0 rcv 3
+10-24 15:27:20.430  3111  3131 D EGL_emulation: eglMakeCurrent: 0x76c9b9e493c0: ver 3 0 (tinfo 0x76c9b9e0c760)
+10-24 15:27:20.431  3111  3131 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:27:20.431  3111  3131 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:27:20.434  3111  3131 D EGL_emulation: eglMakeCurrent: 0x76c9b9e493c0: ver 3 0 (tinfo 0x76c9b9e0c760)
+10-24 15:27:20.446  3125  3125 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.447  3125  3125 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.459  3125  3125 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:27:20.461  3125  3125 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:27:20.467  3125  3125 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:27:20.467  3125  3125 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:27:20.467  3125  3125 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:27:20.471  3125  3125 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:27:20.474  1614  1847 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:27:20.477  3125  3125 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.625  1614  1635 I WindowManager: Screen frozen for +500ms due to Window{b3f90d3 u0 com.android.launcher3/com.android.launcher3.Launcher}
+10-24 15:27:20.632  3141  3141 I art     : Late-enabling -Xcheck:jni
+10-24 15:27:20.632  3141  3141 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:27:20.639  1614  1625 I ActivityManager: Start proc 3141:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:27:20.650  3141  3141 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:27:20.670  3141  3141 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+10-24 15:27:20.679  3141  3141 W art     : Before Android 4.1, method android.graphics.PorterDuffColorFilter androidx.vectordrawable.graphics.drawable.VectorDrawableCompat.updateTintFilter(android.graphics.PorterDuffColorFilter, android.content.res.ColorStateList, android.graphics.PorterDuff$Mode) would have incorrectly overridden the package-private method in android.graphics.drawable.Drawable
+10-24 15:27:20.687  3141  3141 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:27:20.688  3141  3141 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:27:20.696  3141  3141 I cr_LibraryLoader: Time to load native libraries: 1 ms (timestamps 4754-4755)
+10-24 15:27:20.696  3141  3141 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:27:20.699  3141  3141 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {5c17ffe}
+10-24 15:27:20.699  3141  3141 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:27:20.699  3141  3141 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:27:20.702  3141  3141 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:27:20.706  3141  3141 D         : HostConnection::get() New Host Connection established 0x76c9a9f0a140, tid 3141
+10-24 15:27:20.708  3141  3141 D EGL_emulation: eglCreateContext: 0x76c9b7592ec0: maj 3 min 0 rcv 3
+10-24 15:27:20.709  3141  3141 D EGL_emulation: eglMakeCurrent: 0x76c9b7592ec0: ver 3 0 (tinfo 0x76c9a9ebbdc0)
+10-24 15:27:20.710  3141  3141 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:27:20.710  3141  3141 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:27:20.723  3141  3167 W cr_media: Requires BLUETOOTH permission
+10-24 15:27:20.728  3141  3141 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:27:20.737  3141  3141 W cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+10-24 15:27:20.738  3141  3141 D Capacitor: Starting BridgeActivity
+10-24 15:27:20.750  3141  3141 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:20.752  3141  3141 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:20.752  3141  3141 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:20.753  3141  3141 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:20.753  3141  3141 D Capacitor: Registering plugin instance: App
+10-24 15:27:20.754  3141  3141 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:20.755  3141  3141 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:20.758  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.760  3141  3141 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:20.762  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.767  3141  3141 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:20.767  3141  3141 D Capacitor: Loading app at https://localhost
+10-24 15:27:20.771  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.774  3141  3141 I cr_Ime  : ImeThread is not enabled.
+10-24 15:27:20.779  3141  3141 D Capacitor: App started
+10-24 15:27:20.780  3141  3141 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:20.780  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.780  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.780  3141  3141 D Capacitor: App resumed
+10-24 15:27:20.782  1305  1340 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:27:20.807  3141  3183 E libEGL  : validate_display:99 error 3008 (EGL_BAD_DISPLAY)
+10-24 15:27:20.811  3141  3183 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+10-24 15:27:20.811  3141  3180 I OpenGLRenderer: Initialized EGL, version 1.4
+10-24 15:27:20.811  3141  3180 D OpenGLRenderer: Swap behavior 1
+10-24 15:27:20.812  3141  3180 D         : HostConnection::get() New Host Connection established 0x76c9b9e145e0, tid 3180
+10-24 15:27:20.813  3141  3180 D EGL_emulation: eglCreateContext: 0x76c9b9e498c0: maj 3 min 0 rcv 3
+10-24 15:27:20.817  3141  3180 D EGL_emulation: eglMakeCurrent: 0x76c9b9e498c0: ver 3 0 (tinfo 0x76c9b9f62a80)
+10-24 15:27:20.817  3141  3180 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:27:20.817  3141  3180 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:27:20.820  3141  3183 D         : HostConnection::get() New Host Connection established 0x76c9a6e52900, tid 3183
+10-24 15:27:20.822  3141  3183 D EGL_emulation: eglCreateContext: 0x76c9b9e4c5c0: maj 3 min 0 rcv 3
+10-24 15:27:20.823  3141  3183 D EGL_emulation: eglMakeCurrent: 0x76c9b9e4c5c0: ver 3 0 (tinfo 0x76c9a6e653c0)
+10-24 15:27:20.823  3141  3183 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:27:20.823  3141  3183 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:27:20.830  3141  3161 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:27:20.835  3141  3183 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008a34
+10-24 15:27:20.836  3141  3183 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008073
+10-24 15:27:20.836  3141  3183 E eglCodecCommon: glUtilsParamSize: unknow param 0x000088ff
+10-24 15:27:20.866  3141  3141 W cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 3141
+10-24 15:27:20.868  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.868  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.885  3141  3161 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:22.646  3141  3141 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:27:22.648  3141  3141 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:27:22.649  3141  3180 D EGL_emulation: eglMakeCurrent: 0x76c9b9e498c0: ver 3 0 (tinfo 0x76c9b9f62a80)
+10-24 15:27:22.765  3141  3141 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:27:22.781  3141  3141 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:27:22.792  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s163ms
+10-24 15:27:22.792  3111  3131 D EGL_emulation: eglMakeCurrent: 0x76c9b9e493c0: ver 3 0 (tinfo 0x76c9b9e0c760)
+10-24 15:27:22.826  1614  2074 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4456 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903 
+10-24 15:27:24.322  1614  1712 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+10-24 15:27:24.630  1614  1635 I art     : Starting a blocking GC Explicit
+10-24 15:27:24.640  1614  1635 I art     : Explicit concurrent mark sweep GC freed 12076(727KB) AllocSpace objects, 2(40KB) LOS objects, 33% free, 8MB/12MB, paused 666us total 10.077ms
+10-24 15:27:26.260  3141  3190 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:28:15.743  3441  3441 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:15.744  3441  3441 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:15.754  3441  3441 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:15.756  3441  3441 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:15.763  3441  3441 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:15.763  3441  3441 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:15.763  3441  3441 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:15.766  3441  3441 D AndroidRuntime: Calling main entry com.android.commands.settings.SettingsCmd
+10-24 15:28:15.769  1614  1628 I ActivityManager: Config changes=40000000 {1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v s.9}
+10-24 15:28:15.769  3441  3441 D AndroidRuntime: Shutting down VM
+10-24 15:28:15.772  1305  1708 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:28:15.776  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:28:15.776  3141  3141 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:28:15.776  3141  3141 D Capacitor: App paused
+10-24 15:28:15.776  3141  3141 D Capacitor: Saving instance state!
+10-24 15:28:15.779  3141  3180 D EGL_emulation: eglMakeCurrent: 0x76c9b9e498c0: ver 3 0 (tinfo 0x76c9b9f62a80)
+10-24 15:28:15.779  3141  3141 D Capacitor/AppPlugin: Firing change: false
+10-24 15:28:15.779  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:15.779  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:15.779  3141  3141 D Capacitor: App stopped
+10-24 15:28:15.780  3141  3141 D Capacitor: App destroyed
+10-24 15:28:15.785  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.WindowManagerService.removeWindow:2300 com.android.server.wm.Session.remove:193 
+10-24 15:28:15.790  3141  3141 W cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+10-24 15:28:15.791  3141  3141 D Capacitor: Starting BridgeActivity
+10-24 15:28:15.797  3141  3141 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:28:15.797  3141  3141 D Capacitor: Registering plugin instance: WebView
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: App
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: Haptics
+10-24 15:28:15.799  3141  3141 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:28:15.799  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:15.799  3141  3141 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:28:15.800  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:15.802  3141  3141 W Capacitor: Unable to read file at path public/plugins
+10-24 15:28:15.802  3141  3141 D Capacitor: Loading app at https://localhost
+10-24 15:28:15.803  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:15.817  3141  3141 I cr_Ime  : ImeThread is not enabled.
+10-24 15:28:15.822  3141  3141 D Capacitor: App started
+10-24 15:28:15.823  3141  3141 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:15.823  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:15.823  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:15.823  3141  3141 D Capacitor: App resumed
+10-24 15:28:15.825  3141  3141 W cr_AwContents: Application attempted to call on a destroyed WebView
+10-24 15:28:15.825  3141  3141 W cr_AwContents: java.lang.Throwable
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at org.chromium.android_webview.AwContents.isDestroyed(AwContents.java:1215)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at org.chromium.android_webview.AwContents.evaluateJavaScript(AwContents.java:2200)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.android.webview.chromium.WebViewChromium.evaluateJavaScript(WebViewChromium.java:614)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.webkit.WebView.evaluateJavascript(WebView.java:1037)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.lambda$eval$0(MockCordovaWebViewImpl.java:189)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.$r8$lambda$4KdV8CYlWQxu6zbahMKlKsvDFpM(MockCordovaWebViewImpl.java)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.os.Handler.handleCallback(Handler.java:751)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.os.Handler.dispatchMessage(Handler.java:95)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.os.Looper.loop(Looper.java:154)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.app.ActivityThread.main(ActivityThread.java:6077)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at java.lang.reflect.Method.invoke(Native Method)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:866)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:756)
+10-24 15:28:15.825  3141  3141 W cr_ScreenOrientation: Removing an inexistent observer!
+10-24 15:28:15.848  3141  3161 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:28:15.852  3141  3183 D EGL_emulation: eglMakeCurrent: 0x76c9b9e4c5c0: ver 3 0 (tinfo 0x76c9a6e653c0)
+10-24 15:28:15.865  3141  3141 W cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 3141
+10-24 15:28:15.867  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:28:15.874  3141  3161 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:28:15.882  3111  3111 D ConfigMonitor: Configuration changed, restarting launcher
+10-24 15:28:15.882  3111  3111 I Process : Sending signal. PID: 3111 SIG: 9
+10-24 15:28:15.924  3451  3451 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:15.925  3451  3451 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:15.931  1614  2249 D GraphicsStats: Buffer count: 3
+10-24 15:28:15.931  1614  2249 I WindowManager: WIN DEATH: Window{b3f90d3 u0 com.android.launcher3/com.android.launcher3.Launcher}
+10-24 15:28:15.931  1614  2074 I ActivityManager: Process com.android.launcher3 (pid 3111) has died
+10-24 15:28:15.931  1614  2074 D ActivityManager: cleanUpApplicationRecord -- 3111
+10-24 15:28:15.937  3451  3451 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:15.939  3451  3451 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:15.947  3451  3451 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:15.947  3451  3451 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:15.948  3451  3451 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:15.951  3451  3451 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:15.953  1614  1626 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10062 user=0: from pid 3451
+10-24 15:28:15.953  1614  1626 I ActivityManager: Killing 3141:com.nexiuska.marblerush/u0a62 (adj 0): stop com.nexiuska.marblerush
+10-24 15:28:15.953  1614  1626 D ActivityManager: cleanUpApplicationRecord -- 3141
+10-24 15:28:15.956  1614  1626 W ActivityManager: Force removing ActivityRecord{23e713c u0 com.nexiuska.marblerush/.MainActivity t5}: app died, no saved state
+10-24 15:28:15.959  1614  1626 E JavaBinder: !!! FAILED BINDER TRANSACTION !!!  (parcel size = 56)
+10-24 15:28:15.964  1614  1635 E JavaBinder: !!! FAILED BINDER TRANSACTION !!!  (parcel size = 60)
+10-24 15:28:15.964  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326 
+10-24 15:28:15.968  3467  3467 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:15.976  1614  1626 I ActivityManager: Start proc 3467:com.android.launcher3/u0a14 for activity com.android.launcher3/.Launcher
+10-24 15:28:15.977  3451  3451 D AndroidRuntime: Shutting down VM
+10-24 15:28:15.981  1614  1625 D GraphicsStats: Buffer count: 2
+10-24 15:28:15.982  1856  1856 D CarrierSvcBindHelper: No carrier app for: 0
+10-24 15:28:15.985  3467  3467 W System  : ClassLoader referenced unknown path: /system/priv-app/Launcher3/lib/x86_64
+10-24 15:28:15.997  3467  3467 V Launcher: LauncherAppState inited
+10-24 15:28:15.999  3467  3467 D Launcher.Model: Old launcher provider: content://com.android.launcher2.settings/favorites?notify=true
+10-24 15:28:15.999  3467  3467 D Launcher.Model: Old launcher provider does not exist.
+10-24 15:28:16.022  3467  3467 W System  : ClassLoader referenced unknown path: 
+10-24 15:28:16.023  3467  3467 W System  : ClassLoader referenced unknown path: /system/app/QuickSearchBox/lib/x86_64
+10-24 15:28:16.042  1305  1340 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:28:16.046  3467  3467 D         : HostConnection::get() New Host Connection established 0x76c9aa479340, tid 3467
+10-24 15:28:16.063  3481  3481 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:16.064  3481  3481 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:16.076  1305  3455 D         : HostConnection::get() New Host Connection established 0x78ae14e1ba80, tid 3455
+10-24 15:28:16.077  3467  3487 D         : HostConnection::get() New Host Connection established 0x76c9aa55ccc0, tid 3487
+10-24 15:28:16.077  3481  3481 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:16.077  3467  3487 I OpenGLRenderer: Initialized EGL, version 1.4
+10-24 15:28:16.077  3467  3487 D OpenGLRenderer: Swap behavior 1
+10-24 15:28:16.079  3481  3481 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:16.079  3467  3487 D EGL_emulation: eglCreateContext: 0x76c9aa48ca20: maj 3 min 0 rcv 3
+10-24 15:28:16.083  3467  3487 D EGL_emulation: eglMakeCurrent: 0x76c9aa48ca20: ver 3 0 (tinfo 0x76c9aa4adee0)
+10-24 15:28:16.083  3467  3487 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:28:16.083  3467  3487 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:28:16.084  3481  3481 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:16.084  3481  3481 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:16.085  3481  3481 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:16.086  3467  3487 D EGL_emulation: eglMakeCurrent: 0x76c9aa48ca20: ver 3 0 (tinfo 0x76c9aa4adee0)
+10-24 15:28:16.089  3481  3481 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:16.093  1614  2249 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:28:16.097  3481  3481 D AndroidRuntime: Shutting down VM
+10-24 15:28:16.270  3496  3496 I art     : Late-enabling -Xcheck:jni
+10-24 15:28:16.270  3496  3496 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:16.274  1614  1635 I WindowManager: Screen frozen for +504ms due to Window{17bebce u0 com.android.launcher3/com.android.launcher3.Launcher}
+10-24 15:28:16.277  1614  2249 I ActivityManager: Start proc 3496:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:28:16.284  3496  3496 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:28:16.306  3496  3496 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+10-24 15:28:16.314  3496  3496 W art     : Before Android 4.1, method android.graphics.PorterDuffColorFilter androidx.vectordrawable.graphics.drawable.VectorDrawableCompat.updateTintFilter(android.graphics.PorterDuffColorFilter, android.content.res.ColorStateList, android.graphics.PorterDuff$Mode) would have incorrectly overridden the package-private method in android.graphics.drawable.Drawable
+10-24 15:28:16.321  3496  3496 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:28:16.322  3496  3496 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:28:16.334  3496  3496 I cr_LibraryLoader: Time to load native libraries: 6 ms (timestamps 387-393)
+10-24 15:28:16.334  3496  3496 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:28:16.336  3496  3496 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {5c17ffe}
+10-24 15:28:16.336  3496  3496 I cr_LibraryLoader: Expected native library version number "52.0.2743.100", actual native library version number "52.0.2743.100"
+10-24 15:28:16.337  3496  3496 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:28:16.339  3496  3496 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:28:16.345  3496  3496 D         : HostConnection::get() New Host Connection established 0x76c9a9f0a140, tid 3496
+10-24 15:28:16.347  3496  3496 D EGL_emulation: eglCreateContext: 0x76c9c087e100: maj 3 min 0 rcv 3
+10-24 15:28:16.348  3496  3496 D EGL_emulation: eglMakeCurrent: 0x76c9c087e100: ver 3 0 (tinfo 0x76c9a9eb1f20)
+10-24 15:28:16.348  3496  3496 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:28:16.348  3496  3496 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:28:16.360  3496  3522 W cr_media: Requires BLUETOOTH permission
+10-24 15:28:16.361  3496  3496 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:28:16.370  3496  3496 W cr_AwContents: onDetachedFromWindow called when already detached. Ignoring
+10-24 15:28:16.371  3496  3496 D Capacitor: Starting BridgeActivity
+10-24 15:28:16.382  3496  3496 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:28:16.383  3496  3496 D Capacitor: Registering plugin instance: WebView
+10-24 15:28:16.383  3496  3496 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:28:16.384  3496  3496 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:28:16.385  3496  3496 D Capacitor: Registering plugin instance: App
+10-24 15:28:16.385  3496  3496 D Capacitor: Registering plugin instance: Haptics
+10-24 15:28:16.386  3496  3496 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:28:16.389  3496  3496 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:16.391  3496  3496 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:28:16.393  3496  3496 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:16.397  3496  3496 W Capacitor: Unable to read file at path public/plugins
+10-24 15:28:16.397  3496  3496 D Capacitor: Loading app at https://localhost
+10-24 15:28:16.400  3496  3496 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:16.402  3496  3496 I cr_Ime  : ImeThread is not enabled.
+10-24 15:28:16.406  3496  3496 D Capacitor: App started
+10-24 15:28:16.406  3496  3496 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:16.407  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:16.407  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:16.407  3496  3496 D Capacitor: App resumed
+10-24 15:28:16.412  1305  1708 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:28:16.434  3496  3538 E libEGL  : validate_display:99 error 3008 (EGL_BAD_DISPLAY)
+10-24 15:28:16.441  3496  3536 I OpenGLRenderer: Initialized EGL, version 1.4
+10-24 15:28:16.442  3496  3536 D OpenGLRenderer: Swap behavior 1
+10-24 15:28:16.443  3496  3536 D         : HostConnection::get() New Host Connection established 0x76c9a8a52fc0, tid 3536
+10-24 15:28:16.446  3496  3536 D EGL_emulation: eglCreateContext: 0x76c9a8a30fc0: maj 3 min 0 rcv 3
+10-24 15:28:16.447  3496  3536 D EGL_emulation: eglMakeCurrent: 0x76c9a8a30fc0: ver 3 0 (tinfo 0x76c9a9f18600)
+10-24 15:28:16.448  3496  3536 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:28:16.448  3496  3536 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:28:16.451  3496  3538 I VideoCapabilities: Unsupported profile 4 for video/mp4v-es
+10-24 15:28:16.461  3496  3516 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:28:16.464  3496  3538 D         : HostConnection::get() New Host Connection established 0x76c9a7038660, tid 3538
+10-24 15:28:16.467  3496  3538 D EGL_emulation: eglCreateContext: 0x76c9b9e4c340: maj 3 min 0 rcv 3
+10-24 15:28:16.467  3496  3538 D EGL_emulation: eglMakeCurrent: 0x76c9b9e4c340: ver 3 0 (tinfo 0x76c9a703b4c0)
+10-24 15:28:16.468  3496  3538 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008cdf
+10-24 15:28:16.468  3496  3538 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008824
+10-24 15:28:16.471  3496  3538 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008a34
+10-24 15:28:16.471  3496  3538 E eglCodecCommon: glUtilsParamSize: unknow param 0x00008073
+10-24 15:28:16.471  3496  3538 E eglCodecCommon: glUtilsParamSize: unknow param 0x000088ff
+10-24 15:28:16.492  3496  3496 W cr_BindingManager: Cannot call determinedVisibility() - never saw a connection for the pid: 3496
+10-24 15:28:16.513  3496  3516 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:28:18.279  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:18.280  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:18.281  3496  3536 D EGL_emulation: eglMakeCurrent: 0x76c9a8a30fc0: ver 3 0 (tinfo 0x76c9a9f18600)
+10-24 15:28:18.390  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:18.398  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:18.408  3467  3487 D EGL_emulation: eglMakeCurrent: 0x76c9aa48ca20: ver 3 0 (tinfo 0x76c9aa4adee0)
+10-24 15:28:18.410  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s142ms
+10-24 15:28:18.442  1614  2075 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4456 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903 
+10-24 15:28:19.965  1614  1712 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+10-24 15:28:20.280  1614  1635 I art     : Starting a blocking GC Explicit
+10-24 15:28:20.291  1614  1635 I art     : Explicit concurrent mark sweep GC freed 30255(1477KB) AllocSpace objects, 5(96KB) LOS objects, 33% free, 7MB/11MB, paused 640us total 10.197ms
+10-24 15:28:21.611  3496  3545 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:28:41.179  3550  3550 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:41.180  3550  3550 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:41.191  3550  3550 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:41.193  3550  3550 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:41.201  3550  3550 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:41.201  3550  3550 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:41.201  3550  3550 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:41.204  3550  3550 D AndroidRuntime: Calling main entry com.android.commands.wm.Wm
+10-24 15:28:41.206  3550  3550 D AndroidRuntime: Shutting down VM
+10-24 15:28:41.282  3560  3560 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:41.283  3560  3560 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:41.294  3560  3560 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:41.296  3560  3560 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:41.303  3560  3560 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:41.303  3560  3560 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:41.303  3560  3560 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:41.306  3560  3560 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:41.311  3560  3560 I Input   : injectMotionEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=160.0, y[0]=384.0, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=165366, downTime=165366, deviceId=0, source=0x1002 }
+10-24 15:28:41.313  3560  3560 I Input   : injectMotionEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=160.0, y[0]=384.0, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=165366, downTime=165366, deviceId=0, source=0x1002 }
+10-24 15:28:41.315  3560  3560 D AndroidRuntime: Shutting down VM
+10-24 15:28:44.395  3570  3570 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:44.396  3570  3570 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:44.407  3570  3570 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:44.409  3570  3570 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:44.415  3570  3570 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:44.415  3570  3570 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:44.416  3570  3570 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:44.418  3570  3570 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:44.421  3570  3570 I Input   : injectMotionEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=160.0, y[0]=364.0, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=168478, downTime=168478, deviceId=0, source=0x1002 }
+10-24 15:28:44.423  3570  3570 I Input   : injectMotionEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=160.0, y[0]=364.0, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=168478, downTime=168478, deviceId=0, source=0x1002 }
+10-24 15:28:44.426  3570  3570 D AndroidRuntime: Shutting down VM
+10-24 15:28:52.449  1305  1340 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:28:52.450  1305  3455 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:28:52.451  3582  3582 D         : HostConnection::get() New Host Connection established 0x734f4f42d4e0, tid 3582
+10-24 15:28:52.532  3585  3585 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:52.533  3585  3585 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:52.543  3585  3585 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:52.545  3585  3585 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:52.553  3585  3585 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:52.553  3585  3585 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:52.553  3585  3585 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:52.555  3585  3585 D AndroidRuntime: Calling main entry com.android.commands.pm.Pm
+10-24 15:28:52.559  3585  3585 I art     : System.exit called, status: 0
+10-24 15:28:52.559  3585  3585 I AndroidRuntime: VM exiting with result code 0.
+10-24 15:28:52.639  3600  3600 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:52.640  3600  3600 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:52.650  3600  3600 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:52.652  3600  3600 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:52.658  3600  3600 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:52.658  3600  3600 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:52.659  3600  3600 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:52.661  3600  3600 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:52.662  3600  3600 I Input   : injectKeyEvent: KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_HOME, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=176721, downTime=176721, deviceId=-1, source=0x101 }
+10-24 15:28:52.663  3600  3600 I Input   : injectKeyEvent: KeyEvent { action=ACTION_UP, keyCode=KEYCODE_HOME, scanCode=0, metaState=0, flags=0x0, repeatCount=0, eventTime=176721, downTime=176721, deviceId=-1, source=0x101 }
+10-24 15:28:52.666  1614  1654 I ActivityManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 cmp=com.android.launcher3/.Launcher (has extras)} from uid 1000 on display 0
+10-24 15:28:52.669  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:28:52.669  3496  3496 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:28:52.669  3496  3496 D Capacitor: App paused
+10-24 15:28:52.672  3496  3496 E Capacitor/Console: File:  - Line 1 - Msg: Uncaught TypeError: Cannot read property 'triggerEvent' of undefined
+10-24 15:28:52.682  1305  1342 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 286720
+10-24 15:28:52.683  1614  1654 D         : HostConnection::get() New Host Connection established 0x76c9a560e820, tid 1654
+10-24 15:28:52.714  3600  3600 D AndroidRuntime: Shutting down VM
+10-24 15:28:52.714  3496  3496 D Capacitor: Saving instance state!
+10-24 15:28:52.715  3496  3536 D EGL_emulation: eglMakeCurrent: 0x76c9a8a30fc0: ver 3 0 (tinfo 0x76c9a9f18600)
+10-24 15:28:52.718  3496  3496 D Capacitor/AppPlugin: Firing change: false
+10-24 15:28:52.718  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:52.718  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:52.718  3496  3496 D Capacitor: App stopped
+10-24 15:28:52.743  3467  3487 D EGL_emulation: eglMakeCurrent: 0x76c9aa48ca20: ver 3 0 (tinfo 0x76c9aa4adee0)
+10-24 15:28:56.797  3613  3613 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:56.798  3613  3613 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:56.808  3613  3613 W art     : Unexpected CPU variant for X86 using defaults: x86_64
+10-24 15:28:56.810  3613  3613 D ICU     : No timezone override file found: /data/misc/zoneinfo/current/icu/icu_tzdata.dat
+10-24 15:28:56.817  3613  3613 E memtrack: Couldn't load memtrack module (No such file or directory)
+10-24 15:28:56.817  3613  3613 E android.os.Debug: failed to load memtrack module: -2
+10-24 15:28:56.817  3613  3613 I Radio-JNI: register_android_hardware_Radio DONE
+10-24 15:28:56.820  3613  3613 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:56.823  1614  2249 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:28:56.827  3613  3613 D AndroidRuntime: Shutting down VM
+10-24 15:28:56.843  3467  3487 D EGL_emulation: eglMakeCurrent: 0x76c9aa48ca20: ver 3 0 (tinfo 0x76c9aa4adee0)
+10-24 15:28:56.844  3496  3496 D Capacitor: App restarted
+10-24 15:28:56.844  3496  3496 D Capacitor: App started
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:56.845  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:56.845  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event resume
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: No listeners found for event resume
+10-24 15:28:56.845  3496  3496 D Capacitor: App resumed
+10-24 15:28:56.863  3496  3496 E Capacitor/Console: File:  - Line 1 - Msg: Uncaught TypeError: Cannot read property 'triggerEvent' of undefined
+10-24 15:28:56.878  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:56.878  3496  3536 D EGL_emulation: eglMakeCurrent: 0x76c9a8a30fc0: ver 3 0 (tinfo 0x76c9a9f18600)
+10-24 15:28:56.893  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:56.924  1614  1894 I WindowManager: Destroying surface Surface(name=com.android.launcher3/com.android.launcher3.Launcher) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.AppWindowToken.notifyAppStopped:389 com.android.server.wm.WindowManagerService.notifyAppStopped:4456 com.android.server.am.ActivityStack.activityStoppedLocked:1252 com.android.server.am.ActivityManagerService.activityStopped:6903 
+10-24 15:28:58.475  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.493  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.510  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.527  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.543  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.559  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.577  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.594  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.609  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.626  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.643  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.659  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.676  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.693  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.709  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.726  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.743  3496  3496 W art     : Attempt to remove non-JNI local reference, dumping thread
+10-24 15:28:58.849  1305  2085 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+10-24 15:28:58.850  1305  1340 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 819200
+10-24 15:28:58.851  3625  3625 D         : HostConnection::get() New Host Connection established 0x7d8bb8e2d4e0, tid 3625

@@ -1,0 +1,276 @@
+10-24 15:26:07.376  2649  2649 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:26:07.377  2649  2649 D AndroidRuntime: CheckJNI is OFF
+10-24 15:26:07.401  2649  2649 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:26:07.415  1614  2075 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:26:07.435  1614  1625 I ActivityManager: Start proc 2659:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:26:07.457  2659  2659 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:26:07.508  2659  2659 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:26:07.509  2659  2659 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:26:07.527  2659  2659 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {4d7135f}
+10-24 15:26:07.528  2659  2659 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:26:07.536  2659  2659 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:26:07.569  2659  2659 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:26:07.580  2659  2659 D Capacitor: Starting BridgeActivity
+10-24 15:26:07.590  2659  2659 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: WebView
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:26:07.592  2659  2659 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:26:07.593  2659  2659 D Capacitor: Registering plugin instance: App
+10-24 15:26:07.594  2659  2659 D Capacitor: Registering plugin instance: Haptics
+10-24 15:26:07.595  2659  2659 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:26:07.608  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:26:07.610  2659  2659 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:26:07.613  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:26:07.613  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:26:07.616  2659  2659 W Capacitor: Unable to read file at path public/plugins
+10-24 15:26:07.617  2659  2659 D Capacitor: Loading app at https://localhost
+10-24 15:26:07.621  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:26:07.629  2659  2659 D Capacitor: App started
+10-24 15:26:07.629  2659  2659 D Capacitor/AppPlugin: Firing change: true
+10-24 15:26:07.629  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:26:07.629  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:26:07.629  2659  2659 D Capacitor: App resumed
+10-24 15:26:07.686  2659  2679 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:26:07.776  2659  2679 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:26:09.613  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s189ms
+10-24 15:26:09.615  2649  2649 D AndroidRuntime: Shutting down VM
+10-24 15:26:09.631  1614  1635 I WindowManager: Destroying surface Surface(name=Starting com.nexiuska.marblerush) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.destroyOrSaveSurface:2073 com.android.server.wm.AppWindowToken.destroySurfaces:363 com.android.server.wm.WindowStateAnimator.finishExit:565 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:491 com.android.server.wm.WindowAnimator.updateWindowsLocked:303 com.android.server.wm.WindowAnimator.animateLocked:704 
+10-24 15:26:13.506  2659  2720 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:27:20.096  3086  3086 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.098  3086  3086 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.121  3086  3086 D AndroidRuntime: Calling main entry com.android.commands.settings.SettingsCmd
+10-24 15:27:20.128  3086  3086 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.133  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:27:20.133  2659  2659 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:27:20.133  2659  2659 D Capacitor: App paused
+10-24 15:27:20.134  2659  2659 D Capacitor: Saving instance state!
+10-24 15:27:20.135  2659  2659 D Capacitor/AppPlugin: Firing change: false
+10-24 15:27:20.135  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.135  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.135  2659  2659 D Capacitor: App stopped
+10-24 15:27:20.136  2659  2659 D Capacitor: App destroyed
+10-24 15:27:20.139  1614  1847 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.WindowManagerService.removeWindow:2300 com.android.server.wm.Session.remove:193 
+10-24 15:27:20.153  2659  2659 D Capacitor: Starting BridgeActivity
+10-24 15:27:20.158  2659  2659 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:20.159  2659  2659 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:20.159  2659  2659 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:20.160  2659  2659 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:20.160  2659  2659 D Capacitor: Registering plugin instance: App
+10-24 15:27:20.161  2659  2659 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:20.162  2659  2659 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:20.162  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.163  2659  2659 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:20.163  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.163  2659  2659 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.167  2659  2659 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:20.167  2659  2659 D Capacitor: Loading app at https://localhost
+10-24 15:27:20.168  2659  2659 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.185  2659  2659 D Capacitor: App started
+10-24 15:27:20.191  2659  2659 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:20.191  2659  2659 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.191  2659  2659 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.191  2659  2659 D Capacitor: App resumed
+10-24 15:27:20.203  2659  2659 W cr_AwContents: Application attempted to call on a destroyed WebView
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at org.chromium.android_webview.AwContents.isDestroyed(AwContents.java:1215)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at org.chromium.android_webview.AwContents.evaluateJavaScript(AwContents.java:2200)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.android.webview.chromium.WebViewChromium.evaluateJavaScript(WebViewChromium.java:614)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at android.webkit.WebView.evaluateJavascript(WebView.java:1037)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.lambda$eval$0(MockCordovaWebViewImpl.java:189)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.$r8$lambda$4KdV8CYlWQxu6zbahMKlKsvDFpM(MockCordovaWebViewImpl.java)
+10-24 15:27:20.203  2659  2659 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)
+10-24 15:27:20.214  2659  2679 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:27:20.251  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.251  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.252  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.252  2659  2659 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.264  2659  2679 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:20.285  3100  3100 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.286  3100  3100 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.315  3100  3100 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:27:20.317  1614  1626 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10062 user=0: from pid 3100
+10-24 15:27:20.317  1614  1626 I ActivityManager: Killing 2659:com.nexiuska.marblerush/u0a62 (adj 0): stop com.nexiuska.marblerush
+10-24 15:27:20.318  1614  1626 W ActivityManager: Force removing ActivityRecord{d84bb8c u0 com.nexiuska.marblerush/.MainActivity t4}: app died, no saved state
+10-24 15:27:20.319  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326 
+10-24 15:27:20.331  3100  3100 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.446  3125  3125 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:27:20.447  3125  3125 D AndroidRuntime: CheckJNI is OFF
+10-24 15:27:20.471  3125  3125 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:27:20.474  1614  1847 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:27:20.477  3125  3125 D AndroidRuntime: Shutting down VM
+10-24 15:27:20.639  1614  1625 I ActivityManager: Start proc 3141:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:27:20.650  3141  3141 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:27:20.687  3141  3141 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:27:20.688  3141  3141 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:27:20.699  3141  3141 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {5c17ffe}
+10-24 15:27:20.699  3141  3141 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:27:20.702  3141  3141 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:27:20.728  3141  3141 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:27:20.738  3141  3141 D Capacitor: Starting BridgeActivity
+10-24 15:27:20.750  3141  3141 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:20.752  3141  3141 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:20.752  3141  3141 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:20.753  3141  3141 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:20.753  3141  3141 D Capacitor: Registering plugin instance: App
+10-24 15:27:20.754  3141  3141 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:20.755  3141  3141 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:20.758  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.760  3141  3141 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:20.762  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:20.762  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:20.767  3141  3141 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:20.767  3141  3141 D Capacitor: Loading app at https://localhost
+10-24 15:27:20.771  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:27:20.779  3141  3141 D Capacitor: App started
+10-24 15:27:20.780  3141  3141 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:20.780  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:20.780  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:20.780  3141  3141 D Capacitor: App resumed
+10-24 15:27:20.830  3141  3161 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:27:20.868  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.868  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:27:20.885  3141  3161 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:22.792  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s163ms
+10-24 15:27:26.260  3141  3190 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:28:15.743  3441  3441 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:15.744  3441  3441 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:15.766  3441  3441 D AndroidRuntime: Calling main entry com.android.commands.settings.SettingsCmd
+10-24 15:28:15.769  3441  3441 D AndroidRuntime: Shutting down VM
+10-24 15:28:15.776  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:28:15.776  3141  3141 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:28:15.776  3141  3141 D Capacitor: App paused
+10-24 15:28:15.776  3141  3141 D Capacitor: Saving instance state!
+10-24 15:28:15.779  3141  3141 D Capacitor/AppPlugin: Firing change: false
+10-24 15:28:15.779  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:15.779  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:15.779  3141  3141 D Capacitor: App stopped
+10-24 15:28:15.780  3141  3141 D Capacitor: App destroyed
+10-24 15:28:15.785  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.WindowManagerService.removeWindow:2300 com.android.server.wm.Session.remove:193 
+10-24 15:28:15.791  3141  3141 D Capacitor: Starting BridgeActivity
+10-24 15:28:15.797  3141  3141 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:28:15.797  3141  3141 D Capacitor: Registering plugin instance: WebView
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: App
+10-24 15:28:15.798  3141  3141 D Capacitor: Registering plugin instance: Haptics
+10-24 15:28:15.799  3141  3141 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:28:15.799  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:15.799  3141  3141 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:28:15.800  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:15.800  3141  3141 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:15.802  3141  3141 W Capacitor: Unable to read file at path public/plugins
+10-24 15:28:15.802  3141  3141 D Capacitor: Loading app at https://localhost
+10-24 15:28:15.803  3141  3141 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:15.822  3141  3141 D Capacitor: App started
+10-24 15:28:15.823  3141  3141 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:15.823  3141  3141 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:15.823  3141  3141 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:15.823  3141  3141 D Capacitor: App resumed
+10-24 15:28:15.825  3141  3141 W cr_AwContents: Application attempted to call on a destroyed WebView
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at org.chromium.android_webview.AwContents.isDestroyed(AwContents.java:1215)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at org.chromium.android_webview.AwContents.evaluateJavaScript(AwContents.java:2200)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.android.webview.chromium.WebViewChromium.evaluateJavaScript(WebViewChromium.java:614)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at android.webkit.WebView.evaluateJavascript(WebView.java:1037)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.lambda$eval$0(MockCordovaWebViewImpl.java:189)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl.$r8$lambda$4KdV8CYlWQxu6zbahMKlKsvDFpM(MockCordovaWebViewImpl.java)
+10-24 15:28:15.825  3141  3141 W cr_AwContents: 	at com.getcapacitor.cordova.MockCordovaWebViewImpl$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)
+10-24 15:28:15.848  3141  3161 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:28:15.867  3141  3141 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS:
+10-24 15:28:15.874  3141  3161 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:28:15.924  3451  3451 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:15.925  3451  3451 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:15.951  3451  3451 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:15.953  1614  1626 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10062 user=0: from pid 3451
+10-24 15:28:15.953  1614  1626 I ActivityManager: Killing 3141:com.nexiuska.marblerush/u0a62 (adj 0): stop com.nexiuska.marblerush
+10-24 15:28:15.956  1614  1626 W ActivityManager: Force removing ActivityRecord{23e713c u0 com.nexiuska.marblerush/.MainActivity t5}: app died, no saved state
+10-24 15:28:15.964  1614  1626 I WindowManager: Destroying surface Surface(name=com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2014 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:881 com.android.server.wm.WindowState.removeLocked:1449 com.android.server.wm.WindowManagerService.removeWindowInnerLocked:2478 com.android.server.wm.WindowManagerService.removeWindowLocked:2436 com.android.server.wm.WindowManagerService.removeWindowLocked:2305 com.android.server.wm.AppWindowToken.removeAllWindows:530 com.android.server.wm.AppWindowToken.removeAppFromTaskLocked:326 
+10-24 15:28:15.977  3451  3451 D AndroidRuntime: Shutting down VM
+10-24 15:28:16.063  3481  3481 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:16.064  3481  3481 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:16.089  3481  3481 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:16.093  1614  2249 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:28:16.097  3481  3481 D AndroidRuntime: Shutting down VM
+10-24 15:28:16.277  1614  2249 I ActivityManager: Start proc 3496:com.nexiuska.marblerush/u0a62 for activity com.nexiuska.marblerush/.MainActivity
+10-24 15:28:16.284  3496  3496 W System  : ClassLoader referenced unknown path: /data/app/com.nexiuska.marblerush-1/lib/x86_64
+10-24 15:28:16.321  3496  3496 W System  : ClassLoader referenced unknown path: /system/app/webview/lib/x86_64
+10-24 15:28:16.322  3496  3496 I WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+10-24 15:28:16.336  3496  3496 V WebViewChromiumFactoryProvider: Binding Chromium to main looper Looper (main, tid 1) {5c17ffe}
+10-24 15:28:16.337  3496  3496 I chromium: [INFO:library_loader_hooks.cc(143)] Chromium logging enabled: level = 0, default verbosity = 0
+10-24 15:28:16.339  3496  3496 I cr_BrowserStartup: Initializing chromium process, singleProcess=true
+10-24 15:28:16.361  3496  3496 I cr_DRP  : No DRP key due to exception:java.lang.ClassNotFoundException: com.android.webview.chromium.Drp
+10-24 15:28:16.371  3496  3496 D Capacitor: Starting BridgeActivity
+10-24 15:28:16.382  3496  3496 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:28:16.383  3496  3496 D Capacitor: Registering plugin instance: WebView
+10-24 15:28:16.383  3496  3496 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:28:16.384  3496  3496 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:28:16.385  3496  3496 D Capacitor: Registering plugin instance: App
+10-24 15:28:16.385  3496  3496 D Capacitor: Registering plugin instance: Haptics
+10-24 15:28:16.386  3496  3496 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:28:16.389  3496  3496 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:16.391  3496  3496 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:28:16.393  3496  3496 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:16.394  3496  3496 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:16.397  3496  3496 W Capacitor: Unable to read file at path public/plugins
+10-24 15:28:16.397  3496  3496 D Capacitor: Loading app at https://localhost
+10-24 15:28:16.400  3496  3496 W Capacitor: Unable to get package info for 'com.google.android.webview'android.content.pm.PackageManager$NameNotFoundException: com.android.chrome
+10-24 15:28:16.406  3496  3496 D Capacitor: App started
+10-24 15:28:16.406  3496  3496 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:16.407  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:16.407  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:16.407  3496  3496 D Capacitor: App resumed
+10-24 15:28:16.461  3496  3516 D Capacitor: Handling local request: https://localhost/webview-outdated.html
+10-24 15:28:16.513  3496  3516 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:28:18.410  1614  1635 I ActivityManager: Displayed com.nexiuska.marblerush/.MainActivity: +2s142ms
+10-24 15:28:21.611  3496  3545 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:28:41.179  3550  3550 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:41.180  3550  3550 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:41.204  3550  3550 D AndroidRuntime: Calling main entry com.android.commands.wm.Wm
+10-24 15:28:41.206  3550  3550 D AndroidRuntime: Shutting down VM
+10-24 15:28:41.282  3560  3560 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:41.283  3560  3560 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:41.306  3560  3560 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:41.315  3560  3560 D AndroidRuntime: Shutting down VM
+10-24 15:28:44.395  3570  3570 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:44.396  3570  3570 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:44.418  3570  3570 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:44.426  3570  3570 D AndroidRuntime: Shutting down VM
+10-24 15:28:52.532  3585  3585 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:52.533  3585  3585 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:52.555  3585  3585 D AndroidRuntime: Calling main entry com.android.commands.pm.Pm
+10-24 15:28:52.559  3585  3585 I AndroidRuntime: VM exiting with result code 0.
+10-24 15:28:52.639  3600  3600 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:52.640  3600  3600 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:52.661  3600  3600 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+10-24 15:28:52.669  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:28:52.669  3496  3496 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:28:52.669  3496  3496 D Capacitor: App paused
+10-24 15:28:52.672  3496  3496 E Capacitor/Console: File:  - Line 1 - Msg: Uncaught TypeError: Cannot read property 'triggerEvent' of undefined
+10-24 15:28:52.714  3600  3600 D AndroidRuntime: Shutting down VM
+10-24 15:28:52.714  3496  3496 D Capacitor: Saving instance state!
+10-24 15:28:52.718  3496  3496 D Capacitor/AppPlugin: Firing change: false
+10-24 15:28:52.718  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:52.718  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:52.718  3496  3496 D Capacitor: App stopped
+10-24 15:28:56.797  3613  3613 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-24 15:28:56.798  3613  3613 D AndroidRuntime: CheckJNI is OFF
+10-24 15:28:56.820  3613  3613 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+10-24 15:28:56.823  1614  2249 I ActivityManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} from uid 2000 on display 0
+10-24 15:28:56.827  3613  3613 D AndroidRuntime: Shutting down VM
+10-24 15:28:56.844  3496  3496 D Capacitor: App restarted
+10-24 15:28:56.844  3496  3496 D Capacitor: App started
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:56.845  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:56.845  3496  3496 V Capacitor/AppPlugin: Notifying listeners for event resume
+10-24 15:28:56.845  3496  3496 D Capacitor/AppPlugin: No listeners found for event resume
+10-24 15:28:56.845  3496  3496 D Capacitor: App resumed
+10-24 15:28:56.863  3496  3496 E Capacitor/Console: File:  - Line 1 - Msg: Uncaught TypeError: Cannot read property 'triggerEvent' of undefined
