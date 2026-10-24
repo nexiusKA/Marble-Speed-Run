@@ -9,6 +9,7 @@ const path = require('path');
 const { _android } = require('playwright');
 
 const OUT = process.argv[2] || 'smoke-out';
+const TAG = process.argv[3] || 'normal';
 const PKG = 'com.nexiuska.marblerush';
 const log = [];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -41,7 +42,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const step = async (label, shot) => {
     const m = await metrics(label);
     log.push(m);
-    if (shot) await device.screenshot({ path: path.join(OUT, `diag-${shot}.png`) });
+    if (shot) await device.screenshot({ path: path.join(OUT, `diag-${TAG}-${shot}.png`) });
   };
 
   // Start from a fresh page load (the smoke test before this left a run going)
@@ -51,17 +52,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   if (!(await page.evaluate(() => !!window.__marbleGame))) {
     log.push({ label: 'no game on page (update page shown?)', url: page.url() });
-    fs.writeFileSync(path.join(OUT, 'diag.json'), JSON.stringify(log, null, 2));
+    fs.writeFileSync(path.join(OUT, `diag-${TAG}.json`), JSON.stringify(log, null, 2));
     return;
   }
 
   await step('menu', '1-menu');
-  await page.tap('#endless-btn'); await sleep(800);
-  await page.tap('#play-btn'); await sleep(6000);
+  await page.click('#endless-btn'); await sleep(800);
+  await page.click('#play-btn'); await sleep(6000);
   await step('endless running', '2-endless');
 
   // Rapid double taps on a control button (players hammer these)
-  for (let i = 0; i < 3; i++) { await page.tap('#btn-left'); await sleep(120); await page.tap('#btn-left'); await sleep(400); }
+  for (let i = 0; i < 3; i++) { await page.click('#btn-left'); await sleep(120); await page.click('#btn-left'); await sleep(400); }
   await sleep(1500);
   await step('after double taps on control', '3-doubletap');
 
@@ -69,9 +70,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const fsVisible = await page.isVisible('#fullscreen-btn');
   log.push({ label: 'fullscreen button visible', fsVisible });
   if (fsVisible) {
-    await page.tap('#fullscreen-btn'); await sleep(2500);
+    await page.click('#fullscreen-btn'); await sleep(2500);
     await step('after fullscreen button', '4-fullscreen');
-    await page.tap('#fullscreen-btn').catch(() => {}); await sleep(2500);
+    await page.click('#fullscreen-btn').catch(() => {}); await sleep(2500);
     await step('after fullscreen button again', '5-fullscreen-off');
   }
 
@@ -83,12 +84,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   await sleep(800);
   await page.evaluate(() => { const b = document.getElementById('pvp-btn'); if (b) b.click(); });
   await sleep(600);
-  if (await page.isVisible('#pvp-play-btn')) { await page.tap('#pvp-play-btn'); await sleep(6000); }
+  if (await page.isVisible('#pvp-play-btn')) { await page.click('#pvp-play-btn'); await sleep(6000); }
   await step('pvp running', '6-pvp');
   log.push({ label: 'fullscreen button visible in pvp', fsVisible: await page.isVisible('#fullscreen-btn') });
 
-  fs.writeFileSync(path.join(OUT, 'diag.json'), JSON.stringify(log, null, 2));
+  fs.writeFileSync(path.join(OUT, `diag-${TAG}.json`), JSON.stringify(log, null, 2));
 })().catch((e) => {
   log.push({ error: String(e && e.stack || e) });
-  fs.writeFileSync(path.join(OUT, 'diag.json'), JSON.stringify(log, null, 2));
+  fs.writeFileSync(path.join(OUT, `diag-${TAG}.json`), JSON.stringify(log, null, 2));
 }).finally(() => process.exit(0));
