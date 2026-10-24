@@ -23,8 +23,8 @@ adb shell settings put system font_scale 1.3
 adb shell am force-stop "$PKG"; adb shell am start -n "$PKG/.MainActivity" > /dev/null 2>&1; sleep 25
 node scripts/android-diag.js "$OUT" font130 || true
 adb shell settings put system font_scale 1.0
-# Sony Xperia-like 21:9 screens (Xperia 10/5: 1080x2520, Xperia 1: 1644x3840 / 4K)
-for spec in "xperia10:1080x2520:440" "xperia1:1644x3840:640"; do
+# Samsung Galaxy S21 FE: 1080x2340, One UI default density and enlarged 'Screen zoom'
+for spec in "s21fe:1080x2340:450" "s21fe-zoom:1080x2340:510"; do
   name=${spec%%:*}; rest=${spec#*:}; size=${rest%%:*}; dens=${rest#*:}
   adb shell wm size "$size"; adb shell wm density "$dens"
   adb shell am force-stop "$PKG"; adb shell am start -n "$PKG/.MainActivity" > /dev/null 2>&1; sleep 30
