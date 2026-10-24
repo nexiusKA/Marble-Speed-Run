@@ -9,6 +9,10 @@
   const container = document.getElementById('game-container');
   const canvasEl  = document.getElementById('gameCanvas');
   const fsBtn     = document.getElementById('fullscreen-btn');
+  const cap = window.Capacitor;
+  if (cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform()) {
+    document.documentElement.classList.add('native-app');
+  }
   const logicalH  = CANVAS_H + CONTROLS_H;
 
   container.style.height = logicalH + 'px';
@@ -102,6 +106,15 @@
   // scripts run (the game showed up zoomed in until the first resize), so
   // re-measure once the page has loaded and shortly after.
   window.addEventListener('load', updateScale);
+  // Safety net: some WebViews change the viewport (system bars, fullscreen,
+  // split screen) without a resize event. Re-check the size once a second and
+  // whenever the game state changes (see game loop below).
+  let lastSize = '';
+  window.__marbleRescale = () => {
+    const size = window.innerWidth + 'x' + window.innerHeight;
+    if (size !== lastSize) { lastSize = size; updateScale(); }
+  };
+  setInterval(window.__marbleRescale, 1000);
   [100, 500, 1500].forEach((ms) => setTimeout(updateScale, ms));
 })();
 
@@ -193,6 +206,7 @@
       if (game.state !== lastState) {
         lastState = game.state;
         if (window.MarbleNative) window.MarbleNative.onGameStateChange(lastState);
+        if (window.__marbleRescale) window.__marbleRescale();
       }
     } catch (err) {
       crashed = true;
