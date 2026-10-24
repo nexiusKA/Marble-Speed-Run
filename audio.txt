@@ -1,0 +1,4 @@
+uid=
+--- playing (foreground)
+--- after HOME (background)
+--- after resume

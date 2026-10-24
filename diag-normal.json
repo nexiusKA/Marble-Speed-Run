@@ -1,0 +1,162 @@
+[
+  {
+    "label": "menu",
+    "state": "menu",
+    "inner": [
+      320,
+      592
+    ],
+    "client": [
+      320,
+      592
+    ],
+    "scroll": [
+      320,
+      592,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      592,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      0,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "label": "endless running",
+    "state": "countdown",
+    "inner": [
+      320,
+      592
+    ],
+    "client": [
+      320,
+      592
+    ],
+    "scroll": [
+      320,
+      592,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      592,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      0,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "label": "after double taps on control",
+    "state": "running",
+    "inner": [
+      320,
+      616
+    ],
+    "client": [
+      320,
+      616
+    ],
+    "scroll": [
+      320,
+      616,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      616,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      12,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "label": "fullscreen button visible",
+    "fsVisible": false
+  },
+  {
+    "label": "pvp running",
+    "state": "countdown",
+    "inner": [
+      320,
+      592
+    ],
+    "client": [
+      320,
+      592
+    ],
+    "scroll": [
+      320,
+      592,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      592,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      0,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "label": "fullscreen button visible in pvp",
+    "fsVisible": false
+  }
+]

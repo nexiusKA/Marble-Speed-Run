@@ -1,0 +1,81 @@
+[
+  {
+    "label": "menu",
+    "state": "menu",
+    "inner": [
+      320,
+      592
+    ],
+    "client": [
+      320,
+      592
+    ],
+    "scroll": [
+      320,
+      592,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      592,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      0,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "label": "endless running",
+    "state": "countdown",
+    "inner": [
+      320,
+      592
+    ],
+    "client": [
+      320,
+      592
+    ],
+    "scroll": [
+      320,
+      592,
+      0,
+      0
+    ],
+    "visualViewport": [
+      320,
+      592,
+      1,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "scale(0.666667)",
+    "containerRect": [
+      0,
+      0,
+      320,
+      592
+    ],
+    "canvas": [
+      480,
+      796
+    ],
+    "dpr": 1
+  },
+  {
+    "error": "page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#btn-left')\n    - locator resolved to <button id=\"btn-left\" class=\"ctrl-btn\" aria-label=\"Left\">◀</button>\n  - attempting click action\n    - waiting for element to be visible, enabled and stable\n    - element is visible, enabled and stable\n    - scrolling into view if needed\n    - done scrolling\n    - performing click action\n\n    at /home/runner/work/Marble-Speed-Run/Marble-Speed-Run/scripts/android-diag.js:65:93"
+  }
+]
