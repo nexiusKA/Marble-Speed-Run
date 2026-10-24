@@ -1,0 +1,7 @@
+Starting: Intent { cmp=com.nexiuska.marblerush/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: com.nexiuska.marblerush/.MainActivity
+TotalTime: 2991
+WaitTime: 2995
+Complete
