@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Opt out of system game interventions (Android 12+ Game Mode, Samsung Game
+  Booster / Game Optimizing Service). Resolution downscaling resizes the window
+  back buffer, but the WebView renders in a child process that is not always
+  scaled the same way – the game then shows up zoomed in and cropped on some
+  Samsung phones (seen on a Galaxy S21 FE). The game is light enough to run at
+  full resolution, and it paces its own frames.
+-->
+<game-mode-config
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:allowGameDownscaling="false"
+    android:allowGameFpsOverride="false" />

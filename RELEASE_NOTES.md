@@ -1,3 +1,9 @@
+# Marble Rush 1.1.2
+
+- Fixes the game being shown zoomed in and cropped on Samsung phones: the app now
+  opts out of system resolution downscaling for games (Samsung Game Booster /
+  Android Game Mode)
+
 # Marble Rush 1.1.1
 
 - Fixes the game being shown zoomed in on some Android phones: the page can no
