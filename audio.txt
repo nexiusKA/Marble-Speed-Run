@@ -1,0 +1,7 @@
+uid=10192
+--- playing (foreground)
+  AudioPlaybackConfiguration piid:159 deviceId:2 type:AAudio u/pid:10192/6888 state:started attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN source=DEFAULT flags=0x0 tags= bundle=null sessionId:-1 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=44100}
+--- after HOME (background)
+  AudioPlaybackConfiguration piid:159 deviceId:2 type:AAudio u/pid:10192/6888 state:stopped attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN source=DEFAULT flags=0x0 tags= bundle=null sessionId:-1 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=44100}
+--- after resume
+  AudioPlaybackConfiguration piid:159 deviceId:2 type:AAudio u/pid:10192/6888 state:started attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN source=DEFAULT flags=0x0 tags= bundle=null sessionId:-1 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=44100}

@@ -1,0 +1,1192 @@
+10-24 15:27:07.484   522  1883 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+10-24 15:27:07.520   522  2208 D CoreBackPreview: Window{fef89c5 u0 Splash Screen com.nexiuska.marblerush}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@8feb904, mPriority=0, mIsAnimationCallback=false}
+10-24 15:27:07.538   522   554 I ActivityManager: Start proc 2389:com.nexiuska.marblerush/u0a192 for next-top-activity {com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:27:08.009  1830  2467 W chromium: [1024/152708.009865:WARNING:dns_config_service_android.cc(81)] Failed to read DnsConfig.
+10-24 15:27:08.094  2389  2389 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:27:08.094  2389  2389 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:27:08.096   522   541 V WindowManager:     info={id=5 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{1ab9694 Task{a4f0d2d #8 type=standard A=10192:com.nexiuska.marblerush}}} m=OPEN f=MOVE_TO_TOP leash=Surface(name=Task=8)/@0x8e42a01 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{868653d Task{aedcc73 #1 type=home}}} m=TO_BACK f=NONE leash=Surface(name=Task=1)/@0x1150d91 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0}]}
+10-24 15:27:08.187   522   809 I SdkSandboxManager: No SDKs used. Skipping SDK data reconcilation for CallingInfo{mUid=10192, mPackageName='com.nexiuska.marblerush, mAppProcessToken='null'}
+10-24 15:27:08.325  2389  2389 D nativeloader: Configuring clns-6 for other apk /data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.nexiuska.marblerush
+10-24 15:27:08.354  2389  2389 V GraphicsEnvironment: ANGLE GameManagerService for com.nexiuska.marblerush: false
+10-24 15:27:08.354  2389  2389 V GraphicsEnvironment: com.nexiuska.marblerush is not listed in per-application setting
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b134024 com.google.android.youtube/10139} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{495778d com.google.android.as/10125} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{21f0d42 com.google.android.devicelockcontroller/10173} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4ef153 com.google.android.contacts/10153} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8563a90 com.google.android.partnersetup/10124} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{deeff89 com.google.android.apps.youtube.music/10155} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d94bb8e com.google.android.cellbroadcastreceiver/10189} BLOCKED
+10-24 15:27:08.630   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{74d4faf com.google.android.inputmethod.latin/10145} BLOCKED
+10-24 15:27:08.692  1048  1048 D CarrierSvcBindHelper: onPackageAdded: com.nexiuska.marblerush
+10-24 15:27:08.760  2389  2389 I WebViewFactory: Loading com.google.android.webview version 113.0.5672.136 (code 567263637)
+10-24 15:27:08.775  2389  2389 D nativeloader: Configuring clns-7 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:27:08.782   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f58bec5 com.android.cts.priv.ctsshim/10181} BLOCKED
+10-24 15:27:08.782  2389  2389 D nativeloader: Configuring clns-8 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b134024 com.google.android.youtube/10139} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{447701a com.android.internal.display.cutout.emulation.corner/10025} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4aed74b com.android.internal.display.cutout.emulation.double/10048} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{30cb528 com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8b8241 com.google.android.onetimeinitializer/10126} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c5c73e6 com.google.android.ext.shared/10101} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8919d27 com.android.internal.systemui.navbar.gestural_wide_back/10007} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{70bfbd4 com.android.virtualmachine.res/10176} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{cd017d com.google.android.federatedcompute/10190} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{16be872 com.android.managedprovisioning.auto_generated_rro_product__/10024} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{5f0e4c3 com.android.carrierconfig.auto_generated_rro_vendor__/10078} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f170140 com.android.systemui.emulation.pixel_3_xl/10034} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{6ad3879 com.android.systemui.emulation.pixel_4_xl/10059} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{58c19be com.android.systemui.emulation.pixel_fold/10009} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3730a1f com.android.simappdialog.auto_generated_rro_product__/10030} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{80af16c com.android.htmlviewer/10115} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7bfe335 com.google.android.health.connect.backuprestore/10179} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3ec13ca com.android.systemui.auto_generated_rro_product__/10031} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{1c8293b com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d6bb858 com.google.android.soundpicker/10136} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{5187db1 com.google.android.marvin.talkbackoverlay/10077} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{99fa296 com.google.android.configupdater/10129} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{2861e17 com.android.internal.emulation.pixel_3a_xl/10044} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d100204 com.android.internal.emulation.pixel_6_pro/10018} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{38643ed com.android.internal.emulation.pixel_7_pro/10004} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f2b5222 com.android.internal.emulation.pixel_8_pro/10058} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c484b3 com.android.internal.emulation.pixel_3a/10053} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{98d3a70 com.android.internal.emulation.pixel_4a/10011} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b9031e9 com.android.internal.emulation.pixel_6a/10023} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{ed06e6e com.android.internal.emulation.pixel_7a/10033} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{778b90f com.google.android.overlay.googlewebview/10049} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7638d9c com.google.android.hotspot2.osulogin/10185} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d3103a5 com.android.simappdialog/10112} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{399037a com.android.internal.display.cutout.emulation.hole/10073} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{191d72b com.android.internal.display.cutout.emulation.tall/10065} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e9e788 com.android.internal.systemui.navbar.threebutton/10068} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3533521 com.android.camera2/10144} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d23dd46 com.android.systemui.auto_generated_rro_vendor__/10076} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{fd4bb07 com.google.android.deskclock/10152} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{cf9f434 com.android.internal.systemui.navbar.twobutton/10020} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{495778d com.google.android.as/10125} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{30d025d com.google.android.gm/10142} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{43087d2 com.android.internal.systemui.navbar.gestural_extra_wide_back/10045} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7800a3 com.android.systemui.emulation.pixel_3/10015} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{45c1fa0 com.android.systemui.emulation.pixel_4/10037} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{29c6759 com.android.systemui.emulation.pixel_5/10071} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{beb4f1e com.android.systemui.emulation.pixel_6/10074} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{48003ff com.android.systemui.emulation.pixel_7/10072} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{1f395cc com.android.systemui.emulation.pixel_8/10070} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4232015 com.android.nfc.auto_generated_rro_product__/10027} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{bf93f2a com.android.printspooler/10104} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{edae11b com.android.emergency.auto_generated_rro_product__/10041} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{9aa42b8 com.google.android.connectivity.resources.goldfish.overlay/10079} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{22a891 com.android.dreams.basic/10103} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f4423f6 com.google.android.networkstack.tethering.emulator/10022} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{93c73f7 com.android.providers.settings.auto_generated_rro_product__/10002} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{21cd264 com.google.android.as.oss/10122} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{bb83ccd com.android.traceur.auto_generated_rro_product__/10005} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{21f0d42 com.google.android.devicelockcontroller/10173} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3868982 com.google.android.dialer/10128} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{aba5893 com.android.internal.emulation.pixel_3/10046} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d06b0d0 com.android.internal.emulation.pixel_4/10060} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{698d8c9 com.android.internal.emulation.pixel_5/10012} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{597bbce com.android.internal.emulation.pixel_6/10038} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c27eaef com.android.internal.emulation.pixel_7/10067} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{a6e09fc com.android.internal.emulation.pixel_8/10039} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{ccd3885 com.google.android.captiveportallogin/10113} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{677c6da com.android.musicfx/10088} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{632470b com.google.android.apps.docs/10154} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{a01a925 com.google.android.apps.maps/10156} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{28fc9e8 com.google.android.modulemetadata/10147} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{82dd801 com.google.android.markup/10135} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{51b76a6 com.android.providers.settings.auto_generated_rro_vendor__/10080} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{53c48e7 com.google.android.rkpdapp/10186} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4ef153 com.google.android.contacts/10153} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{28b9c94 com.android.server.telecom.auto_generated_rro_product__/10032} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d9ef33d com.google.android.overlay.googleconfig/10055} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8f85732 com.android.chrome/10150} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{efa8c83 com.android.bips.auto_generated_rro_product__/10035} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7cfee00 com.google.android.apps.customization.pixel/10143} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{20c8639 com.google.android.tag/10082} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{950b47e com.google.android.overlay.permissioncontroller/10003} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8563a90 com.google.android.partnersetup/10124} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{5cf6ddf com.google.android.apps.wallpaper.nexus/10141} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{645ea2c com.google.android.apps.nexuslauncher/10169} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3264cf5 com.google.android.nearby.halfsheet/10171} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d3f9a8a com.android.theme.font.notoserifsource/10066} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{5e708fb com.google.android.safetycenter.resources/10187} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{53d7d18 com.android.internal.display.cutout.emulation.waterfall/10040} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{fdbc371 com.android.internal.systemui.navbar.transparent/10029} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{84d556 com.google.android.connectivity.resources/10170} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{81339d7 com.android.providers.contacts.auto_generated_rro_product__/10019} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f1952c4 com.google.android.feedback/10162} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c9825ad com.google.android.printservice.recommendation/10110} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{910f0e2 com.google.android.apps.photos/10140} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d597f69 com.google.android.calendar/10148} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{6679c73 com.google.android.documentsui/10098} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{fbad730 com.android.systemui.emulation.pixel_3a_xl/10021} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f3e6fa9 com.android.systemui.emulation.pixel_6_pro/10063} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{951392e com.android.systemui.emulation.pixel_7_pro/10054} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e958ccf com.android.systemui.emulation.pixel_8_pro/10001} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{dae365c com.google.mainline.telemetry/10151} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{ee55d65 com.android.carrierconfig.auto_generated_rro_product__/10064} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b3bba3a com.android.providers.partnerbookmarks/10100} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e0826eb com.android.wallpaper.livepicker/10090} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{a165c48 com.android.providers.telephony.auto_generated_rro_product__/10062} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3536ae1 com.android.phone.auto_generated_rro_vendor__/10081} BLOCKED
+10-24 15:27:08.785   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{1b4006 com.google.mainline.adservices/10137} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3c046c7 com.android.imsserviceentitlement/10117} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{358f4f4 com.google.android.healthconnect.controller/10178} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3ad41d com.android.internal.emulation.pixel_2_xl/10016} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{11b5692 com.android.internal.emulation.pixel_3_xl/10056} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3f08863 com.android.internal.emulation.pixel_4_xl/10047} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{68a6c60 com.android.internal.emulation.pixel_fold/10006} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8359519 com.android.bookmarkprovider/10114} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c9449de com.google.android.overlay.pixelconfigcommon/10014} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{95947bf com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__/10050} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b99ee8c com.android.systemui.emulation.pixel_3a/10013} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{38169d5 com.android.systemui.emulation.pixel_4a/10000} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c1725ea com.android.systemui.emulation.pixel_6a/10042} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{64a0db com.android.systemui.emulation.pixel_7a/10017} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{83d6778 com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7a68450 com.google.android.projection.gearhead/10123} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{67bce51 com.google.android.uwb.resources/10180} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{416e649 com.android.cts.ctsshim/10182} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f39b6b6 com.google.android.wifi.resources/10183} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8026fb7 com.google.android.wifi.dialog/10184} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{59d8324 com.google.android.apps.wallpaper/10161} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3ddfe8d com.google.android.odad/10121} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7228842 com.android.settings.auto_generated_rro_product__/10028} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4445053 com.android.internal.systemui.navbar.gestural/10051} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{deeff89 com.google.android.apps.youtube.music/10155} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4c1ad90 com.android.bluetoothmidiservice/10106} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{6b8f689 com.android.storagemanager.auto_generated_rro_product__/10026} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d94bb8e com.google.android.cellbroadcastreceiver/10189} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{ed4e68e com.android.phone.auto_generated_rro_product__/10061} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{eb99eaf android.auto_generated_rro_product__/10069} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{dbc12bc com.android.internal.systemui.navbar.gestural_narrow_back/10052} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{74d4faf com.google.android.inputmethod.latin/10145} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{317245 android.auto_generated_rro_vendor__/10075} BLOCKED
+10-24 15:27:08.786   522   825 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c3cdd9a com.google.android.apps.restore/10120} BLOCKED
+10-24 15:27:08.952  2389  2617 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed_new"
+10-24 15:27:08.953  2389  2617 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed"
+10-24 15:27:08.988   522   554 I ActivityManager: Start proc 2621:com.google.android.webview:webview_service/u0a134 for service {com.google.android.webview/org.chromium.android_webview.services.VariationsSeedServer}
+10-24 15:27:09.170  2621  2621 I webview_service: Using CollectorTypeCC GC.
+10-24 15:27:09.171  2621  2621 W webview_service: Unexpected CPU variant for x86: x86_64.
+10-24 15:27:09.171  2621  2621 W webview_service: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-24 15:27:09.175  2621  2621 E webview_service: Not starting debugger since process cannot load the jdwp agent.
+10-24 15:27:09.464   522   554 I ActivityManager: Start proc 2678:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0ai9000 for  {com.nexiuska.marblerush/org.chromium.content.app.SandboxedProcessService0:0}
+10-24 15:27:09.571  2621  2621 W webview_service: Entry not found
+10-24 15:27:09.572  2621  2621 D nativeloader: Configuring clns-6 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:27:09.596  2621  2621 D nativeloader: Configuring clns-7 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:27:09.597  1048  1335 D ImsResolver: maybeAddedImsService, packageName: com.nexiuska.marblerush
+10-24 15:27:09.632  2621  2621 V GraphicsEnvironment: ANGLE GameManagerService for com.google.android.webview: false
+10-24 15:27:09.632  2621  2621 V GraphicsEnvironment: com.google.android.webview is not listed in per-application setting
+10-24 15:27:09.634  2621  2621 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:webview_service
+10-24 15:27:10.164  2678  2678 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+10-24 15:27:10.194   852   852 I SafetyLabelChangedBroadcastReceiver: received broadcast packageName: com.nexiuska.marblerush, current user: UserHandle{0}, packageChangeEvent: NEW_INSTALL, intent user: UserHandle{0}
+10-24 15:27:10.869  2389  2714 W chromium: [WARNING:dns_config_service_android.cc(115)] Failed to read DnsConfig.
+10-24 15:27:11.350   522   554 I ActivityManager: Start proc 2862:com.android.chrome/u0a150 for service {com.android.chrome/org.chromium.chrome.browser.customtabs.CustomTabsConnectionService}
+10-24 15:27:12.658  2389  2389 D Capacitor: Starting BridgeActivity
+10-24 15:27:12.872  2389  2389 W uska.marblerush: Verification of void com.getcapacitor.Bridge.loadWebView() took 136.271ms (1966.67 bytecodes/s) (8408B approximate peak alloc)
+10-24 15:27:13.226  2389  2389 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:13.408  2389  2389 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:13.477  2389  2389 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:13.525  2389  2389 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:13.562  2389  2389 D Capacitor: Registering plugin instance: App
+10-24 15:27:13.705  2389  2389 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:13.867  2389  2389 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:14.000  2389  2389 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:14.058  1048  1048 D CarrierSvcBindHelper: onPackageModified: com.nexiuska.marblerush
+10-24 15:27:14.064  1048  1335 D ImsResolver: maybeAddedImsService, packageName: com.nexiuska.marblerush
+10-24 15:27:14.128  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:14.128  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:14.145  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:14.145  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:14.589  2389  2389 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:14.598  2389  2389 D Capacitor: Loading app at https://localhost
+10-24 15:27:14.828   522   554 I ActivityManager: Start proc 3267:com.google.android.webview:webview_apk/u0a134 for service {com.google.android.webview/org.chromium.android_webview.nonembedded.AwComponentUpdateService}
+10-24 15:27:14.971  3267  3267 I iew:webview_apk: Using CollectorTypeCC GC.
+10-24 15:27:14.971  3267  3267 W iew:webview_apk: Unexpected CPU variant for x86: x86_64.
+10-24 15:27:14.971  3267  3267 W iew:webview_apk: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-24 15:27:14.991  2389  2389 D Capacitor: App started
+10-24 15:27:15.004  2389  2389 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:15.004  2389  2389 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:15.004  2389  2389 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:15.004  2389  2389 D Capacitor: App resumed
+10-24 15:27:15.019  1664  1664 I AiAiEcho: AppFetcherImplV2 updateApps package:[com.nexiuska.marblerush], userId:[0], reason:[package is added.].
+10-24 15:27:15.119  2389  2714 D Capacitor: Handling local request: https://localhost/
+10-24 15:27:15.156  1109  1154 I Launcher.IconCache: Database bulk icon loading failed, using fallback bulk icon loading for: ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:27:15.436  2389  2389 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:27:15.437  2389  2389 D Capacitor/AppPlugin: No listeners found for event pause
+10-24 15:27:15.437  2389  2389 D Capacitor: App paused
+10-24 15:27:15.438  2389  2389 D Capacitor/AppPlugin: Firing change: false
+10-24 15:27:15.438  2389  2389 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:15.438  2389  2389 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:15.439  2389  2389 D Capacitor: App stopped
+10-24 15:27:15.439  2389  2389 D Capacitor: Saving instance state!
+10-24 15:27:15.441  2389  2389 D Capacitor: App destroyed
+10-24 15:27:15.442   522  2006 W InputManager-JNI: Input channel object '28f343f com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity (client)' was disposed without first being removed with the input manager!
+10-24 15:27:15.476  3267  3267 E iew:webview_apk: Not starting debugger since process cannot load the jdwp agent.
+10-24 15:27:15.627  2389  2389 D Capacitor: Starting BridgeActivity
+10-24 15:27:15.638  2389  2714 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:27:15.652  2389  2746 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:27:15.658  2389  2814 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:27:15.664  2389  2815 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:27:15.669  2389  2816 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:27:15.713  2389  2389 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:27:15.715  2389  2389 D Capacitor: Registering plugin instance: WebView
+10-24 15:27:15.716  2389  2389 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:27:15.718  2389  2389 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:27:15.722  2389  2389 D Capacitor: Registering plugin instance: App
+10-24 15:27:15.725  2389  2389 D Capacitor: Registering plugin instance: Haptics
+10-24 15:27:15.729  2389  2389 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:27:15.733  2389  2389 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:27:15.748  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:15.749  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:15.756  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:27:15.756  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:27:15.816  2389  2389 W Capacitor: Unable to read file at path public/plugins
+10-24 15:27:15.834  2389  2389 D Capacitor: Loading app at https://localhost
+10-24 15:27:15.863  3267  3267 W iew:webview_apk: Entry not found
+10-24 15:27:15.864  3267  3267 D nativeloader: Configuring clns-6 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:27:15.867  3267  3267 D nativeloader: Configuring clns-7 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:27:15.888  2389  2389 D Capacitor: App started
+10-24 15:27:15.895  2389  2389 D Capacitor/AppPlugin: Firing change: true
+10-24 15:27:15.904  2389  2389 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:27:15.904  2389  2389 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:27:15.905  2389  2389 D Capacitor: App resumed
+10-24 15:27:15.923  3267  3267 V GraphicsEnvironment: ANGLE GameManagerService for com.google.android.webview: false
+10-24 15:27:15.923  3267  3267 V GraphicsEnvironment: com.google.android.webview is not listed in per-application setting
+10-24 15:27:16.045  3267  3267 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:webview_apk
+10-24 15:27:16.509  2389  2814 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:27:16.509  2389  2814 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:27:16.510  2389  2814 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:27:16.511  2389  2814 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:27:16.511  2389  2814 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:27:16.512  2389  2814 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:27:16.516  2389  2746 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:27:16.516  2389  2746 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:27:16.517  2389  2746 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:27:16.517  2389  2746 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:27:16.520  2389  2815 D Capacitor: Handling local request: https://localhost/
+10-24 15:27:16.634  2389  2714 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:27:16.634  2389  2746 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:27:16.646  2389  2746 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:27:16.648  2389  2714 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:27:16.674  2389  2714 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:27:16.677  2389  2714 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:27:16.678  2389  2746 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:27:16.691  2389  2714 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:27:16.691  2389  2746 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:27:16.698  2389  2746 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:27:16.699  2389  2714 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:27:16.703  2389  2714 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:27:16.707  2389  2746 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:27:16.708  2389  2746 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:27:16.731  2389  2814 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:27:16.852  3267  3360 W cr_AWNetworkFetcherTask: 	at org.chromium.android_webview.nonembedded.NetworkFetcherTask.download(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:48)
+10-24 15:27:17.024   522  2214 D CoreBackPreview: Window{51260c5 u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@4b1c5cc, mPriority=0, mIsAnimationCallback=false}
+10-24 15:27:18.655   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{a4edd5f com.google.android.youtube/10139} BLOCKED
+10-24 15:27:18.655   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{18163ac com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:27:18.660   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{37e0875 com.google.android.gm/10142} BLOCKED
+10-24 15:27:18.660   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{2bb700a com.google.android.dialer/10128} BLOCKED
+10-24 15:27:18.661   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7adf07b com.google.android.contacts/10153} BLOCKED
+10-24 15:27:18.661   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e770e98 com.google.android.apps.youtube.music/10155} BLOCKED
+10-24 15:27:19.121   522  1894 I WindowManager: finishDrawing of relaunch: Window{51260c5 u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} 10899ms
+10-24 15:27:19.132   522   541 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:27:19.134   522   541 I ActivityTaskManager: Displayed com.nexiuska.marblerush/.MainActivity for user 0: +11s745ms
+10-24 15:27:19.204   522   825 I ImeTracker: com.nexiuska.marblerush:7b8bd04: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-24 15:27:19.204   522   825 I ImeTracker: com.nexiuska.marblerush:7b8bd04: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:27:19.276  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, false)
+10-24 15:27:19.456   522  2006 W InputManager-JNI: Input channel object 'fef89c5 Splash Screen com.nexiuska.marblerush (client)' was disposed without first being removed with the input manager!
+10-24 15:27:19.777  1664  1664 I AiAiEcho: AppFetcherImpl onPackageChanged com.nexiuska.marblerush.
+10-24 15:27:19.782  1664  3287 I AiAiEcho: AppIndexer Package:[com.nexiuska.marblerush] UserProfile:[0] Enabled:[true].
+10-24 15:27:19.782  1664  3287 I AiAiEcho: AppFetcherImplV2 updateApps package:[com.nexiuska.marblerush], userId:[0], reason:[package is updated.].
+10-24 15:27:20.442  1826  2307 I WebViewFactory: Loading com.google.android.webview version 113.0.5672.136 (code 567263637)
+10-24 15:27:20.447  1826  2307 D nativeloader: Configuring clns-8 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:27:20.494  1826  2307 D nativeloader: Configuring clns-9 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:27:20.600   522   553 D SystemServerTimingAsync: ssm.onUnlockedUser-0_com.android.server.webkit.WebViewUpdateService
+10-24 15:27:20.600   522   553 V SystemServerTimingAsync: ssm.onUnlockedUser-0_com.android.server.webkit.WebViewUpdateService took to complete: 0ms
+10-24 15:27:20.998  1826  3658 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.google.android.googlequicksearchbox/app_webview/variations_seed_new"
+10-24 15:27:20.998  1826  3658 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.google.android.googlequicksearchbox/app_webview/variations_seed"
+10-24 15:27:22.198  2389  3765 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:27:23.974  2389  2389 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS: TypeError: Cannot read properties of null (reading 'style')
+10-24 15:27:24.135  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.149  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732478, pluginId: App, methodName: addListener
+10-24 15:27:24.151  2389  2389 V Capacitor: callback: 54732478, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.153  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.157  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.160  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732479, pluginId: App, methodName: addListener
+10-24 15:27:24.160  2389  2389 V Capacitor: callback: 54732479, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.163  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.167  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.176  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732480, pluginId: App, methodName: addListener
+10-24 15:27:24.176  2389  2389 V Capacitor: callback: 54732480, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.177  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.178  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.186  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732481, pluginId: App, methodName: addListener
+10-24 15:27:24.188  2389  2389 V Capacitor: callback: 54732481, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.191  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.192  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.199  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732482, pluginId: StatusBar, methodName: hide
+10-24 15:27:24.199  2389  2389 V Capacitor: callback: 54732482, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.200  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.292  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.293  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732483, pluginId: StatusBar, methodName: show
+10-24 15:27:24.293  2389  2389 V Capacitor: callback: 54732483, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:27:24.294  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:27:24.299  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.301  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032270, pluginId: App, methodName: addListener
+10-24 15:27:24.301  2389  2389 V Capacitor: callback: 58032270, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:27:24.302  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.302  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032271, pluginId: App, methodName: addListener
+10-24 15:27:24.303  2389  2389 V Capacitor: callback: 58032271, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:27:24.303  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.304  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032272, pluginId: App, methodName: addListener
+10-24 15:27:24.304  2389  2389 V Capacitor: callback: 58032272, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:27:24.305  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.305  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032273, pluginId: App, methodName: addListener
+10-24 15:27:24.305  2389  2389 V Capacitor: callback: 58032273, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:27:24.306  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:24.307  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032274, pluginId: StatusBar, methodName: hide
+10-24 15:27:24.307  2389  2389 V Capacitor: callback: 58032274, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:27:24.322  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:27:24.322  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:27:24.872   522  2113 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c83b0b9 com.google.android.gm/10142} BLOCKED
+10-24 15:27:26.019   522  4036 D SystemServerTimingAsync: ssm.onCompletedEventUser-0_{|Unlocked|}_com.android.server.webkit.WebViewUpdateService
+10-24 15:27:26.019   522  4036 V SystemServerTimingAsync: ssm.onCompletedEventUser-0_{|Unlocked|}_com.android.server.webkit.WebViewUpdateService took to complete: 0ms
+10-24 15:27:26.798  1475  3160 I BlockstoreStorage: Clearing Blockstore Data for package com.nexiuska.marblerush [CONTEXT service_id=258 ]
+10-24 15:27:27.541   522   616 D ActivityManager: freezing 3267 com.google.android.webview:webview_apk
+10-24 15:27:27.688  2389  2713 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:27:27.729  2389  2389 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:27:27.771   522   892 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4548f5e com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:27:27.780   522  1193 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c63df3f com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:27:28.317  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:27:28.318  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 58032275, pluginId: StatusBar, methodName: show
+10-24 15:27:28.320  2389  2389 V Capacitor: callback: 58032275, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:27:28.558  2389  2389 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:27:28.566  2389  2389 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:27:28.824  2389  2713 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4b5516a com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{1fe265b com.android.camera2/10144} BLOCKED
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e483ef8 com.google.android.gm/10142} BLOCKED
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{3c28fd1 com.google.android.devicelockcontroller/10173} BLOCKED
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{e4f1a36 com.google.android.rkpdapp/10186} BLOCKED
+10-24 15:27:29.484   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{d6ecd37 com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:27:29.485   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7baf9bf com.google.android.projection.gearhead/10123} BLOCKED
+10-24 15:27:31.080  1049  1074 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.deviceinfo.legal.WebViewLicensePreferenceController
+10-24 15:27:31.424   522   616 D ActivityManager: freezing 2621 com.google.android.webview:webview_service
+10-24 15:27:34.589  2389  2389 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:27:34.610  2389  2713 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:34.669  2389  2713 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:27:39.494   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{7c4885d com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:27:39.494   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{52895d2 com.google.android.gm/10142} BLOCKED
+10-24 15:27:49.907   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{4b7c9 com.google.android.youtube/10139} BLOCKED
+10-24 15:27:49.907   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{77aece com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:27:49.907   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f426b85 com.google.android.apps.maps/10156} BLOCKED
+10-24 15:27:49.907   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b8c61ef com.google.android.contacts/10153} BLOCKED
+10-24 15:27:53.979  4331  4817 I cr_CronetUrlRequestContext: destroyNativeStreamLocked org.chromium.net.impl.CronetBidirectionalStream@ee86d9a
+10-24 15:27:54.896   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{c810075 com.google.android.gm/10142} BLOCKED
+10-24 15:27:54.896   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{8f080a com.google.android.contacts/10153} BLOCKED
+10-24 15:27:57.166   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{2f255d1 com.google.android.as/10125} BLOCKED
+10-24 15:28:03.179  2389  2713 D Capacitor: Handling local request: https://localhost/
+10-24 15:28:03.371   522  1707 W ProcessStats: Tracking association SourceState{cf3df0b com.nexiuska.marblerush/10192 BTop #4019} whose proc state 2 is better than process ProcessState{67c25fa com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (2766 skipped)
+10-24 15:28:03.875  2389  2746 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:28:03.880  2389  2816 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:28:03.881  2389  2814 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:28:03.881  2389  2714 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:28:03.882  2389  2815 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:28:03.883  2389  2713 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:28:03.885  2389  2816 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:28:03.889  2389  2714 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:28:03.889  2389  2815 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:28:03.890  2389  2713 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:28:03.891  2389  2713 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:28:03.893  2389  2714 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:28:03.894  2389  2746 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:28:03.896  2389  2815 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:28:03.899  2389  2816 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:28:04.086  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.087  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 54732484, pluginId: StatusBar, methodName: show
+10-24 15:28:04.087  2389  2389 V Capacitor: callback: 54732484, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.090  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.414  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.418  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434575, pluginId: App, methodName: addListener
+10-24 15:28:04.420  2389  2389 V Capacitor: callback: 105434575, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.424  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.429  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.430  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434576, pluginId: App, methodName: addListener
+10-24 15:28:04.430  2389  2389 V Capacitor: callback: 105434576, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.432  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.435  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.436  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434577, pluginId: App, methodName: addListener
+10-24 15:28:04.439  2389  2389 V Capacitor: callback: 105434577, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.441  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.442  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.443  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434578, pluginId: App, methodName: addListener
+10-24 15:28:04.444  2389  2389 V Capacitor: callback: 105434578, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.446  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.448  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.450  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434579, pluginId: StatusBar, methodName: hide
+10-24 15:28:04.450  2389  2389 V Capacitor: callback: 105434579, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.452  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:04.540  2389  2713 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:28:04.626  2389  2389 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:04.628  2389  2389 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 105434580, pluginId: StatusBar, methodName: show
+10-24 15:28:04.630  2389  2389 V Capacitor: callback: 105434580, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.Bridge.callPluginMethod(Bridge.java:854)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.callPluginMethod(MessageHandler.java:149)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.postMessage(MessageHandler.java:94)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.lambda$new$0(MessageHandler.java:29)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler.$r8$lambda$NqeaDFIoN0gw3x9NS3830RcfMfI(Unknown Source:0)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at com.getcapacitor.MessageHandler$$ExternalSyntheticLambda2.onPostMessage(D8$$SyntheticClass:0)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at org.chromium.support_lib_boundary.util.BoundaryInterfaceReflectionUtil$InvocationHandlerWithDelegateGetter.invoke(BoundaryInterfaceReflectionUtil.java:159)
+10-24 15:28:04.634  2389  2389 W MessageQueue: 	at org.chromium.android_webview.WebMessageListenerHolder.onPostMessage(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:53)
+10-24 15:28:05.970   522   554 I ActivityManager: Start proc 4955:com.google.android.webview/u0a134 for broadcast {com.google.android.webview/com.google.android.libraries.phenotype.client.stable.PhenotypeUpdateBackgroundBroadcastReceiver}
+10-24 15:28:05.976  4955  4955 I android.webview: Using CollectorTypeCC GC.
+10-24 15:28:05.976  4955  4955 W android.webview: Unexpected CPU variant for x86: x86_64.
+10-24 15:28:05.976  4955  4955 W android.webview: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+10-24 15:28:05.985  4955  4955 E android.webview: Not starting debugger since process cannot load the jdwp agent.
+10-24 15:28:06.145  4955  4955 W android.webview: Entry not found
+10-24 15:28:06.175  4955  4955 D nativeloader: Configuring clns-6 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:28:06.180  4955  4955 D nativeloader: Configuring clns-7 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.webview
+10-24 15:28:06.217  4955  4955 V GraphicsEnvironment: ANGLE GameManagerService for com.google.android.webview: false
+10-24 15:28:06.217  4955  4955 V GraphicsEnvironment: com.google.android.webview is not listed in per-application setting
+10-24 15:28:06.219  4955  4955 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview
+10-24 15:28:13.382   522   553 W ProcessStats: Tracking association SourceState{cf3df0b com.nexiuska.marblerush/10192 BTop #4641} whose proc state 2 is better than process ProcessState{67c25fa com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (367 skipped)
+10-24 15:28:14.475   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f24cf61 com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:28:15.588   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{50b00fa com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:28:16.234   522   616 D ActivityManager: freezing 4955 com.google.android.webview
+10-24 15:28:20.936   522  2211 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{f7320c2 com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:28:21.778  1049  4260 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.deviceinfo.legal.WebViewLicensePreferenceController
+10-24 15:28:22.906  1049  1406 D PrefCtrlListHelper: Could not find Context-only controller for pref: com.android.settings.deviceinfo.legal.WebViewLicensePreferenceController
+10-24 15:28:25.491   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{433169d com.google.android.as/10125} BLOCKED
+10-24 15:28:27.894   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{930a0da com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:28:36.896   522   579 I AppsFilter: interaction: PackageSetting{8f500b7 com.nexiuska.marblerush/10192} -> PackageSetting{b744388 com.google.android.contacts/10153} BLOCKED
+10-24 15:28:39.637   522   598 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10192 user=0: from pid 5566
+10-24 15:28:39.660  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, true)
+10-24 15:28:39.790   522   598 I ActivityManager: Killing 2389:com.nexiuska.marblerush/u0a192 (adj 0): stop com.nexiuska.marblerush due to from pid 5566
+10-24 15:28:39.817   522   598 I ActivityManager: Killing 2678:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a192i0 (adj 0): isolated not needed
+10-24 15:28:39.823   522   598 W ActivityTaskManager: Force removing ActivityRecord{52f1214 u0 com.nexiuska.marblerush/.MainActivity t8 f}}: app died, no saved state
+10-24 15:28:39.887   522   825 I WindowManager: WIN DEATH: Window{51260c5 u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:28:39.901   522   825 W InputManager-JNI: Input channel object '51260c5 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity (client)' was disposed without first being removed with the input manager!
+10-24 15:28:39.902   522  2177 I ImeTracker: com.nexiuska.marblerush:72b3bc9: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_REMOVE_CLIENT
+10-24 15:28:39.902   522  2177 I ImeTracker: com.nexiuska.marblerush:72b3bc9: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:28:40.006   522  1896 V ActivityManager: Got obituary of 2389:com.nexiuska.marblerush
+10-24 15:28:40.262   522  1896 I ActivityTaskManager: Add Task{a4f0d2d #8 type=standard A=10192:com.nexiuska.marblerush} to hidden list because adding Task{72f042 #9 type=standard A=10192:com.nexiuska.marblerush}
+10-24 15:28:40.268   522  1896 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+10-24 15:28:40.408   522  2375 D CoreBackPreview: Window{9f7b95 u0 Splash Screen com.nexiuska.marblerush}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@bc077fc, mPriority=0, mIsAnimationCallback=false}
+10-24 15:28:40.495   522   554 I ActivityManager: Start proc 5579:com.nexiuska.marblerush/u0a192 for next-top-activity {com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:28:40.581  5579  5579 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:28:40.581  5579  5579 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:28:40.863  5579  5579 D nativeloader: Configuring clns-6 for other apk /data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.nexiuska.marblerush
+10-24 15:28:40.890  5579  5579 V GraphicsEnvironment: ANGLE GameManagerService for com.nexiuska.marblerush: false
+10-24 15:28:40.890  5579  5579 V GraphicsEnvironment: com.nexiuska.marblerush is not listed in per-application setting
+10-24 15:28:41.011   522   541 V WindowManager:     info={id=6 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{3edc2be Task{72f042 #9 type=standard A=10192:com.nexiuska.marblerush}}} m=OPEN f=MOVE_TO_TOP leash=Surface(name=Task=9)/@0x33c4240 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{1ab9694 Task{a4f0d2d #8 type=standard A=10192:com.nexiuska.marblerush}}} m=CLOSE f=NONE leash=Surface(name=Task=8)/@0x8e42a01 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{a85ff1f Display{#0 state=ON size=320x640 ROTATION_0}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xb3533ff sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0}]}
+10-24 15:28:41.242  5579  5579 I WebViewFactory: Loading com.google.android.webview version 113.0.5672.136 (code 567263637)
+10-24 15:28:41.263  5579  5579 D nativeloader: Configuring clns-7 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:28:41.268  5579  5579 D nativeloader: Configuring clns-8 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f58bec5 com.android.cts.priv.ctsshim/10181} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4b7c9 com.google.android.youtube/10139} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{447701a com.android.internal.display.cutout.emulation.corner/10025} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4aed74b com.android.internal.display.cutout.emulation.double/10048} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{930a0da com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8b8241 com.google.android.onetimeinitializer/10126} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c5c73e6 com.google.android.ext.shared/10101} BLOCKED
+10-24 15:28:41.269   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8919d27 com.android.internal.systemui.navbar.gestural_wide_back/10007} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{70bfbd4 com.android.virtualmachine.res/10176} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{cd017d com.google.android.federatedcompute/10190} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{16be872 com.android.managedprovisioning.auto_generated_rro_product__/10024} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{5f0e4c3 com.android.carrierconfig.auto_generated_rro_vendor__/10078} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f170140 com.android.systemui.emulation.pixel_3_xl/10034} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{6ad3879 com.android.systemui.emulation.pixel_4_xl/10059} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{58c19be com.android.systemui.emulation.pixel_fold/10009} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3730a1f com.android.simappdialog.auto_generated_rro_product__/10030} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{80af16c com.android.htmlviewer/10115} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7bfe335 com.google.android.health.connect.backuprestore/10179} BLOCKED
+10-24 15:28:41.270   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3ec13ca com.android.systemui.auto_generated_rro_product__/10031} BLOCKED
+10-24 15:28:41.273   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{50b00fa com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:28:41.273   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d6bb858 com.google.android.soundpicker/10136} BLOCKED
+10-24 15:28:41.273   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{5187db1 com.google.android.marvin.talkbackoverlay/10077} BLOCKED
+10-24 15:28:41.273   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{99fa296 com.google.android.configupdater/10129} BLOCKED
+10-24 15:28:41.273   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{2861e17 com.android.internal.emulation.pixel_3a_xl/10044} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d100204 com.android.internal.emulation.pixel_6_pro/10018} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{38643ed com.android.internal.emulation.pixel_7_pro/10004} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f2b5222 com.android.internal.emulation.pixel_8_pro/10058} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c484b3 com.android.internal.emulation.pixel_3a/10053} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{98d3a70 com.android.internal.emulation.pixel_4a/10011} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{b9031e9 com.android.internal.emulation.pixel_6a/10023} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{ed06e6e com.android.internal.emulation.pixel_7a/10033} BLOCKED
+10-24 15:28:41.275   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{778b90f com.google.android.overlay.googlewebview/10049} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7638d9c com.google.android.hotspot2.osulogin/10185} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d3103a5 com.android.simappdialog/10112} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{399037a com.android.internal.display.cutout.emulation.hole/10073} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{191d72b com.android.internal.display.cutout.emulation.tall/10065} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{e9e788 com.android.internal.systemui.navbar.threebutton/10068} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{1fe265b com.android.camera2/10144} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d23dd46 com.android.systemui.auto_generated_rro_vendor__/10076} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{fd4bb07 com.google.android.deskclock/10152} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{cf9f434 com.android.internal.systemui.navbar.twobutton/10020} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{433169d com.google.android.as/10125} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c810075 com.google.android.gm/10142} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{43087d2 com.android.internal.systemui.navbar.gestural_extra_wide_back/10045} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7800a3 com.android.systemui.emulation.pixel_3/10015} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{45c1fa0 com.android.systemui.emulation.pixel_4/10037} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{29c6759 com.android.systemui.emulation.pixel_5/10071} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{beb4f1e com.android.systemui.emulation.pixel_6/10074} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{48003ff com.android.systemui.emulation.pixel_7/10072} BLOCKED
+10-24 15:28:41.276   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{1f395cc com.android.systemui.emulation.pixel_8/10070} BLOCKED
+10-24 15:28:41.277   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4232015 com.android.nfc.auto_generated_rro_product__/10027} BLOCKED
+10-24 15:28:41.278   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{bf93f2a com.android.printspooler/10104} BLOCKED
+10-24 15:28:41.279   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{edae11b com.android.emergency.auto_generated_rro_product__/10041} BLOCKED
+10-24 15:28:41.279   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{9aa42b8 com.google.android.connectivity.resources.goldfish.overlay/10079} BLOCKED
+10-24 15:28:41.280   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{22a891 com.android.dreams.basic/10103} BLOCKED
+10-24 15:28:41.280   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f4423f6 com.google.android.networkstack.tethering.emulator/10022} BLOCKED
+10-24 15:28:41.284   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{93c73f7 com.android.providers.settings.auto_generated_rro_product__/10002} BLOCKED
+10-24 15:28:41.284   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{21cd264 com.google.android.as.oss/10122} BLOCKED
+10-24 15:28:41.285   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{bb83ccd com.android.traceur.auto_generated_rro_product__/10005} BLOCKED
+10-24 15:28:41.285   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3c28fd1 com.google.android.devicelockcontroller/10173} BLOCKED
+10-24 15:28:41.285   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{2bb700a com.google.android.dialer/10128} BLOCKED
+10-24 15:28:41.285   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{aba5893 com.android.internal.emulation.pixel_3/10046} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d06b0d0 com.android.internal.emulation.pixel_4/10060} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{698d8c9 com.android.internal.emulation.pixel_5/10012} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{597bbce com.android.internal.emulation.pixel_6/10038} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c27eaef com.android.internal.emulation.pixel_7/10067} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{a6e09fc com.android.internal.emulation.pixel_8/10039} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{ccd3885 com.google.android.captiveportallogin/10113} BLOCKED
+10-24 15:28:41.286   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{677c6da com.android.musicfx/10088} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{632470b com.google.android.apps.docs/10154} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f426b85 com.google.android.apps.maps/10156} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{28fc9e8 com.google.android.modulemetadata/10147} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{82dd801 com.google.android.markup/10135} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{51b76a6 com.android.providers.settings.auto_generated_rro_vendor__/10080} BLOCKED
+10-24 15:28:41.287   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{e4f1a36 com.google.android.rkpdapp/10186} BLOCKED
+10-24 15:28:41.288   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{b744388 com.google.android.contacts/10153} BLOCKED
+10-24 15:28:41.288   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{28b9c94 com.android.server.telecom.auto_generated_rro_product__/10032} BLOCKED
+10-24 15:28:41.288   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d9ef33d com.google.android.overlay.googleconfig/10055} BLOCKED
+10-24 15:28:41.289   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8f85732 com.android.chrome/10150} BLOCKED
+10-24 15:28:41.289   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{efa8c83 com.android.bips.auto_generated_rro_product__/10035} BLOCKED
+10-24 15:28:41.290   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7cfee00 com.google.android.apps.customization.pixel/10143} BLOCKED
+10-24 15:28:41.290   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{20c8639 com.google.android.tag/10082} BLOCKED
+10-24 15:28:41.292   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{950b47e com.google.android.overlay.permissioncontroller/10003} BLOCKED
+10-24 15:28:41.294   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8563a90 com.google.android.partnersetup/10124} BLOCKED
+10-24 15:28:41.296   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{5cf6ddf com.google.android.apps.wallpaper.nexus/10141} BLOCKED
+10-24 15:28:41.296   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{645ea2c com.google.android.apps.nexuslauncher/10169} BLOCKED
+10-24 15:28:41.296   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3264cf5 com.google.android.nearby.halfsheet/10171} BLOCKED
+10-24 15:28:41.298   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d3f9a8a com.android.theme.font.notoserifsource/10066} BLOCKED
+10-24 15:28:41.299   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{5e708fb com.google.android.safetycenter.resources/10187} BLOCKED
+10-24 15:28:41.299   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{53d7d18 com.android.internal.display.cutout.emulation.waterfall/10040} BLOCKED
+10-24 15:28:41.299   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{fdbc371 com.android.internal.systemui.navbar.transparent/10029} BLOCKED
+10-24 15:28:41.299   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{84d556 com.google.android.connectivity.resources/10170} BLOCKED
+10-24 15:28:41.300   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{81339d7 com.android.providers.contacts.auto_generated_rro_product__/10019} BLOCKED
+10-24 15:28:41.300   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f1952c4 com.google.android.feedback/10162} BLOCKED
+10-24 15:28:41.302   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c9825ad com.google.android.printservice.recommendation/10110} BLOCKED
+10-24 15:28:41.303   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{910f0e2 com.google.android.apps.photos/10140} BLOCKED
+10-24 15:28:41.303   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d597f69 com.google.android.calendar/10148} BLOCKED
+10-24 15:28:41.303   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{39e2f00 com.google.android.documentsui/10098} BLOCKED
+10-24 15:28:41.303   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{fbad730 com.android.systemui.emulation.pixel_3a_xl/10021} BLOCKED
+10-24 15:28:41.304   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f3e6fa9 com.android.systemui.emulation.pixel_6_pro/10063} BLOCKED
+10-24 15:28:41.304   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{951392e com.android.systemui.emulation.pixel_7_pro/10054} BLOCKED
+10-24 15:28:41.304   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{e958ccf com.android.systemui.emulation.pixel_8_pro/10001} BLOCKED
+10-24 15:28:41.307   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{dae365c com.google.mainline.telemetry/10151} BLOCKED
+10-24 15:28:41.313   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{ee55d65 com.android.carrierconfig.auto_generated_rro_product__/10064} BLOCKED
+10-24 15:28:41.313   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{b3bba3a com.android.providers.partnerbookmarks/10100} BLOCKED
+10-24 15:28:41.314   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{e0826eb com.android.wallpaper.livepicker/10090} BLOCKED
+10-24 15:28:41.315   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{a165c48 com.android.providers.telephony.auto_generated_rro_product__/10062} BLOCKED
+10-24 15:28:41.315   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3536ae1 com.android.phone.auto_generated_rro_vendor__/10081} BLOCKED
+10-24 15:28:41.316   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{1b4006 com.google.mainline.adservices/10137} BLOCKED
+10-24 15:28:41.316   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3c046c7 com.android.imsserviceentitlement/10117} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{358f4f4 com.google.android.healthconnect.controller/10178} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3ad41d com.android.internal.emulation.pixel_2_xl/10016} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{11b5692 com.android.internal.emulation.pixel_3_xl/10056} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3f08863 com.android.internal.emulation.pixel_4_xl/10047} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{68a6c60 com.android.internal.emulation.pixel_fold/10006} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8359519 com.android.bookmarkprovider/10114} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c9449de com.google.android.overlay.pixelconfigcommon/10014} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{95947bf com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__/10050} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{b99ee8c com.android.systemui.emulation.pixel_3a/10013} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{38169d5 com.android.systemui.emulation.pixel_4a/10000} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c1725ea com.android.systemui.emulation.pixel_6a/10042} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{64a0db com.android.systemui.emulation.pixel_7a/10017} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f7320c2 com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7baf9bf com.google.android.projection.gearhead/10123} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{67bce51 com.google.android.uwb.resources/10180} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{416e649 com.android.cts.ctsshim/10182} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{f39b6b6 com.google.android.wifi.resources/10183} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8026fb7 com.google.android.wifi.dialog/10184} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{59d8324 com.google.android.apps.wallpaper/10161} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{3ddfe8d com.google.android.odad/10121} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{7228842 com.android.settings.auto_generated_rro_product__/10028} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4445053 com.android.internal.systemui.navbar.gestural/10051} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{e770e98 com.google.android.apps.youtube.music/10155} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4c1ad90 com.android.bluetoothmidiservice/10106} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{6b8f689 com.android.storagemanager.auto_generated_rro_product__/10026} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{d94bb8e com.google.android.cellbroadcastreceiver/10189} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{ed4e68e com.android.phone.auto_generated_rro_product__/10061} BLOCKED
+10-24 15:28:41.344   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{eb99eaf android.auto_generated_rro_product__/10069} BLOCKED
+10-24 15:28:41.345   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{dbc12bc com.android.internal.systemui.navbar.gestural_narrow_back/10052} BLOCKED
+10-24 15:28:41.345   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{74d4faf com.google.android.inputmethod.latin/10145} BLOCKED
+10-24 15:28:41.345   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{317245 android.auto_generated_rro_vendor__/10075} BLOCKED
+10-24 15:28:41.345   522  2177 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{c3cdd9a com.google.android.apps.restore/10120} BLOCKED
+10-24 15:28:41.397  5579  5625 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed_new"
+10-24 15:28:41.397  5579  5625 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed"
+10-24 15:28:41.628   522   554 I ActivityManager: Start proc 5631:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i1 for  {com.nexiuska.marblerush/org.chromium.content.app.SandboxedProcessService0:0}
+10-24 15:28:41.722  5579  5633 W chromium: [WARNING:dns_config_service_android.cc(115)] Failed to read DnsConfig.
+10-24 15:28:41.765  5579  5635 E chromium: [ERROR:simple_file_enumerator.cc(21)] opendir /data/user/0/com.nexiuska.marblerush/cache/WebView/Default/HTTP Cache/Code Cache/wasm: No such file or directory (2)
+10-24 15:28:41.766  5579  5635 E chromium: [ERROR:simple_index_file.cc(614)] Could not reconstruct index from disk
+10-24 15:28:41.795   522   952 D ActivityManager: sync unfroze 2621 com.google.android.webview:webview_service for 6
+10-24 15:28:41.874  5579  5579 D Capacitor: Starting BridgeActivity
+10-24 15:28:41.922  5579  5579 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:28:41.931  5579  5579 D Capacitor: Registering plugin instance: WebView
+10-24 15:28:41.934  5579  5579 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:28:41.935  5579  5579 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:28:41.951  5579  5579 D Capacitor: Registering plugin instance: App
+10-24 15:28:41.953  5579  5579 D Capacitor: Registering plugin instance: Haptics
+10-24 15:28:41.961  5579  5579 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:28:41.975  5579  5579 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:28:41.986  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:41.988  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:41.995  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:28:41.996  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:28:42.022  5631  5631 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+10-24 15:28:42.067  5579  5579 W Capacitor: Unable to read file at path public/plugins
+10-24 15:28:42.078  5579  5579 D Capacitor: Loading app at https://localhost
+10-24 15:28:42.157  1048  1048 D CarrierSvcBindHelper: onHandleForceStop: [com.nexiuska.marblerush]
+10-24 15:28:42.371  5579  5579 D Capacitor: App started
+10-24 15:28:42.438  5579  5579 D Capacitor/AppPlugin: Firing change: true
+10-24 15:28:42.439  5579  5579 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:28:42.440  5579  5579 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:28:42.441  5579  5579 D Capacitor: App resumed
+10-24 15:28:42.481  5579  5633 D Capacitor: Handling local request: https://localhost/
+10-24 15:28:42.726  5579  5644 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:28:42.736  5579  5636 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:28:42.741  5579  5643 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:28:42.742  5579  5635 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:28:42.743  5579  5633 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:28:42.751   522  2209 D CoreBackPreview: Window{9768ea5 u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@2a095b6, mPriority=0, mIsAnimationCallback=false}
+10-24 15:28:42.874  5579  5579 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS: TypeError: Cannot read properties of null (reading 'style')
+10-24 15:28:43.019  5579  5632 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:28:43.289  5579  5632 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:28:43.292  5579  5632 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:28:43.295  5579  5632 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:28:43.296  5579  5635 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:28:43.297  5579  5633 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:28:43.298  5579  5636 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:28:43.324  5579  5635 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:28:43.328  5579  5643 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:28:43.352  5579  5644 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:28:43.423  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:43.430  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665723, pluginId: App, methodName: addListener
+10-24 15:28:43.430  5579  5579 V Capacitor: callback: 76665723, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:28:43.431  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:43.432  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665724, pluginId: App, methodName: addListener
+10-24 15:28:43.432  5579  5579 V Capacitor: callback: 76665724, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:28:43.434  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:43.435  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665725, pluginId: App, methodName: addListener
+10-24 15:28:43.435  5579  5579 V Capacitor: callback: 76665725, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:28:43.439  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:43.439  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665726, pluginId: App, methodName: addListener
+10-24 15:28:43.440  5579  5579 V Capacitor: callback: 76665726, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:28:43.441  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:43.442  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665727, pluginId: StatusBar, methodName: hide
+10-24 15:28:43.442  5579  5579 V Capacitor: callback: 76665727, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:28:43.479  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:28:43.480  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:28:43.991  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:28:43.998  5631  5682 E chromium: [ERROR:tile_manager.cc(835)] WARNING: tile memory limits exceeded, some content may not draw
+10-24 15:28:43.998  5631  5682 E chromium: [ERROR:tile_manager.cc(835)] WARNING: tile memory limits exceeded, some content may not draw
+10-24 15:28:44.143  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:28:44.144  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665728, pluginId: StatusBar, methodName: show
+10-24 15:28:44.146  5579  5579 V Capacitor: callback: 76665728, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:28:44.152  1109  1154 I Launcher.IconCache: Database bulk icon loading failed, using fallback bulk icon loading for: ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:28:44.164  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:28:44.164  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:28:45.445   522   541 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:28:45.455   522   541 I ActivityTaskManager: Displayed com.nexiuska.marblerush/.MainActivity for user 0: +5s374ms
+10-24 15:28:45.515   522  1894 I ImeTracker: com.nexiuska.marblerush:98877d83: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-24 15:28:45.516   522  1894 I ImeTracker: com.nexiuska.marblerush:98877d83: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:28:45.539  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, false)
+10-24 15:28:45.545   522   598 D CoreBackPreview: Window{9f7b95 u0 Splash Screen com.nexiuska.marblerush}: Setting back callback null
+10-24 15:28:45.547   522  2113 W InputManager-JNI: Input channel object '9f7b95 Splash Screen com.nexiuska.marblerush (client)' was disposed without first being removed with the input manager!
+10-24 15:28:47.383   522   579 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{63fc26 com.google.android.contacts/10153} BLOCKED
+10-24 15:28:47.869  5579  5731 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:28:48.062  5579  5632 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:28:48.079  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:28:52.877   522   616 D ActivityManager: freezing 2621 com.google.android.webview:webview_service
+10-24 15:28:54.179  5579  5632 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:28:54.581   522   579 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{2aaa9f6 com.google.android.contacts/10153} BLOCKED
+10-24 15:29:05.522   522   579 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{b0b0bfd com.google.android.contacts/10153} BLOCKED
+10-24 15:29:07.298  5579  5632 D Capacitor: Handling local request: https://localhost/
+10-24 15:29:07.544  5579  5633 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:29:07.551  5579  5633 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:29:07.557  5579  5632 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:29:07.570  5579  5633 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:29:07.573  5579  5635 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:29:07.582  5579  5632 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:29:07.589  5579  5632 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:29:07.591  5579  5632 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:29:07.599  5579  5632 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:29:07.605  5579  5633 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:29:07.610  5579  5633 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:29:07.618  5579  5632 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:29:07.625  5579  5632 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:29:07.631  5579  5632 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:29:07.637  5579  5632 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:29:07.671  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.672  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 76665729, pluginId: StatusBar, methodName: show
+10-24 15:29:07.672  5579  5579 V Capacitor: callback: 76665729, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:29:07.707  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:07.713  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:07.801  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.801  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956257, pluginId: App, methodName: addListener
+10-24 15:29:07.802  5579  5579 V Capacitor: callback: 92956257, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:29:07.803  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.806  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956258, pluginId: App, methodName: addListener
+10-24 15:29:07.806  5579  5579 V Capacitor: callback: 92956258, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:29:07.812  5579  5632 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:29:07.812  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.813  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956259, pluginId: App, methodName: addListener
+10-24 15:29:07.814  5579  5579 V Capacitor: callback: 92956259, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:29:07.814  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.815  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956260, pluginId: App, methodName: addListener
+10-24 15:29:07.815  5579  5579 V Capacitor: callback: 92956260, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:29:07.816  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.817  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956261, pluginId: StatusBar, methodName: hide
+10-24 15:29:07.817  5579  5579 V Capacitor: callback: 92956261, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:29:07.818  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:07.819  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956262, pluginId: StatusBar, methodName: show
+10-24 15:29:07.819  5579  5579 V Capacitor: callback: 92956262, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:29:07.827  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:07.827  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:07.835  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:07.835  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:08.280  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:08.281  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:18.399   522  2113 I MediaFocusControl: requestAudioFocus() from uid/pid 10192/5579 AA=USAGE_MEDIA/CONTENT_TYPE_UNKNOWN clientId=android.media.AudioManager@269c339org.chromium.content.browser.AudioFocusDelegate@799ad7e callingPack=com.nexiuska.marblerush req=1 flags=0x0 sdk=36
+10-24 15:29:18.670  5579  5579 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@com.nexiuska.marblerush>
+10-24 15:29:18.867   522   579 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{8d8aedb com.google.android.contacts/10153} BLOCKED
+10-24 15:29:19.976  1826  2603 E cr_CronetUrlRequestContext: 	at org.chromium.net.impl.r.run(PG:5)
+10-24 15:29:24.062  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:24.062  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956263, pluginId: StatusBar, methodName: hide
+10-24 15:29:24.063  5579  5579 V Capacitor: callback: 92956263, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:29:24.156  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:24.159  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:24.230  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:26.418  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:26.420  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956264, pluginId: Haptics, methodName: impact
+10-24 15:29:26.420  5579  5579 V Capacitor: callback: 92956264, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:26.720  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:28.809   522   579 I AppsFilter: interaction: PackageSetting{e25ffa6 com.nexiuska.marblerush/10192} -> PackageSetting{4202c4d com.google.android.contacts/10153} BLOCKED
+10-24 15:29:29.155  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:29.163  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956265, pluginId: Haptics, methodName: impact
+10-24 15:29:29.163  5579  5579 V Capacitor: callback: 92956265, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:29.364  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:34.478  5579  5579 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@com.nexiuska.marblerush>
+10-24 15:29:34.806  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:34.806  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956266, pluginId: Haptics, methodName: impact
+10-24 15:29:34.806  5579  5579 V Capacitor: callback: 92956266, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:35.263  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:37.417  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:37.418  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956267, pluginId: Haptics, methodName: impact
+10-24 15:29:37.418  5579  5579 V Capacitor: callback: 92956267, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:37.638  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:39.454  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:39.455  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956268, pluginId: Haptics, methodName: impact
+10-24 15:29:39.456  5579  5579 V Capacitor: callback: 92956268, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:39.485  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:40.985  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:40.986  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956269, pluginId: Haptics, methodName: impact
+10-24 15:29:40.986  5579  5579 V Capacitor: callback: 92956269, pluginId: Haptics, methodName: impact, methodData: {"style":"LIGHT"}
+10-24 15:29:41.054  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:44.001  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:44.003  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956270, pluginId: StatusBar, methodName: show
+10-24 15:29:44.004  5579  5579 V Capacitor: callback: 92956270, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:29:44.121  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:44.121  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:44.173  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:46.744   522  2214 I MediaFocusControl: abandonAudioFocus() from uid/pid 10192/5579 clientId=android.media.AudioManager@269c339org.chromium.content.browser.AudioFocusDelegate@799ad7e
+10-24 15:29:46.983   522   538 I MediaFocusControl: requestAudioFocus() from uid/pid 10192/5579 AA=USAGE_MEDIA/CONTENT_TYPE_UNKNOWN clientId=android.media.AudioManager@269c339org.chromium.content.browser.AudioFocusDelegate@799ad7e callingPack=com.nexiuska.marblerush req=1 flags=0x0 sdk=36
+10-24 15:29:52.701  5579  5579 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:52.702  5579  5579 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 92956271, pluginId: StatusBar, methodName: hide
+10-24 15:29:52.702  5579  5579 V Capacitor: callback: 92956271, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:29:52.712  5579  5579 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:52.712  5579  5579 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:52.976  5579  5579 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:53.983  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, true)
+10-24 15:29:53.993   522  1883 I ActivityManager: Force stopping com.nexiuska.marblerush appid=10192 user=0: from pid 6877
+10-24 15:29:53.994   522  1883 I ActivityManager: Killing 5579:com.nexiuska.marblerush/u0a192 (adj 0): stop com.nexiuska.marblerush due to from pid 6877
+10-24 15:29:53.999   522  1883 I ActivityManager: Killing 5631:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a192i1 (adj 0): isolated not needed
+10-24 15:29:54.000   522  1883 W ActivityTaskManager: Force removing ActivityRecord{3ac212e u0 com.nexiuska.marblerush/.MainActivity t9 f}}: app died, no saved state
+10-24 15:29:54.050   522  2206 V ActivityManager: Got obituary of 5579:com.nexiuska.marblerush
+10-24 15:29:54.050   522   892 I WindowManager: WIN DEATH: Window{9768ea5 u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:29:54.051   522   892 W InputManager-JNI: Input channel object '9768ea5 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity (client)' was disposed without first being removed with the input manager!
+10-24 15:29:54.051   522  1896 I ImeTracker: com.nexiuska.marblerush:fd93e3bd: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_REMOVE_CLIENT
+10-24 15:29:54.051   522  1896 I ImeTracker: com.nexiuska.marblerush:fd93e3bd: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:29:54.067  1048  1048 D CarrierSvcBindHelper: onHandleForceStop: [com.nexiuska.marblerush]
+10-24 15:29:54.107   522  2220 I ActivityTaskManager: Add Task{72f042 #9 type=standard A=10192:com.nexiuska.marblerush} to hidden list because adding Task{fa4521b #10 type=standard A=10192:com.nexiuska.marblerush}
+10-24 15:29:54.108   522  2220 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+10-24 15:29:54.149   522   554 I ActivityManager: Start proc 6888:com.nexiuska.marblerush/u0a192 for next-top-activity {com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:29:54.217   522  2206 D CoreBackPreview: Window{babf4f7 u0 Splash Screen com.nexiuska.marblerush}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@d9840ce, mPriority=0, mIsAnimationCallback=false}
+10-24 15:29:54.474  6888  6888 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:29:54.474  6888  6888 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:29:54.573  6888  6888 D nativeloader: Configuring clns-6 for other apk /data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.nexiuska.marblerush
+10-24 15:29:54.586  6888  6888 V GraphicsEnvironment: ANGLE GameManagerService for com.nexiuska.marblerush: false
+10-24 15:29:54.586  6888  6888 V GraphicsEnvironment: com.nexiuska.marblerush is not listed in per-application setting
+10-24 15:29:54.632   522   541 V WindowManager:     info={id=7 t=CHANGE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{406d43e Task{fa4521b #10 type=standard A=10192:com.nexiuska.marblerush}}} m=OPEN f=MOVE_TO_TOP leash=Surface(name=Task=10)/@0x1ab97c0 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{3edc2be Task{72f042 #9 type=standard A=10192:com.nexiuska.marblerush}}} m=CLOSE f=NONE leash=Surface(name=Task=9)/@0x33c4240 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{a85ff1f Display{#0 state=ON size=320x640 ROTATION_0}}} m=CHANGE f=IS_DISPLAY leash=Surface(name=WindowedMagnification:0:31)/@0xb3533ff sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0}]}
+10-24 15:29:54.952  6888  6888 I WebViewFactory: Loading com.google.android.webview version 113.0.5672.136 (code 567263637)
+10-24 15:29:54.968  6888  6888 D nativeloader: Configuring clns-7 for other apk /data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:29:54.972  6888  6888 D nativeloader: Configuring clns-8 for other apk /data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/lib/x86_64:/data/app/~~Kcxe_wwStLMWS16W4fKFrg==/com.google.android.webview-k10-vgFiqlR5vItPUlo9Pg==/WebViewGoogle.apk!/lib/x86_64:/data/app/~~wTbmDJ0Zsyj4uhpWdcyk2A==/com.google.android.trichromelibrary_567263637-2YVwhedLce7mIq8w6jxTFg==/TrichromeLibrary.apk!/lib/x86_64, permitted_path=/data:/mnt/expand
+10-24 15:29:54.973   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f58bec5 com.android.cts.priv.ctsshim/10181} BLOCKED
+10-24 15:29:54.973   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4b7c9 com.google.android.youtube/10139} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{447701a com.android.internal.display.cutout.emulation.corner/10025} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4aed74b com.android.internal.display.cutout.emulation.double/10048} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{930a0da com.google.android.googlequicksearchbox/10131} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8b8241 com.google.android.onetimeinitializer/10126} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c5c73e6 com.google.android.ext.shared/10101} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8919d27 com.android.internal.systemui.navbar.gestural_wide_back/10007} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{70bfbd4 com.android.virtualmachine.res/10176} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{cd017d com.google.android.federatedcompute/10190} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{16be872 com.android.managedprovisioning.auto_generated_rro_product__/10024} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{5f0e4c3 com.android.carrierconfig.auto_generated_rro_vendor__/10078} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f170140 com.android.systemui.emulation.pixel_3_xl/10034} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{6ad3879 com.android.systemui.emulation.pixel_4_xl/10059} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{58c19be com.android.systemui.emulation.pixel_fold/10009} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3730a1f com.android.simappdialog.auto_generated_rro_product__/10030} BLOCKED
+10-24 15:29:54.974   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{80af16c com.android.htmlviewer/10115} BLOCKED
+10-24 15:29:54.977   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7bfe335 com.google.android.health.connect.backuprestore/10179} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3ec13ca com.android.systemui.auto_generated_rro_product__/10031} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{50b00fa com.google.android.apps.messaging/10130} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d6bb858 com.google.android.soundpicker/10136} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{5187db1 com.google.android.marvin.talkbackoverlay/10077} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{99fa296 com.google.android.configupdater/10129} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{2861e17 com.android.internal.emulation.pixel_3a_xl/10044} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d100204 com.android.internal.emulation.pixel_6_pro/10018} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{38643ed com.android.internal.emulation.pixel_7_pro/10004} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f2b5222 com.android.internal.emulation.pixel_8_pro/10058} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c484b3 com.android.internal.emulation.pixel_3a/10053} BLOCKED
+10-24 15:29:54.978   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{98d3a70 com.android.internal.emulation.pixel_4a/10011} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{b9031e9 com.android.internal.emulation.pixel_6a/10023} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{ed06e6e com.android.internal.emulation.pixel_7a/10033} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{778b90f com.google.android.overlay.googlewebview/10049} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7638d9c com.google.android.hotspot2.osulogin/10185} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d3103a5 com.android.simappdialog/10112} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{399037a com.android.internal.display.cutout.emulation.hole/10073} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{191d72b com.android.internal.display.cutout.emulation.tall/10065} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{e9e788 com.android.internal.systemui.navbar.threebutton/10068} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{1fe265b com.android.camera2/10144} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d23dd46 com.android.systemui.auto_generated_rro_vendor__/10076} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{fd4bb07 com.google.android.deskclock/10152} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{cf9f434 com.android.internal.systemui.navbar.twobutton/10020} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{433169d com.google.android.as/10125} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c810075 com.google.android.gm/10142} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{43087d2 com.android.internal.systemui.navbar.gestural_extra_wide_back/10045} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7800a3 com.android.systemui.emulation.pixel_3/10015} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{45c1fa0 com.android.systemui.emulation.pixel_4/10037} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{29c6759 com.android.systemui.emulation.pixel_5/10071} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{beb4f1e com.android.systemui.emulation.pixel_6/10074} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{48003ff com.android.systemui.emulation.pixel_7/10072} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{1f395cc com.android.systemui.emulation.pixel_8/10070} BLOCKED
+10-24 15:29:54.979   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4232015 com.android.nfc.auto_generated_rro_product__/10027} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{bf93f2a com.android.printspooler/10104} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{edae11b com.android.emergency.auto_generated_rro_product__/10041} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{9aa42b8 com.google.android.connectivity.resources.goldfish.overlay/10079} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{22a891 com.android.dreams.basic/10103} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f4423f6 com.google.android.networkstack.tethering.emulator/10022} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{93c73f7 com.android.providers.settings.auto_generated_rro_product__/10002} BLOCKED
+10-24 15:29:54.980   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{21cd264 com.google.android.as.oss/10122} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{bb83ccd com.android.traceur.auto_generated_rro_product__/10005} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3c28fd1 com.google.android.devicelockcontroller/10173} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{2bb700a com.google.android.dialer/10128} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{aba5893 com.android.internal.emulation.pixel_3/10046} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d06b0d0 com.android.internal.emulation.pixel_4/10060} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{698d8c9 com.android.internal.emulation.pixel_5/10012} BLOCKED
+10-24 15:29:54.984   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{597bbce com.android.internal.emulation.pixel_6/10038} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c27eaef com.android.internal.emulation.pixel_7/10067} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{a6e09fc com.android.internal.emulation.pixel_8/10039} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{ccd3885 com.google.android.captiveportallogin/10113} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{677c6da com.android.musicfx/10088} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{632470b com.google.android.apps.docs/10154} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f426b85 com.google.android.apps.maps/10156} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{28fc9e8 com.google.android.modulemetadata/10147} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{82dd801 com.google.android.markup/10135} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{51b76a6 com.android.providers.settings.auto_generated_rro_vendor__/10080} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{e4f1a36 com.google.android.rkpdapp/10186} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4202c4d com.google.android.contacts/10153} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{28b9c94 com.android.server.telecom.auto_generated_rro_product__/10032} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d9ef33d com.google.android.overlay.googleconfig/10055} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8f85732 com.android.chrome/10150} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{efa8c83 com.android.bips.auto_generated_rro_product__/10035} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7cfee00 com.google.android.apps.customization.pixel/10143} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{20c8639 com.google.android.tag/10082} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{950b47e com.google.android.overlay.permissioncontroller/10003} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8563a90 com.google.android.partnersetup/10124} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{5cf6ddf com.google.android.apps.wallpaper.nexus/10141} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{645ea2c com.google.android.apps.nexuslauncher/10169} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3264cf5 com.google.android.nearby.halfsheet/10171} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d3f9a8a com.android.theme.font.notoserifsource/10066} BLOCKED
+10-24 15:29:54.985   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{5e708fb com.google.android.safetycenter.resources/10187} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{53d7d18 com.android.internal.display.cutout.emulation.waterfall/10040} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{fdbc371 com.android.internal.systemui.navbar.transparent/10029} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{84d556 com.google.android.connectivity.resources/10170} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{81339d7 com.android.providers.contacts.auto_generated_rro_product__/10019} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f1952c4 com.google.android.feedback/10162} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c9825ad com.google.android.printservice.recommendation/10110} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{910f0e2 com.google.android.apps.photos/10140} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d597f69 com.google.android.calendar/10148} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{39e2f00 com.google.android.documentsui/10098} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{fbad730 com.android.systemui.emulation.pixel_3a_xl/10021} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f3e6fa9 com.android.systemui.emulation.pixel_6_pro/10063} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{951392e com.android.systemui.emulation.pixel_7_pro/10054} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{e958ccf com.android.systemui.emulation.pixel_8_pro/10001} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{dae365c com.google.mainline.telemetry/10151} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{ee55d65 com.android.carrierconfig.auto_generated_rro_product__/10064} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{b3bba3a com.android.providers.partnerbookmarks/10100} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{e0826eb com.android.wallpaper.livepicker/10090} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{a165c48 com.android.providers.telephony.auto_generated_rro_product__/10062} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3536ae1 com.android.phone.auto_generated_rro_vendor__/10081} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{1b4006 com.google.mainline.adservices/10137} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3c046c7 com.android.imsserviceentitlement/10117} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{358f4f4 com.google.android.healthconnect.controller/10178} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3ad41d com.android.internal.emulation.pixel_2_xl/10016} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{11b5692 com.android.internal.emulation.pixel_3_xl/10056} BLOCKED
+10-24 15:29:54.986   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3f08863 com.android.internal.emulation.pixel_4_xl/10047} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{68a6c60 com.android.internal.emulation.pixel_fold/10006} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8359519 com.android.bookmarkprovider/10114} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c9449de com.google.android.overlay.pixelconfigcommon/10014} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{95947bf com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__/10050} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{b99ee8c com.android.systemui.emulation.pixel_3a/10013} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{38169d5 com.android.systemui.emulation.pixel_4a/10000} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c1725ea com.android.systemui.emulation.pixel_6a/10042} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{64a0db com.android.systemui.emulation.pixel_7a/10017} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f7320c2 com.google.android.settings.intelligence/10118} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7baf9bf com.google.android.projection.gearhead/10123} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{67bce51 com.google.android.uwb.resources/10180} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{416e649 com.android.cts.ctsshim/10182} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{f39b6b6 com.google.android.wifi.resources/10183} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{8026fb7 com.google.android.wifi.dialog/10184} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{59d8324 com.google.android.apps.wallpaper/10161} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{3ddfe8d com.google.android.odad/10121} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{7228842 com.android.settings.auto_generated_rro_product__/10028} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4445053 com.android.internal.systemui.navbar.gestural/10051} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{e770e98 com.google.android.apps.youtube.music/10155} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{4c1ad90 com.android.bluetoothmidiservice/10106} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{6b8f689 com.android.storagemanager.auto_generated_rro_product__/10026} BLOCKED
+10-24 15:29:54.987   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{d94bb8e com.google.android.cellbroadcastreceiver/10189} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{ed4e68e com.android.phone.auto_generated_rro_product__/10061} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{eb99eaf android.auto_generated_rro_product__/10069} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{dbc12bc com.android.internal.systemui.navbar.gestural_narrow_back/10052} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{74d4faf com.google.android.inputmethod.latin/10145} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{317245 android.auto_generated_rro_vendor__/10075} BLOCKED
+10-24 15:29:54.988   522   892 I AppsFilter: interaction: PackageSetting{1b92123 com.nexiuska.marblerush/10192} -> PackageSetting{c3cdd9a com.google.android.apps.restore/10120} BLOCKED
+10-24 15:29:55.072  6888  6931 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed_new"
+10-24 15:29:55.073  6888  6931 I cr_VariationsUtils: Failed reading seed file "/data/user/0/com.nexiuska.marblerush/app_webview/variations_seed"
+10-24 15:29:55.160   522   554 I ActivityManager: Start proc 6935:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i2 for  {com.nexiuska.marblerush/org.chromium.content.app.SandboxedProcessService0:0}
+10-24 15:29:55.181  6888  6952 W chromium: [WARNING:dns_config_service_android.cc(115)] Failed to read DnsConfig.
+10-24 15:29:55.213  6935  6935 I cr_WebViewApkApp: Launched version=113.0.5672.136 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+10-24 15:29:55.236  6888  6937 E chromium: [ERROR:simple_file_enumerator.cc(21)] opendir /data/user/0/com.nexiuska.marblerush/cache/WebView/Default/HTTP Cache/Code Cache/wasm: No such file or directory (2)
+10-24 15:29:55.236  6888  6937 E chromium: [ERROR:simple_index_file.cc(614)] Could not reconstruct index from disk
+10-24 15:29:55.236  6888  6937 E chromium: [ERROR:simple_file_enumerator.cc(21)] opendir /data/user/0/com.nexiuska.marblerush/cache/WebView/Default/HTTP Cache/Code Cache/js: No such file or directory (2)
+10-24 15:29:55.236  6888  6937 E chromium: [ERROR:simple_index_file.cc(614)] Could not reconstruct index from disk
+10-24 15:29:55.268   522  2375 D ActivityManager: sync unfroze 2621 com.google.android.webview:webview_service for 6
+10-24 15:29:55.400  6888  6888 D Capacitor: Starting BridgeActivity
+10-24 15:29:55.444  6888  6888 D Capacitor: Registering plugin instance: CapacitorCookies
+10-24 15:29:55.463  6888  6888 D Capacitor: Registering plugin instance: WebView
+10-24 15:29:55.467  6888  6888 D Capacitor: Registering plugin instance: CapacitorHttp
+10-24 15:29:55.477  6888  6888 D Capacitor: Registering plugin instance: SystemBars
+10-24 15:29:55.487  6888  6888 D Capacitor: Registering plugin instance: App
+10-24 15:29:55.499  6888  6888 D Capacitor: Registering plugin instance: Haptics
+10-24 15:29:55.507  6888  6888 D Capacitor: Registering plugin instance: SplashScreen
+10-24 15:29:55.522  6888  6888 D Capacitor: Registering plugin instance: StatusBar
+10-24 15:29:55.534  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:29:55.535  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:29:55.536  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarOverlayChanged
+10-24 15:29:55.536  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarOverlayChanged
+10-24 15:29:55.609  6888  6888 W Capacitor: Unable to read file at path public/plugins
+10-24 15:29:55.613  6888  6888 D Capacitor: Loading app at https://localhost
+10-24 15:29:55.696  6888  6888 D Capacitor: App started
+10-24 15:29:55.699  6888  6888 D Capacitor/AppPlugin: Firing change: true
+10-24 15:29:55.700  6888  6888 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:29:55.700  6888  6888 D Capacitor/AppPlugin: No listeners found for event appStateChange
+10-24 15:29:55.700  6888  6888 D Capacitor: App resumed
+10-24 15:29:55.721  6888  6938 D Capacitor: Handling local request: https://localhost/
+10-24 15:29:55.784  6888  6938 D Capacitor: Handling local request: https://localhost/style.css
+10-24 15:29:55.824  6888  6940 D Capacitor: Handling local request: https://localhost/js/native.js
+10-24 15:29:55.826  6888  6952 D Capacitor: Handling local request: https://localhost/js/utils.js
+10-24 15:29:55.827  6888  6939 D Capacitor: Handling local request: https://localhost/js/version.js
+10-24 15:29:55.838  6888  6953 D Capacitor: Handling local request: https://localhost/js/quality.js
+10-24 15:29:55.846   522  1894 D CoreBackPreview: Window{d59ab0d u0 com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@a54216c, mPriority=0, mIsAnimationCallback=false}
+10-24 15:29:55.868  6888  6888 E Capacitor/Console: File:  - Line 6 - Msg: Error injecting safe area CSS: TypeError: Cannot read properties of null (reading 'style')
+10-24 15:29:55.968  6888  6937 D Capacitor: Handling local request: https://localhost/js/input.js
+10-24 15:29:55.981  6888  6938 D Capacitor: Handling local request: https://localhost/js/marble.js
+10-24 15:29:55.981  6888  6939 D Capacitor: Handling local request: https://localhost/js/track.js
+10-24 15:29:55.982  6888  6938 D Capacitor: Handling local request: https://localhost/js/fog.js
+10-24 15:29:55.982  6888  6939 D Capacitor: Handling local request: https://localhost/js/pickup.js
+10-24 15:29:55.983  6888  6938 D Capacitor: Handling local request: https://localhost/js/ui.js
+10-24 15:29:55.983  6888  6939 D Capacitor: Handling local request: https://localhost/js/sound.js
+10-24 15:29:55.983  6888  6938 D Capacitor: Handling local request: https://localhost/js/game.js
+10-24 15:29:55.984  6888  6939 D Capacitor: Handling local request: https://localhost/js/main.js
+10-24 15:29:55.985  6888  6940 D Capacitor: Handling local request: https://localhost/js/obstacle.js
+10-24 15:29:56.007  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.009  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119836995, pluginId: App, methodName: addListener
+10-24 15:29:56.009  6888  6888 V Capacitor: callback: 119836995, pluginId: App, methodName: addListener, methodData: {"eventName":"backButton"}
+10-24 15:29:56.010  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.011  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119836996, pluginId: App, methodName: addListener
+10-24 15:29:56.011  6888  6888 V Capacitor: callback: 119836996, pluginId: App, methodName: addListener, methodData: {"eventName":"pause"}
+10-24 15:29:56.011  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.011  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119836997, pluginId: App, methodName: addListener
+10-24 15:29:56.011  6888  6888 V Capacitor: callback: 119836997, pluginId: App, methodName: addListener, methodData: {"eventName":"resume"}
+10-24 15:29:56.012  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.012  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119836998, pluginId: App, methodName: addListener
+10-24 15:29:56.012  6888  6888 V Capacitor: callback: 119836998, pluginId: App, methodName: addListener, methodData: {"eventName":"appStateChange"}
+10-24 15:29:56.012  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.013  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119836999, pluginId: StatusBar, methodName: hide
+10-24 15:29:56.013  6888  6888 V Capacitor: callback: 119836999, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:29:56.017  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:56.017  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:56.056  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:56.076  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:29:56.077  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119837000, pluginId: StatusBar, methodName: show
+10-24 15:29:56.077  6888  6888 V Capacitor: callback: 119837000, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:29:56.094  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:29:56.095  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:29:58.088   522   541 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:29:58.089   522   541 I ActivityTaskManager: Displayed com.nexiuska.marblerush/.MainActivity for user 0: +3s993ms
+10-24 15:29:58.106   522  1894 I ImeTracker: com.nexiuska.marblerush:2bce076e: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-24 15:29:58.106   522  1894 I ImeTracker: com.nexiuska.marblerush:2bce076e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:29:58.199  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, false)
+10-24 15:29:58.210   522  1894 D CoreBackPreview: Window{babf4f7 u0 Splash Screen com.nexiuska.marblerush}: Setting back callback null
+10-24 15:29:58.211   522  1894 W InputManager-JNI: Input channel object 'babf4f7 Splash Screen com.nexiuska.marblerush (client)' was disposed without first being removed with the input manager!
+10-24 15:29:58.321  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:29:58.410  6888  6937 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:30:02.304  6888  6937 D Capacitor: Handling local request: https://localhost/favicon.ico
+10-24 15:30:02.401  6888  7013 D ProfileInstaller: Installing profile for com.nexiuska.marblerush
+10-24 15:30:05.920   522   616 D ActivityManager: freezing 2621 com.google.android.webview:webview_service
+10-24 15:30:06.647   522  2220 W ProcessStats: Tracking association SourceState{cf3df0b com.nexiuska.marblerush/10192 BTop #12920} whose proc state 2 is better than process ProcessState{67c25fa com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (913 skipped)
+10-24 15:30:18.717   522  2167 W ProcessStats: Tracking association SourceState{cf3df0b com.nexiuska.marblerush/10192 BTop #13006} whose proc state 2 is better than process ProcessState{67c25fa com.google.android.gms.persistent/10132 pkg=com.google.android.gms} proc state 4 (162 skipped)
+10-24 15:30:22.982  6888  6937 D Capacitor: Handling local request: https://localhost/sounds/vacation_synth.mp3
+10-24 15:30:23.006   522  2220 I MediaFocusControl: requestAudioFocus() from uid/pid 10192/6888 AA=USAGE_MEDIA/CONTENT_TYPE_UNKNOWN clientId=android.media.AudioManager@76669cdorg.chromium.content.browser.AudioFocusDelegate@c65b282 callingPack=com.nexiuska.marblerush req=1 flags=0x0 sdk=36
+10-24 15:30:28.796  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:30:28.797  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119837001, pluginId: StatusBar, methodName: hide
+10-24 15:30:28.798  6888  6888 V Capacitor: callback: 119837001, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:30:28.812  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:30:28.812  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:30:28.873  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:30:31.220  6888  6888 V Capacitor/AppPlugin: Notifying listeners for event pause
+10-24 15:30:31.221  6888  6888 D Capacitor: App paused
+10-24 15:30:31.333  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:30:32.531   522   541 V WindowManager:     info={id=8 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{868653d Task{aedcc73 #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x1150d91 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{406d43e Task{fa4521b #10 type=standard A=10192:com.nexiuska.marblerush}}} m=TO_BACK f=NONE leash=Surface(name=Task=10)/@0x1ab97c0 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{89abed1 token=android.os.Binder@1b7c9f8})/@0xac718d7 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0}]}
+10-24 15:30:33.685  6888  6888 D Capacitor/AppPlugin: Firing change: false
+10-24 15:30:33.686  6888  6888 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:30:33.691  6888  6888 D Capacitor: App stopped
+10-24 15:30:33.701  6888  6888 D Capacitor: Saving instance state!
+10-24 15:30:33.707  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: {"isActive":false}
+10-24 15:30:33.989  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:30:33.989  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119837002, pluginId: StatusBar, methodName: show
+10-24 15:30:33.989  6888  6888 V Capacitor: callback: 119837002, pluginId: StatusBar, methodName: show, methodData: {}
+10-24 15:30:33.992  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:30:33.992  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:30:33.998  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:30:35.243   522  2211 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=2
+10-24 15:30:35.244   836   889 V WindowManagerShell: Transition requested: android.os.BinderProxy@19672dc TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=10 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity } baseActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} topActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} origActivity=null realActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} numActivities=1 lastActiveTime=243506 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@6361fe5} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{2e18aba com.nexiuska.marblerush.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+10-24 15:30:35.247   836   889 D WindowManagerShell: onActivityRestartAttempt: ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity}
+10-24 15:30:35.250  6888  6888 D Capacitor: App restarted
+10-24 15:30:35.250  6888  6888 D Capacitor: App started
+10-24 15:30:35.252  6888  6888 D Capacitor/AppPlugin: Firing change: true
+10-24 15:30:35.252  6888  6888 V Capacitor/AppPlugin: Notifying listeners for event appStateChange
+10-24 15:30:35.253  6888  6888 V Capacitor/AppPlugin: Notifying listeners for event resume
+10-24 15:30:35.254  6888  6888 D Capacitor: App resumed
+10-24 15:30:35.255  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: {"isActive":true}
+10-24 15:30:35.258   522   538 I MediaFocusControl: requestAudioFocus() from uid/pid 10192/6888 AA=USAGE_MEDIA/CONTENT_TYPE_UNKNOWN clientId=android.media.AudioManager@76669cdorg.chromium.content.browser.AudioFocusDelegate@c65b282 callingPack=com.nexiuska.marblerush req=1 flags=0x0 sdk=36
+10-24 15:30:35.262  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:30:35.272   522   541 V WindowManager: Sent Transition #9 createdAt=10-24 15:30:35.241 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=10 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.nexiuska.marblerush/.MainActivity } baseActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} topActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} origActivity=null realActivity=ComponentInfo{com.nexiuska.marblerush/com.nexiuska.marblerush.MainActivity} numActivities=1 lastActiveTime=243506 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{406d43e Task{fa4521b #10 type=standard A=10192:com.nexiuska.marblerush}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{5ce5551 com.nexiuska.marblerush.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+10-24 15:30:35.272   522   541 V WindowManager:     info={id=9 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{406d43e Task{fa4521b #10 type=standard A=10192:com.nexiuska.marblerush}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=10)/@0x1ab97c0 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0},{WCT{RemoteToken{868653d Task{aedcc73 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x1150d91 sb=Rect(0, 0 - 320, 640) eb=Rect(0, 0 - 320, 640) d=0}]}
+10-24 15:30:35.314   522   541 W ziparchive: Unable to open '/data/app/~~3MZrFjtoR289gmXMGUZXGQ==/com.nexiuska.marblerush-oNnD8lIKrPr86e8e0sMXBA==/base.dm': No such file or directory
+10-24 15:30:35.340  6888  6888 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+10-24 15:30:35.346  6888  6888 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 119837003, pluginId: StatusBar, methodName: hide
+10-24 15:30:35.346  6888  6888 V Capacitor: callback: 119837003, pluginId: StatusBar, methodName: hide, methodData: {}
+10-24 15:30:35.396  6888  6888 V Capacitor/StatusBarPlugin: Notifying listeners for event statusBarVisibilityChanged
+10-24 15:30:35.396  6888  6888 D Capacitor/StatusBarPlugin: No listeners found for event statusBarVisibilityChanged
+10-24 15:30:35.397  6888  6888 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+10-24 15:30:35.399   522  2167 I ImeTracker: com.nexiuska.marblerush:648cb93b: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-24 15:30:35.399   522  2167 I ImeTracker: com.nexiuska.marblerush:648cb93b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-24 15:30:35.401  1556  1556 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x12000000 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.nexiuska.marblerush fieldId=0 fieldName=null extras=null}, false)

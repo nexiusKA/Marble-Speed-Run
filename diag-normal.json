@@ -1,0 +1,43 @@
+[
+  {
+    "label": "menu",
+    "state": "menu",
+    "inner": [
+      0,
+      0
+    ],
+    "client": [
+      0,
+      0
+    ],
+    "scroll": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visualViewport": [
+      0,
+      0,
+      0.25,
+      0,
+      0
+    ],
+    "fullscreen": false,
+    "containerTransform": "",
+    "containerRect": [
+      -240,
+      -480,
+      480,
+      960
+    ],
+    "canvas": [
+      480,
+      868
+    ],
+    "dpr": 1
+  },
+  {
+    "error": "page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#endless-btn')\n    - locator resolved to <button id=\"endless-btn\" class=\"btn btn-endless\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    16 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n    - waiting for element to be visible, enabled and stable\n\n    at /home/runner/work/Marble-Speed-Run/Marble-Speed-Run/scripts/android-diag.js:60:14"
+  }
+]

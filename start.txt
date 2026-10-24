@@ -1,0 +1,6 @@
+Starting: Intent { cmp=com.nexiuska.marblerush/.MainActivity }
+Status: timeout
+LaunchState: UNKNOWN (-1)
+Activity: com.nexiuska.marblerush/.MainActivity
+WaitTime: 10698
+Complete
