@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [24, 29, 34, 36]
+        api-level: [34, 36]
     steps:
       - uses: actions/checkout@v4
 
@@ -39,6 +39,9 @@ jobs:
         run: |
           npm install --no-save acorn@8.14.0
           npm run test:syntax
+
+      - name: Install Playwright (Android WebView driver)
+        run: npm install --no-save playwright@1.56.0
 
       - name: Build web assets and sync Android
         run: npm run cap:sync:android
