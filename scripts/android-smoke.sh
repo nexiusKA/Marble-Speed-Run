@@ -16,6 +16,15 @@ for t in 10 20 30 40; do
   sleep 10
   adb exec-out screencap -p > "$OUT/screen-${t}s.png"
 done
+# Layout / zoom diagnostics through the WebView DevTools connection
+node scripts/android-diag.js "$OUT" normal || true
+# Same with a large system font size (Settings -> Display -> Font size)
+adb shell settings put system font_scale 1.3
+adb shell am force-stop "$PKG"; adb shell am start -n "$PKG/.MainActivity" > /dev/null 2>&1; sleep 25
+node scripts/android-diag.js "$OUT" font130 || true
+adb shell settings put system font_scale 1.0
+adb shell am force-stop "$PKG"; adb shell am start -n "$PKG/.MainActivity" > /dev/null 2>&1; sleep 25
+
 # Tap the ENDLESS RUN button (position relative to the screen size), then capture
 SIZE=$(adb shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
 W=${SIZE%x*}; H=${SIZE#*x}

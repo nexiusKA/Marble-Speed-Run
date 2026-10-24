@@ -40,6 +40,9 @@ jobs:
           npm install --no-save acorn@8.14.0
           npm run test:syntax
 
+      - name: Install Playwright (Android WebView driver)
+        run: npm install --no-save playwright@1.56.0
+
       - name: Build web assets and sync Android
         run: npm run cap:sync:android
 

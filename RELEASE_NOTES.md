@@ -1,3 +1,10 @@
+# Marble Rush 1.1.1
+
+- Fixes the game being shown zoomed in on some Android phones: the page can no
+  longer scroll or zoom, WebView zoom and system text zoom are locked, the
+  viewport is re-checked when it changes without a resize event
+- The browser fullscreen button is hidden inside the app (it already runs fullscreen)
+
 # Marble Rush 1.1.0
 
 New in 1.1.0:

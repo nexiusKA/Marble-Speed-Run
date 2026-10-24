@@ -21,5 +21,6 @@
   "android": {
     "minWebViewVersion": 90
   },
-  "backgroundColor": "#0d0a2a"
+  "backgroundColor": "#0d0a2a",
+  "zoomEnabled": false
 }

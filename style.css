@@ -4,6 +4,18 @@
   padding: 0;
 }
 
+/* The page must never scroll or zoom: the game container is scaled with a CSS
+   transform, but its layout box stays 486 px wide, which made the page a few
+   pixels wider than narrow phones (scrollable / zoomable in some WebViews). */
+html, body {
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation; /* no double-tap zoom */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background:
     radial-gradient(circle at 18% 28%, rgba(255,80,0,0.14) 0%, transparent 40%),
@@ -1948,3 +1960,7 @@ body {
     inset 0 0 16px rgba(255,0,255,0.3);
   transform: scale(0.93);
 }
+
+/* Inside the Android app the game already runs fullscreen; the browser
+   fullscreen button would only toggle the WebView's fullscreen mode. */
+html.native-app #fullscreen-btn { display: none !important; }
