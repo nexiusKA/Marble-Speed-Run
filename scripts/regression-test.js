@@ -129,6 +129,12 @@ const mainActivity = fs.readFileSync(path.join(ROOT, 'android/app/src/main/java/
 assert(/setSupportZoom\(false\)/.test(mainActivity) && /setTextZoom\(100\)/.test(mainActivity),
   'MainActivity disables WebView zoom and fixes text zoom at 100 %');
 
+const manifest = fs.readFileSync(path.join(ROOT, 'android/app/src/main/AndroidManifest.xml'), 'utf8');
+const gameModeCfgPath = path.join(ROOT, 'android/app/src/main/res/xml/game_mode_config.xml');
+assert(/android\.game_mode_config/.test(manifest) && fs.existsSync(gameModeCfgPath) &&
+  /allowGameDownscaling="false"/.test(fs.readFileSync(gameModeCfgPath, 'utf8')),
+  'Game Mode downscaling disabled (Samsung Game Booster zoomed/cropped the WebView)');
+
 // Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
 if (process.env.RELEASE_CHECK === '1') {
   const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');

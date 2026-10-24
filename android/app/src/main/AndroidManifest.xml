@@ -22,6 +22,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Never let the system downscale the game's resolution (see res/xml/game_mode_config.xml) -->
+        <meta-data
+            android:name="android.game_mode_config"
+            android:resource="@xml/game_mode_config" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
