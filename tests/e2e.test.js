@@ -386,6 +386,33 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('PvP bots do not get stuck on a red door when hazards wait behind the open one', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      g.startRun(); g.state = 'menu';                       // just for a fresh track
+      const y = g.track.startY + 120;
+      const { left, right } = g.track.getWallsAtY(y);
+      const gate = new DoorGate(y, left, right); gate.correctDoor = 2;
+      // Seen in a real run: a rotating bar and a flipper below the open door
+      const obstacles = [gate,
+        new RotatingBar(right - 45, y + 110, 40, 2.5),
+        new Flipper(y + 230, 'right', g.track.getWallsAtY(y + 230).right, 70)];
+      const d = gate.doors[1];
+      const bot = new BotMarble(d.x + d.w / 2, y - 40, 0, g.track.startY, 'insane');
+      for (let i = 0; i < 60 * 4; i++) {
+        for (const o of obstacles) o.update(1 / 60);
+        bot.update(1 / 60, g.track, 1, 1, obstacles);
+        for (const o of obstacles) o.checkCollision(bot.marble);
+      }
+      return { passed: bot.marble.y > y + 20, y: Math.round(bot.marble.y - y) };
+    });
+    assert(r.passed, `bot is still above the door gate after 4 s (${r.y} px from it)`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   // 6. PvP
   await test('PvP race finishes and shows a result', async () => {
     const errors = [];

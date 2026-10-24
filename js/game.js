@@ -556,8 +556,11 @@ class BotMarble {
     const inside = (a, b) => (x > a - r && x < b + r ? 1 : 0);
     if (obs instanceof DoorGate) {
       const d = obs.doors[obs.correctDoor];
-      // Inside the open door with room to spare is safe; anywhere else is a red door
-      return x > d.x + r * 0.6 && x < d.x + d.w - r * 0.6 ? 0 : 1.5;
+      // Inside the open door with room to spare is safe; anywhere else is a red
+      // door. A red door can't be timed or squeezed past like a spinner – it
+      // blocks for good – so it outweighs any hazards waiting behind the open
+      // door (otherwise a bot sat on a red door until the void caught it).
+      return x > d.x + r * 0.6 && x < d.x + d.w - r * 0.6 ? 0 : 6;
     }
     if (obs instanceof RotatingBar || obs instanceof ElectricSpinner) {
       // Spinning arms sweep a whole disc; treat the disc as blocked
