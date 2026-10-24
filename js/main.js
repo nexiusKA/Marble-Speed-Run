@@ -21,6 +21,10 @@
   container.classList.toggle('compact', CANVAS_H < 850);
 
   function updateScale() {
+    // The Android WebView briefly reports a 0×0 window while it is laid out;
+    // keep the previous scale (or stay hidden) until a real size arrives –
+    // the size check below re-runs this as soon as it changes.
+    if (!window.innerWidth || !window.innerHeight) return;
     // body padding holds the safe-area insets (status bar, notch, gesture bar)
     const bodyStyle = getComputedStyle(document.body);
     const padY   = (parseFloat(bodyStyle.paddingTop) || 0) + (parseFloat(bodyStyle.paddingBottom) || 0);

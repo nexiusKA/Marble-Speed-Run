@@ -121,6 +121,14 @@ assert(!chainsCatchOnAddListener(nativeJs),
 assert(capCfg.android && capCfg.android.minWebViewVersion >= 87,
   'android.minWebViewVersion >= 87 (older WebViews crash or break the layout -> update page instead)');
 
+const css = fs.readFileSync(path.join(ROOT, 'style.css'), 'utf8');
+assert(/html,\s*body\s*\{[^}]*overflow:\s*hidden/.test(css) && /touch-action:\s*manipulation/.test(css),
+  'page cannot scroll or double-tap zoom (html/body overflow hidden, touch-action manipulation)');
+assert(capCfg.zoomEnabled === false, 'Capacitor zoomEnabled is false');
+const mainActivity = fs.readFileSync(path.join(ROOT, 'android/app/src/main/java/com/nexiuska/marblerush/MainActivity.java'), 'utf8');
+assert(/setSupportZoom\(false\)/.test(mainActivity) && /setTextZoom\(100\)/.test(mainActivity),
+  'MainActivity disables WebView zoom and fixes text zoom at 100 %');
+
 // Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
 if (process.env.RELEASE_CHECK === '1') {
   const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');
