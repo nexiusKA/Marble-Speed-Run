@@ -39,6 +39,8 @@ sleep 2
 adb exec-out screencap -p > "$OUT/screen-after-resume.png"
 echo "--- after resume" >> "$OUT/audio.txt"
 adb shell dumpsys audio | grep -E "AudioPlaybackConfiguration.*u/pid:${UID_APP}/" >> "$OUT/audio.txt" || true
+# Layout / zoom diagnostics through the WebView DevTools connection
+node scripts/android-diag.js "$OUT" || true
 adb logcat -d > "$OUT/logcat-full.txt"
 grep -iE "Capacitor|chromium|Console|AndroidRuntime|FATAL|WebView|$PKG" "$OUT/logcat-full.txt" > "$OUT/logcat-app.txt" || true
 adb shell pidof "$PKG" > "$OUT/pid.txt" 2>&1 || echo "NOT RUNNING" > "$OUT/pid.txt"
