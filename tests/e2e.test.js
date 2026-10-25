@@ -940,23 +940,20 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
-  await test('joystick feel: smooth follow, gentle near the centre, no on-screen ring', async () => {
+  await test('finger feels like the buttons: past a small threshold it is full strength at once; no ring', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
     await startRunUi(page);
     const p0 = await canvasPoint(page, 0.5, 0.6);
+    const read = () => page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY }));
     await page.mouse.move(p0.x, p0.y); await page.mouse.down();
-    await page.mouse.move(p0.x + 47, p0.y, { steps: 3 });            // ~half of the 85 px travel
-    await page.waitForTimeout(500);
-    const half = await page.evaluate(() => window.__marbleGame.input.steerX);
-    const smooth = await page.evaluate(() => {
-      const inp = window.__marbleGame.input;
-      inp._steerTarget = 1; inp.steerX = 0;
-      inp.update(1 / 60); const first = inp.steerX;
-      for (let i = 0; i < 30; i++) inp.update(1 / 60);
-      return { first, later: inp.steerX };
-    });
-    // nothing joystick-like may be drawn while the finger is down
+    await page.mouse.move(p0.x + 10, p0.y);          const tiny  = await read();   // below threshold
+    await page.mouse.move(p0.x + 20, p0.y);          const side  = await read();   // ▶ pressed
+    await page.mouse.move(p0.x - 20, p0.y);          const left  = await read();   // ◀ pressed
+    await page.mouse.move(p0.x + 20, p0.y + 20);     const diag  = await read();   // steering, no accidental boost
+    await page.mouse.move(p0.x + 20, p0.y + 40);     const boost = await read();   // ▶ + ▼
+    await page.mouse.move(p0.x, p0.y - 40);          const brake = await read();   // ▲
+    // nothing joystick-like may be drawn at the touch point
     const arcs = await page.evaluate(() => {
       const g = window.__marbleGame; const j = g.input.joystick;
       const P = CanvasRenderingContext2D.prototype; const orig = P.arc; let n = 0;
@@ -968,9 +965,11 @@ async function newPage(browser, baseUrl, errors, storage) {
       return n;
     });
     await page.mouse.up();
-    assert(half > 0.15 && half < 0.45, `half travel should steer gently (got ${half.toFixed(2)})`);
-    assert(smooth.first > 0 && smooth.first < 0.35, `no smoothing (first frame ${smooth.first.toFixed(2)})`);
-    assert(smooth.later > 0.97, `smoothing too slow (${smooth.later.toFixed(2)} after 0.5 s)`);
+    assert(tiny.s === 0 && tiny.t === 0, `tiny move already steers (${JSON.stringify(tiny)})`);
+    assert(side.s === 1 && left.s === -1, `not full strength immediately (${side.s}, ${left.s})`);
+    assert(diag.s === 1 && diag.t === 0, `diagonal steering boosted by accident (${JSON.stringify(diag)})`);
+    assert(boost.s === 1 && boost.t === 1, `steer + boost failed (${JSON.stringify(boost)})`);
+    assert(brake.s === 0 && brake.t === -1, `brake failed (${JSON.stringify(brake)})`);
     assert(arcs === 0, `a joystick ring is still drawn (${arcs} arcs at the touch point)`);
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
