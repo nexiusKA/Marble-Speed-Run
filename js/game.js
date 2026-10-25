@@ -1066,9 +1066,10 @@ class Game {
   }
 
   // ── PVP mode ───────────────────────────────────────────────────────────────
-  startPvpRun() {
+  // seed: optional level seed (tests use it to race bots on identical tracks)
+  startPvpRun(seed) {
     this.pvpMode = true;
-    this._init();
+    this._init(seed);
     this._ghostReplay = null;
     this._ghostRecorder = null;
 

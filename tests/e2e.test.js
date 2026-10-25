@@ -351,9 +351,12 @@ async function newPage(browser, baseUrl, errors, storage) {
     const page = await newPage(browser, baseUrl, errors);
     const r = await page.evaluate(() => {
       const g = window.__marbleGame;
-      const race = (diff, playerSpeedPickup) => {
+      // Deterministic: same tracks for every difficulty and seeded bot randomness,
+      // so the comparison measures driving skill, not track luck.
+      const race = (diff, seed, playerSpeedPickup) => {
+        const origRandom = Math.random; Math.random = makeRng(seed * 7919);
         g._pvpDifficulty = diff; g._pvpEnemyCount = 10; g._pvpGoalDistance = 10000;
-        g.startPvpRun(); g.state = 'running';
+        g.startPvpRun(seed); g.state = 'running';
         let frames = 0, crashes = 0;
         for (; frames < 60 * 120 && g.state === 'running'; frames++) {
           // Park the player at the start so a bot always wins
@@ -364,11 +367,13 @@ async function newPage(browser, baseUrl, errors, storage) {
           // A crash = losing > 100 of the downward speed in one frame from at most top speed
           g.pvpBots.forEach((b, i) => { if (vy[i] <= MAX_SPEED_Y + 5 && vy[i] - b.marble.vy > 100) crashes++; });
         }
+        Math.random = origRandom;
         return { secs: frames / 60, crashesPerBotMin: crashes / 10 / (frames / 3600) };
       };
       const avg = (rs, k) => rs.reduce((s, x) => s + x[k], 0) / rs.length;
-      const easy   = [race('easy'), race('easy'), race('easy')];
-      const insane = [race('insane'), race('insane'), race('insane', true)];
+      const seeds  = [101, 202, 303];
+      const easy   = seeds.map((sd) => race('easy', sd));
+      const insane = seeds.map((sd, i) => race('insane', sd, i === 2));
       return {
         easySecs: avg(easy, 'secs'), insaneSecs: avg(insane, 'secs'),
         easyCrash: avg(easy, 'crashesPerBotMin'), insaneCrash: avg(insane, 'crashesPerBotMin'),
