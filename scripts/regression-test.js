@@ -135,6 +135,17 @@ assert(/android\.game_mode_config/.test(manifest) && fs.existsSync(gameModeCfgPa
   /allowGameDownscaling="false"/.test(fs.readFileSync(gameModeCfgPath, 'utf8')),
   'Game Mode downscaling disabled (Samsung Game Booster zoomed/cropped the WebView)');
 
+// Music: every playlist entry is a real track, and every file in sounds/ is on the playlist
+const soundSrc = fs.readFileSync(path.join(ROOT, 'js/sound.js'), 'utf8');
+const playlist = (soundSrc.match(/const MUSIC_TRACKS = \[([\s\S]*?)\];/) || [, ''])[1]
+  .match(/'sounds\/[^']+'/g).map((t) => t.slice(1, -1));
+const soundFiles = fs.readdirSync(path.join(ROOT, 'sounds')).filter((f) => !f.startsWith('.'));
+assert(playlist.length >= 2, `music playlist has several tracks (${playlist.length})`);
+assert(playlist.every((t) => fs.existsSync(path.join(ROOT, t)) && fs.statSync(path.join(ROOT, t)).size > 500 * 1024),
+  'every playlist track exists and is a real song (> 500 KB, no placeholder stub)');
+assert(soundFiles.every((f) => playlist.includes('sounds/' + f)),
+  'no unused files in sounds/ (they would bloat the app)');
+
 // Release gate: only enforced with RELEASE_CHECK=1 (tag builds in CI)
 if (process.env.RELEASE_CHECK === '1') {
   const policy = fs.readFileSync(path.join(ROOT, 'privacy-policy.html'), 'utf8');

@@ -8,10 +8,14 @@
 // All music tracks live in the sounds/ folder.  A random track is chosen at
 // the start of each run; when a track ends the next random track begins.
 
-// Only vacation_synth.mp3 is a real track; the others are placeholder stubs.
-// Replace the stub files with real audio to expand the playlist.
+// Every file in sounds/ must be listed here (regression-test.js checks both ways).
 const MUSIC_TRACKS = [
   'sounds/vacation_synth.mp3',
+  'sounds/adventure.mp3',
+  'sounds/flower_hunt.mp3',
+  'sounds/ride_the_wave.mp3',
+  'sounds/nightfall.mp3',
+  'sounds/sunrise.mp3',
 ];
 
 class SoundManager {
