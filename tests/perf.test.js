@@ -55,8 +55,15 @@ async function test(name, fn) {
 // Levels, pickups and the simulated steering all use Math.random(), so the
 // per-frame counts used to drift between runs (a few % over budget on CI now
 // and then). A seeded PRNG makes every run measure the same scenes.
+// The level seed also mixes in Date.now() (utils.js randomSeed), so the clock
+// is frozen too – otherwise each run measured a different track.
 function seedRandom() {
+  const frozenNow = 1700000000000;
+  Date.now = () => frozenNow;
   let s = 0x2f6b1a3d;
+  // measureScene reseeds before each scene: the game's own rAF loop keeps
+  // drawing random numbers between scenes, a variable number of times.
+  window.__reseed = () => { s = 0x2f6b1a3d; };
   Math.random = () => {
     s = (s + 0x6D2B79F5) | 0;
     let t = Math.imul(s ^ (s >>> 15), 1 | s);
@@ -100,6 +107,7 @@ async function measureScene(page, setup, glowScale) {
       }
     }
     g.quality.glowScale = glowScale;
+    window.__reseed();
     (new Function('g', setup))(g);
     for (let i = 0; i < 240; i++) { g.shieldTimer = 2; g.update(1 / 60); if (g.state === 'shop') g.closeShop(); }
 
@@ -124,7 +132,7 @@ async function measureScene(page, setup, glowScale) {
 }
 
 const SCENES = {
-  menu:    "g.state = 'menu';",
+  menu:    "g._init(); g.state = 'menu';",
   endless: 'g.startRun();',
   rush:    "g.startRun(); for (let i = 0; i < 300; i++) g.update(1/60); g.nextPowerRushDist = g.distance + 5;" +
            "for (let i = 0; i < 300 && !g.powerRushActive; i++) { g.shieldTimer = 5; g.update(1/60); }" +
