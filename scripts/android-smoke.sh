@@ -28,9 +28,9 @@ adb shell am force-stop "$PKG"; adb shell am start -n "$PKG/.MainActivity" > /de
 # Tap the ENDLESS RUN button (position relative to the screen size), then capture
 SIZE=$(adb shell wm size | grep -o '[0-9]*x[0-9]*' | tail -1)
 W=${SIZE%x*}; H=${SIZE#*x}
-adb shell input tap $((W / 2)) $((H * 60 / 100)) || true   # ENDLESS RUN -> difficulty panel
+adb shell input tap $((W / 2)) $((H * 64 / 100)) || true   # ENDLESS RUN -> difficulty panel
 sleep 3
-adb shell input tap $((W / 2)) $((H * 57 / 100)) || true   # PLAY
+adb shell input tap $((W / 2)) $((H * 60 / 100)) || true   # PLAY
 sleep 8                                                     # 3-2-1 countdown, then running
 adb exec-out screencap -p > "$OUT/screen-after-tap.png"
 

@@ -26,7 +26,7 @@ class UI {
     this._hide(this.gameOverOvl);
 
     // ── Panel navigation ────────────────────────────────────
-    const PANELS = ['menu-panel-main', 'menu-panel-endless', 'menu-panel-pvp'];
+    const PANELS = ['menu-panel-main', 'menu-panel-endless', 'menu-panel-pvp', 'menu-panel-options'];
     const showPanel = (id) => {
       PANELS.forEach(p => {
         const el = document.getElementById(p);
@@ -46,6 +46,10 @@ class UI {
     if (pvpNavBtn)      pvpNavBtn.onclick      = () => showPanel('menu-panel-pvp');
     if (backEndlessBtn) backEndlessBtn.onclick = () => showPanel('menu-panel-main');
     if (backPvpBtn)     backPvpBtn.onclick     = () => showPanel('menu-panel-main');
+    const optionsBtn     = document.getElementById('options-btn');
+    const backOptionsBtn = document.getElementById('back-options-btn');
+    if (optionsBtn)     optionsBtn.onclick     = () => showPanel('menu-panel-options');
+    if (backOptionsBtn) backOptionsBtn.onclick = () => showPanel('menu-panel-main');
 
     // ── Difficulty presets (void speed %, from data-void-rate) ──
     // The game highlights the matching preset whenever the void speed changes.
