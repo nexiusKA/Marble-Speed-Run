@@ -822,6 +822,24 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('game over without coins does not show the previous run\'s coin total', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 7; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      g.ui.hideGameOver();
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 0; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      const el = document.getElementById('go-coin-breakdown');
+      return { display: getComputedStyle(el).display };
+    });
+    assert(r.display === 'none', `coin breakdown still visible (display: ${r.display})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('menu says "Versus" instead of PvP', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors);

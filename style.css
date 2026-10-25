@@ -2041,3 +2041,7 @@ html.native-app #fullscreen-btn { display: none !important; }
 /* The coin breakdown must disappear for runs without coins – otherwise the
    previous run's coins and total stayed on screen. */
 .coin-breakdown.hidden { display: none; }
+
+/* The coin breakdown must disappear for runs without coins – otherwise the
+   previous run's coins and total stayed on screen. */
+.coin-breakdown.hidden { display: none; }
