@@ -7,9 +7,16 @@
 // generated from the ghost's seed – same track, obstacles and coins – and the
 // ghost marble replays the recorded positions.
 //
-// Storage: localStorage 'mrGhost' (JSON, ~10 KB per minute of run time).
+// Six ghosts: the best run (automatic) plus five slots the player fills from
+// the game-over screen. Racing a slot ghost and beating it updates that slot.
+//
+// Storage: localStorage 'mrGhost' (best) and 'mrGhostSlot1…5' (JSON, ~8 KB per
+// minute of run time each).
 
-const GHOST_STORAGE_KEY  = 'mrGhost';
+const GHOST_STORAGE_KEY  = 'mrGhost';        // 🏆 best run (automatic)
+const GHOST_SLOT_PREFIX  = 'mrGhostSlot';    // mrGhostSlot1 … mrGhostSlot5 (saved by the player)
+const GHOST_SELECT_KEY   = 'mrGhostSel';     // 'best' or '1' … '5'
+const GHOST_SLOT_COUNT   = 5;
 const GHOST_MODE_KEY     = 'mrGhostMode';
 const GHOST_SAMPLE_MS    = 50;                  // 20 samples per second
 const GHOST_MAX_SAMPLES  = 20 * 60 * 30;        // 30 minutes of run time
@@ -65,6 +72,8 @@ class GhostRecorder {
 
 class GhostReplay {
   constructor(data) {
+    this.data   = data;
+    this.date   = data.date || '';
     this.seed   = data.seed >>> 0;
     this.result = data.result;
     this.step   = data.step || GHOST_SAMPLE_MS;
@@ -107,7 +116,63 @@ class GhostReplay {
   }
 }
 
+function _parseGhost(raw) {
+  try {
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || d.v !== GHOST_VERSION || typeof d.seed !== 'number' || !Array.isArray(d.xs) ||
+        !Array.isArray(d.dy) || d.xs.length !== d.dy.length || d.xs.length < 2 ||
+        !Number.isFinite(d.result)) {
+      return null;
+    }
+    return new GhostReplay(d);
+  } catch (_) {
+    return null;
+  }
+}
+
+function _slotKey(slot) { return GHOST_SLOT_PREFIX + slot; }
+
 const GhostStore = {
+  // ── slots: 'best' or 1 … 5 ────────────────────────────────────────────────
+  loadSlot(slot) {
+    try { return _parseGhost(localStorage.getItem(slot === 'best' ? GHOST_STORAGE_KEY : _slotKey(slot))); }
+    catch (_) { return null; }
+  },
+
+  saveSlot(slot, data) {
+    try {
+      localStorage.setItem(slot === 'best' ? GHOST_STORAGE_KEY : _slotKey(slot), JSON.stringify(data));
+      return true;
+    } catch (_) {
+      return false; // storage full / unavailable – keep playing without saving
+    }
+  },
+
+  clearSlot(slot) {
+    try { localStorage.removeItem(slot === 'best' ? GHOST_STORAGE_KEY : _slotKey(slot)); } catch (_) { /* ignore */ }
+  },
+
+  loadAll() {
+    const slots = [];
+    for (let i = 1; i <= GHOST_SLOT_COUNT; i++) slots.push(this.loadSlot(i));
+    return { best: this.loadSlot('best'), slots };
+  },
+
+  loadSelection() {
+    try {
+      const v = localStorage.getItem(GHOST_SELECT_KEY);
+      if (v === 'best' || v === null) return 'best';
+      const n = parseInt(v, 10);
+      return n >= 1 && n <= GHOST_SLOT_COUNT ? n : 'best';
+    } catch (_) { return 'best'; }
+  },
+
+  saveSelection(sel) {
+    try { localStorage.setItem(GHOST_SELECT_KEY, String(sel)); } catch (_) { /* ignore */ }
+  },
+
+  // ── single best ghost (kept for compatibility) ────────────────────────────
   load() {
     try {
       const raw = localStorage.getItem(GHOST_STORAGE_KEY);

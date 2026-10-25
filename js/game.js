@@ -684,9 +684,12 @@ class Game {
 
     // Ghost of the best endless run (see ghost.js)
     this.ghostMode = GhostStore.loadMode();
-    this.bestGhost = GhostStore.load();
+    this.ghosts    = GhostStore.loadAll();       // { best, slots: [5] }
+    this.ghostSel  = GhostStore.loadSelection(); // 'best' or 1 … 5
     this._ghostRecorder = null;
     this._ghostReplay   = null;
+    this._ghostSource   = null;                  // which ghost is being raced
+    this._lastRun       = null;                  // recording of the last finished run
 
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
@@ -986,9 +989,11 @@ class Game {
   startRun() {
     this.pvpMode = false;
     // Ghost Mode: race your best run on its own track. Otherwise a new random level.
-    const ghost = (this.ghostMode && this.bestGhost) ? this.bestGhost : null;
+    const sel   = this.ghostMode ? this._effectiveGhostSel() : null;
+    const ghost = sel ? this._ghostFor(sel) : null;
     this._init(ghost ? ghost.seed : undefined);
     this._ghostReplay   = ghost;
+    this._ghostSource   = ghost ? sel : null;
     this._ghostRecorder = new GhostRecorder(this.levelSeed);
     this._ghostSavedThisRun = false;
     this.state = STATE.COUNTDOWN;
@@ -2030,47 +2035,208 @@ class Game {
       console.log(`[DEBUG] Game over | dist=${dist}m | coins=${this.coinsCollected} | bonus=${coinBonus}m | total=${totalDist}m | best=${this.bestDistance}m | newBest=${isNew}`);
     }
     this.ui.updateBestDistance(this.bestDistance);
-    this._saveGhostIfBetter(totalDist);
+    const ghostNews = this._onRunFinishedGhosts(totalDist);
     this.ui.showGameOver(dist, totalDist, this.bestDistance, isNew, this.coinsCollected, coinBonus, () => this.restart());
+    this._renderGameOverGhost(ghostNews);
     if (window.MarbleNative) window.MarbleNative.heavyImpact();
   }
 
   // ── Ghost (best run replay) ───────────────────────────────────────────────
-  _saveGhostIfBetter(result) {
+  get bestGhost() { return this.ghosts ? this.ghosts.best : null; }
+
+  _ghostFor(sel) {
+    if (!this.ghosts) return null;
+    if (sel === 'best') return this.ghosts.best;
+    return this.ghosts.slots[sel - 1] || null;
+  }
+
+  // Selected ghost, or the best run if the selected slot is empty
+  _effectiveGhostSel() {
+    if (this._ghostFor(this.ghostSel)) return this.ghostSel;
+    return this.ghosts && this.ghosts.best ? 'best' : null;
+  }
+
+  _firstFreeGhostSlot() {
+    for (let i = 1; i <= GHOST_SLOT_COUNT; i++) if (!this.ghosts.slots[i - 1]) return i;
+    return null;
+  }
+
+  // Called once per finished endless run. Keeps the recording for "Save as
+  // ghost", updates the best-run ghost and – when racing a saved ghost on its
+  // track – that slot if the run was better. Returns what changed.
+  _onRunFinishedGhosts(result) {
     const rec = this._ghostRecorder;
-    if (this.pvpMode || !rec || this._ghostSavedThisRun || rec.length < 2) return false;
-    if (this.bestGhost && result <= this.bestGhost.result) return false;
-    const data = rec.toData(result, { voidRate: this._voidRateSetting });
-    if (!GhostStore.save(data)) return false;
-    this.bestGhost = new GhostReplay(data);
+    this._lastRun = null;
+    this._lastRunSlot = null;
+    if (this.pvpMode || !rec || this._ghostSavedThisRun || rec.length < 2) return {};
     this._ghostSavedThisRun = true;
-    this._updateGhostInfo();
-    this._showPickupMsg('👻 NEW GHOST SAVED!');
-    return true;
+    const data = rec.toData(result, { voidRate: this._voidRateSetting });
+    this._lastRun = data;
+    const news = {};
+
+    const best = this.ghosts.best;
+    if ((!best || result > best.result) && GhostStore.saveSlot('best', data)) {
+      this.ghosts.best = new GhostReplay(data);
+      news.best = true;
+    }
+    const src = this._ghostSource;
+    if (typeof src === 'number') {
+      const cur = this.ghosts.slots[src - 1];
+      if (cur && cur.seed === data.seed) {
+        this._lastRunSlot = src;                       // this track already lives in slot src
+        if (result > cur.result && GhostStore.saveSlot(src, data)) {
+          this.ghosts.slots[src - 1] = new GhostReplay(data);
+          news.slotImproved = src;
+        }
+      }
+    }
+    this._renderGhostList();
+    return news;
+  }
+
+  saveLastRunAsGhost(slot) {
+    if (!this._lastRun) return false;
+    const n = slot || this._firstFreeGhostSlot();
+    if (!n || !GhostStore.saveSlot(n, this._lastRun)) return false;
+    this.ghosts.slots[n - 1] = new GhostReplay(this._lastRun);
+    this._lastRunSlot = n;
+    this._renderGhostList();
+    return n;
+  }
+
+  deleteGhostSlot(n) {
+    GhostStore.clearSlot(n);
+    this.ghosts.slots[n - 1] = null;
+    if (this.ghostSel === n) this.selectGhost('best');
+    this._renderGhostList();
+  }
+
+  selectGhost(sel) {
+    this.ghostSel = sel;
+    GhostStore.saveSelection(sel);
+    this._renderGhostList();
+  }
+
+  setGhostMode(on) {
+    this.ghostMode = !!on;
+    GhostStore.saveMode(this.ghostMode);
+    const toggle = document.getElementById('ghost-mode-toggle');
+    if (toggle) toggle.checked = this.ghostMode;
+    this._renderGhostList();
+  }
+
+  // Game over → "race this ghost now"
+  raceGhost(sel) {
+    this.setGhostMode(true);
+    this.selectGhost(sel);
+    this.ui.hideGameOver();
+    this.startRun();
   }
 
   _initGhostToggle() {
     const toggle = document.getElementById('ghost-mode-toggle');
     if (!toggle) return;
     toggle.checked = this.ghostMode;
-    toggle.addEventListener('change', () => {
-      this.ghostMode = !!toggle.checked;
-      GhostStore.saveMode(this.ghostMode);
-      this._updateGhostInfo();
-    });
-    this._updateGhostInfo();
+    toggle.addEventListener('change', () => this.setGhostMode(toggle.checked));
+    const list = document.getElementById('ghost-list');
+    if (list) {
+      list.addEventListener('click', (e) => {
+        const del = e.target.closest('[data-del]');
+        if (del) {
+          const n = parseInt(del.dataset.del, 10);
+          if (del.dataset.confirm === '1') this.deleteGhostSlot(n);
+          else { del.dataset.confirm = '1'; del.textContent = 'Delete?'; del.classList.add('confirm'); }
+          e.stopPropagation();
+          return;
+        }
+        const row = e.target.closest('[data-sel]');
+        if (row) this.selectGhost(row.dataset.sel === 'best' ? 'best' : parseInt(row.dataset.sel, 10));
+      });
+    }
+    this._renderGhostList();
   }
 
-  _updateGhostInfo() {
+  _ghostLabel(g) {
+    const d = g.date && /^\d{4}-\d{2}-\d{2}$/.test(g.date) ? `${g.date.slice(8, 10)}.${g.date.slice(5, 7)}.` : '';
+    return `${g.result.toLocaleString('en-US')} m${d ? ' · ' + d : ''}`;
+  }
+
+  _renderGhostList() {
     const info = document.getElementById('ghost-mode-info');
-    if (!info) return;
-    if (!this.bestGhost) {
-      info.textContent = 'No ghost yet – your best run becomes the ghost';
-    } else if (this.ghostMode) {
-      info.textContent = `Race your best run (${this.bestGhost.result} m) on its track`;
-    } else {
-      info.textContent = `Best ghost: ${this.bestGhost.result} m · off = new random track`;
+    const list = document.getElementById('ghost-list');
+    const any = this.ghosts.best || this.ghosts.slots.some(Boolean);
+    const sel = this._effectiveGhostSel();
+    if (info) {
+      if (!any) info.textContent = 'No ghost yet – your best run becomes the ghost';
+      else if (!this.ghostMode) info.textContent = 'Off: every run is a new random track';
+      else info.textContent = 'Race a ghost on its track – pick one below';
     }
+    if (!list) return;
+    list.classList.toggle('hidden', !this.ghostMode || !any);
+    const rows = [];
+    if (this.ghosts.best) {
+      rows.push(`<div class="ghost-row${sel === 'best' ? ' selected' : ''}" data-sel="best" role="button" tabindex="0">` +
+        `<span class="ghost-row-name">🏆 Best run</span><span class="ghost-row-meta">${this._ghostLabel(this.ghosts.best)}</span></div>`);
+    }
+    this.ghosts.slots.forEach((g, i) => {
+      if (!g) return;
+      const n = i + 1;
+      rows.push(`<div class="ghost-row${sel === n ? ' selected' : ''}" data-sel="${n}" role="button" tabindex="0">` +
+        `<span class="ghost-row-name">👻 Ghost #${n}</span><span class="ghost-row-meta">${this._ghostLabel(g)}</span>` +
+        `<button class="ghost-del" data-del="${n}" aria-label="Delete ghost ${n}">✕</button></div>`);
+    });
+    const free = this._firstFreeGhostSlot();
+    rows.push(`<p class="ghost-list-hint">${free ? `${GHOST_SLOT_COUNT - this.ghosts.slots.filter(Boolean).length} free slots – save runs from the game-over screen` : 'All 5 slots used – replace one from the game-over screen'}</p>`);
+    list.innerHTML = rows.join('');
+  }
+
+  // Game-over panel: save this run as a ghost / race it now
+  _renderGameOverGhost(news) {
+    const box  = document.getElementById('go-ghost');
+    const msg  = document.getElementById('go-ghost-msg');
+    const acts = document.getElementById('go-ghost-actions');
+    if (!box || !msg || !acts) return;
+    if (this.pvpMode || !this._lastRun) { box.classList.add('hidden'); return; }
+    box.classList.remove('hidden');
+    const btn = (label, cls, fn) => {
+      const b = document.createElement('button');
+      b.className = 'btn ' + cls; b.textContent = label; b.addEventListener('click', fn);
+      return b;
+    };
+    const lines = [];
+    if (news && news.best) lines.push('👻 Saved as your best-run ghost');
+    if (news && news.slotImproved) lines.push(`👻 Ghost #${news.slotImproved} beaten – updated`);
+    msg.textContent = lines.join(' · ');
+    acts.innerHTML = '';
+
+    if (this._lastRunSlot) {
+      const n = this._lastRunSlot;
+      acts.appendChild(btn(`👻 RACE GHOST #${n}`, 'btn-ghost', () => this.raceGhost(n)));
+      return;
+    }
+    acts.appendChild(btn('👻 SAVE AS GHOST', 'btn-ghost', () => {
+      const free = this._firstFreeGhostSlot();
+      if (free) {
+        const n = this.saveLastRunAsGhost(free);
+        msg.textContent = n ? `👻 Saved as Ghost #${n}` : 'Could not save the ghost';
+        this._renderGameOverGhost({});
+        if (n) msg.textContent = `👻 Saved as Ghost #${n}`;
+        return;
+      }
+      // all slots used → choose one to replace
+      msg.textContent = 'All 5 ghost slots are used – replace which one?';
+      acts.innerHTML = '';
+      const grid = document.createElement('div');
+      grid.className = 'go-ghost-replace';
+      this.ghosts.slots.forEach((g, i) => {
+        grid.appendChild(btn(`#${i + 1} · ${g ? g.result.toLocaleString('en-US') + ' m' : 'empty'}`, 'btn-small', () => {
+          const n = this.saveLastRunAsGhost(i + 1);
+          this._renderGameOverGhost({});
+          if (n) msg.textContent = `👻 Saved as Ghost #${n}`;
+        }));
+      });
+      acts.appendChild(grid);
+    }));
   }
 
   // Ghost marble in world space (called with the camera translation applied)

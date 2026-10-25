@@ -680,6 +680,166 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  // 10. Ghost slots: best run + 5 saved ghosts
+  await test('game over: "Save as ghost" stores the run in a free slot and can race it', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.ghostMode = false;
+      g.startRun(); drive(60 * 10); kill();
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    assert(await page.isVisible('#go-ghost'), 'ghost box not shown on the game-over screen');
+    const seed = await page.evaluate(() => window.__marbleGame.levelSeed);
+    await page.click('#go-ghost-actions .btn-ghost');                       // SAVE AS GHOST
+    const saved = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      return { slot1: g.ghosts.slots[0] && g.ghosts.slots[0].seed, stored: !!localStorage.getItem('mrGhostSlot1'),
+               msg: document.getElementById('go-ghost-msg').textContent,
+               btn: document.querySelector('#go-ghost-actions .btn-ghost').textContent };
+    });
+    assert(saved.slot1 === seed && saved.stored, 'run was not saved into slot 1');
+    assert(/Ghost #1/.test(saved.msg), `unexpected message "${saved.msg}"`);
+    assert(/RACE GHOST #1/.test(saved.btn), `no race button (${saved.btn})`);
+    await page.click('#go-ghost-actions .btn-ghost');                       // RACE GHOST #1
+    const race = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      return { seed: g.levelSeed, source: g._ghostSource, mode: g.ghostMode, sel: localStorage.getItem('mrGhostSel'), state: g.state };
+    });
+    assert(race.seed === seed, 'race did not use the saved track');
+    assert(race.source === 1 && race.mode && race.sel === '1', `wrong ghost selected (${JSON.stringify(race)})`);
+    assert(race.state === 'countdown', `run did not start (${race.state})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('six ghosts: best run + 5 slots; when full you pick one to replace', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.ghostMode = false;
+      const seeds = [];
+      for (let i = 0; i < 6; i++) { g.startRun(); drive(60 * (4 + i)); kill(); seeds.push(g.levelSeed); if (i < 5) g.saveLastRunAsGhost(); }
+      const filled = g.ghosts.slots.map((x) => x && x.seed);
+      // 6th run: all slots used → the game-over button offers a replace grid
+      document.querySelector('#go-ghost-actions .btn-ghost').click();
+      const choices = document.querySelectorAll('.go-ghost-replace button').length;
+      document.querySelectorAll('.go-ghost-replace button')[2].click();     // replace #3
+      return { seeds, filled, choices, slot3: g.ghosts.slots[2].seed, best: !!g.ghosts.best,
+               rows: (() => { g.setGhostMode(true); return document.querySelectorAll('#ghost-list .ghost-row').length; })() };
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    assert(JSON.stringify(r.filled) === JSON.stringify(r.seeds.slice(0, 5)), 'slots not filled in order');
+    assert(r.choices === 5, `expected 5 replace choices, got ${r.choices}`);
+    assert(r.slot3 === r.seeds[5], 'slot 3 was not replaced');
+    assert(r.best, 'best-run ghost missing');
+    assert(r.rows === 6, `menu list should show 6 ghosts, shows ${r.rows}`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('beating a saved ghost on its track updates that slot (best run untouched if lower)', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.ghostMode = false;
+      g.startRun(); drive(60 * 30); kill(); const bestResult = g.ghosts.best.result;   // long run → best
+      g.startRun(); drive(60 * 6); kill(); g.saveLastRunAsGhost(1); const slotBefore = g.ghosts.slots[0].result; const seed = g.ghosts.slots[0].seed;
+      g.raceGhost(1); drive(60 * 12); kill();
+      return { bestResult, bestAfter: g.ghosts.best.result, slotBefore, slotAfter: g.ghosts.slots[0].result, sameTrack: g.ghosts.slots[0].seed === seed,
+               msg: document.getElementById('go-ghost-msg').textContent };
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    assert(r.slotAfter > r.slotBefore, `slot not updated (${r.slotBefore} -> ${r.slotAfter})`);
+    assert(r.sameTrack, 'slot changed its track');
+    assert(r.bestAfter === r.bestResult, 'best-run ghost changed although the run was not a new best');
+    assert(/Ghost #1 beaten/.test(r.msg), `no "beaten" message (${r.msg})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('ghost list: select a ghost, delete with confirm; empty slot falls back to best', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.ghostMode = false;
+      g.startRun(); drive(60 * 8); kill(); g.saveLastRunAsGhost(2);
+      g.ui.hideGameOver(); g.setGhostMode(true);
+      g.ui.showStart(g._onMenuDifficulty, g._onMenuPlay, g._onPvpDifficulty);
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    await page.click('#endless-btn');
+    await page.click('#ghost-list [data-sel="2"]');
+    let st = await page.evaluate(() => ({ sel: window.__marbleGame.ghostSel, stored: localStorage.getItem('mrGhostSel') }));
+    assert(st.sel === 2 && st.stored === '2', `selection not saved (${JSON.stringify(st)})`);
+    await page.click('#ghost-list [data-del="2"]');                  // first tap: confirm
+    let still = await page.evaluate(() => !!window.__marbleGame.ghosts.slots[1]);
+    assert(still, 'deleted without confirmation');
+    await page.click('#ghost-list [data-del="2"]');                  // second tap: delete
+    st = await page.evaluate(() => { const g = window.__marbleGame; g.startRun(); return { slot: !!g.ghosts.slots[1], stored: !!localStorage.getItem('mrGhostSlot2'), sel: g.ghostSel, source: g._ghostSource }; });
+    assert(!st.slot && !st.stored, 'slot not deleted');
+    assert(st.sel === 'best' && st.source === 'best', `did not fall back to best (${JSON.stringify(st)})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('ghost from 1.2.0 (single best ghost) is still there after the update', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const data = await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.startRun(); drive(60 * 6); kill();
+      return localStorage.getItem('mrGhost');
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    await page.context().close();
+    const page2 = await newPage(browser, baseUrl, errors, { mrGhost: data, mrGhostMode: '1' });
+    const r = await page2.evaluate(() => { const g = window.__marbleGame; g.startRun(); return { best: !!g.ghosts.best, source: g._ghostSource }; });
+    assert(r.best && r.source === 'best', 'old ghost not picked up');
+    assert(errors.length === 0, errors.join('\n'));
+    await page2.context().close();
+  });
+
+  await test('game over without coins does not show the previous run\'s coin total', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 7; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      g.ui.hideGameOver();
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 0; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      const el = document.getElementById('go-coin-breakdown');
+      return { display: getComputedStyle(el).display };
+    });
+    assert(r.display === 'none', `coin breakdown still visible (display: ${r.display})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('game over without coins does not show the previous run\'s coin total', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame;
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 7; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      g.ui.hideGameOver();
+      g.startRun(); for (let i = 0; i < 300; i++) g.update(1 / 60);
+      g.coinsCollected = 0; g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+      const el = document.getElementById('go-coin-breakdown');
+      return { display: getComputedStyle(el).display };
+    });
+    assert(r.display === 'none', `coin breakdown still visible (display: ${r.display})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('menu says "Versus" instead of PvP', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors);

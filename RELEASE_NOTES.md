@@ -1,3 +1,13 @@
+# Marble Rush 1.3.0
+
+New in 1.3.0:
+- 👻 Six ghosts: your best run plus 5 slots of your own. Save any run from the
+  game-over screen ("Save as ghost", pick a slot to replace when all are used)
+  and race it right away. Pick the ghost to race in the Endless menu; saved
+  ghosts can be deleted. Beating a saved ghost on its track updates that slot.
+- Fixed: after a run without coins the game-over screen still showed the
+  previous run's coins and total
+
 # Marble Rush 1.2.0
 
 New in 1.2.0:
