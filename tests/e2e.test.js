@@ -901,6 +901,45 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('finger held down for 4 s keeps steering, even when Android cancels the pointer (long-press)', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
+    const cdp = await page.context().newCDPSession(page);
+    const p0 = await canvasPoint(page, 0.5, 0.6);
+    const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x: Math.round(x), y: Math.round(y), id: 1 }] });
+    // record whether our handler blocked the browser's default touch actions
+    await page.evaluate(() => {
+      window.__prevented = [];
+      window.addEventListener('touchstart', (e) => window.__prevented.push(e.defaultPrevented), { passive: true });
+    });
+    await touch('touchStart', p0.x, p0.y);
+    await touch('touchMove', p0.x + 70, p0.y);
+    const samples = [];
+    for (let i = 0; i < 8; i++) {
+      await page.waitForTimeout(500);
+      if (i === 2) {
+        // what Android Chrome does on a long press: cancel the pointer stream
+        await page.evaluate(() => document.getElementById('gameCanvas').dispatchEvent(
+          new PointerEvent('pointercancel', { pointerId: 1, pointerType: 'touch', bubbles: true })));
+      }
+      samples.push(await page.evaluate(() => window.__marbleGame.input.steerX));
+    }
+    const ctx = await page.evaluate(() => {
+      const ev = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+      document.getElementById('gameCanvas').dispatchEvent(ev);
+      return { contextBlocked: ev.defaultPrevented, prevented: window.__prevented };
+    });
+    await touch('touchEnd');
+    const after = await page.evaluate(() => window.__marbleGame.input.steerX);
+    assert(samples.every((v) => v > 0.9), `steering dropped while the finger was held: ${samples.map((v) => v.toFixed(2)).join(', ')}`);
+    assert(after === 0, 'lifting the finger did not stop steering');
+    assert(ctx.prevented.length > 0 && ctx.prevented.every(Boolean), 'touchstart not cancelled – browser long-press can still kick in');
+    assert(ctx.contextBlocked, 'long-press context menu not blocked');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('buttons mode: dragging on the playfield does nothing', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, { mrControls: 'buttons' });

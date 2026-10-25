@@ -110,16 +110,22 @@ class Input {
   // Drag anywhere on the playfield: left/right steers, up brakes, down boosts.
   // The touch point is the joystick centre; JOY_RANGE screen pixels of drag is
   // full deflection, a small dead zone keeps a resting thumb neutral.
+  //
+  // Fingers are read from Touch Events with preventDefault: on Android Chrome a
+  // finger held still for ~1 s turns into a long-press (text selection /
+  // context menu) and the browser cancels the *pointer* events – the joystick
+  // stopped although the finger was still down. Cancelling touchstart/touchmove
+  // suppresses those gestures. Pointer events are only used for the mouse.
   _bindTouchJoystick() {
     const canvas = document.getElementById('gameCanvas');
     if (!canvas) return;
     const JOY_RANGE = 55;    // px on screen for full deflection
     const DEAD      = 0.12;  // fraction of the range ignored around the centre
-    const toCanvas = (e) => {
+    const toCanvas = (clientX, clientY) => {
       const r = canvas.getBoundingClientRect();
       return {
-        x: (e.clientX - r.left) * (canvas.width / (r.width || 1)),
-        y: (e.clientY - r.top) * (canvas.height / (r.height || 1)),
+        x: (clientX - r.left) * (canvas.width / (r.width || 1)),
+        y: (clientY - r.top) * (canvas.height / (r.height || 1)),
         scale: canvas.width / (r.width || 1),
       };
     };
@@ -128,44 +134,79 @@ class Input {
       if (Math.abs(v) < DEAD) return 0;
       return Math.sign(v) * (Math.abs(v) - DEAD) / (1 - DEAD);
     };
+    const active = () => this.controlMode !== 'buttons';
 
-    canvas.addEventListener('pointerdown', (e) => {
-      if (this.controlMode === 'buttons' || this._joyPointer !== null) return;
-      e.preventDefault();
-      try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
-      this._joyPointer = e.pointerId;
-      this._joyStart = { x: e.clientX, y: e.clientY };
-      const p = toCanvas(e);
+    const start = (id, clientX, clientY) => {
+      if (!active() || this._joyPointer !== null) return false;
+      this._joyPointer = id;
+      this._joyStart = { x: clientX, y: clientY };
+      const p = toCanvas(clientX, clientY);
       this.joystick = { ox: p.x, oy: p.y, x: p.x, y: p.y, range: JOY_RANGE * p.scale };
       this.steerX = this.throttleY = 0;
       if (window.MarbleNative) window.MarbleNative.lightImpact();
-    }, { passive: false });
-
-    canvas.addEventListener('pointermove', (e) => {
-      if (e.pointerId !== this._joyPointer || !this._joyStart) return;
-      e.preventDefault();
-      const dx = e.clientX - this._joyStart.x;
-      const dy = e.clientY - this._joyStart.y;
-      this.steerX    = axis(dx);
-      this.throttleY = axis(dy);
-      const p = toCanvas(e);
+      return true;
+    };
+    const move = (id, clientX, clientY) => {
+      if (id !== this._joyPointer || !this._joyStart) return;
+      this.steerX    = axis(clientX - this._joyStart.x);
+      this.throttleY = axis(clientY - this._joyStart.y);
       const j = this.joystick;
       if (j) {
-        // knob position clamped to the ring
+        const p = toCanvas(clientX, clientY);
         const ddx = p.x - j.ox, ddy = p.y - j.oy;
         const len = Math.hypot(ddx, ddy) || 1;
         const k = Math.min(1, j.range / len);
         j.x = j.ox + ddx * k;
         j.y = j.oy + ddy * k;
       }
-    }, { passive: false });
-
-    const end = (e) => {
-      if (e.pointerId !== this._joyPointer) return;
-      this._endJoystick();
     };
-    canvas.addEventListener('pointerup', end);
-    canvas.addEventListener('pointercancel', end);
+    const end = (id) => { if (id === this._joyPointer) this._endJoystick(); };
+
+    // ── Touch (fingers) ──
+    const findTouch = (list, id) => {
+      for (let i = 0; i < list.length; i++) if (list[i].identifier === id) return list[i];
+      return null;
+    };
+    canvas.addEventListener('touchstart', (e) => {
+      if (!active()) return;
+      e.preventDefault();                       // no long-press, selection, scroll or zoom
+      if (this._joyPointer !== null) return;    // a second finger does not take over
+      const t = e.changedTouches[0];
+      if (t) start('t' + t.identifier, t.clientX, t.clientY);
+    }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => {
+      if (!active()) return;
+      e.preventDefault();
+      if (typeof this._joyPointer !== 'string') return;
+      const t = findTouch(e.touches, Number(this._joyPointer.slice(1)));
+      if (t) move(this._joyPointer, t.clientX, t.clientY);
+    }, { passive: false });
+    const touchEnd = (e) => {
+      if (typeof this._joyPointer !== 'string') return;
+      if (findTouch(e.changedTouches, Number(this._joyPointer.slice(1)))) end(this._joyPointer);
+    };
+    canvas.addEventListener('touchend', touchEnd);
+    canvas.addEventListener('touchcancel', touchEnd);
+
+    // ── Mouse / pen (pointer events; touch is handled above) ──
+    canvas.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' || !active()) return;
+      e.preventDefault();
+      if (start('p' + e.pointerId, e.clientX, e.clientY)) {
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+      }
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+      move('p' + e.pointerId, e.clientX, e.clientY);
+    });
+    const pointerEnd = (e) => { if (e.pointerType !== 'touch') end('p' + e.pointerId); };
+    canvas.addEventListener('pointerup', pointerEnd);
+    canvas.addEventListener('pointercancel', pointerEnd);
+
+    // Never open a context menu (long-press) over the game
+    const container = document.getElementById('game-container') || canvas;
+    container.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
   _endJoystick() {
