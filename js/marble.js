@@ -26,18 +26,24 @@ class Marble {
   }
 
   update(dt, input, track, steerMult = 1, gravityMult = 1) {
+    // Input: buttons/keys are on/off (1), the touch joystick is analog
+    // (steerX / throttleY in -1…1). The joystick at full deflection is exactly
+    // as strong as a button, so no control style has an advantage.
+    const steer = clamp((input.right ? 1 : 0) - (input.left ? 1 : 0) + (input.steerX || 0), -1, 1);
+    const boost = Math.max(input.down ? 1 : 0, Math.max(0, input.throttleY || 0));
+    const brake = Math.max(input.up ? 1 : 0, Math.max(0, -(input.throttleY || 0)));
+
     // Steering
-    if (input.left)  this.vx -= STEER_FORCE * steerMult * dt;
-    if (input.right) this.vx += STEER_FORCE * steerMult * dt;
+    if (steer) this.vx += STEER_FORCE * steer * steerMult * dt;
 
     // Gravity
     this.vy += GRAVITY * gravityMult * dt;
 
     // Down boost – extra downward acceleration when held
-    if (input.down) this.vy += GRAVITY * gravityMult * 1.5 * dt;
+    if (boost) this.vy += GRAVITY * gravityMult * 1.5 * boost * dt;
 
     // Up brake – slow downward velocity when held
-    if (input.up && this.vy > 0) this.vy = Math.max(0, this.vy - GRAVITY * gravityMult * 2 * dt);
+    if (brake && this.vy > 0) this.vy = Math.max(0, this.vy - GRAVITY * gravityMult * 2 * brake * dt);
 
     // Horizontal damping for arcade feel
     this.vx *= Math.pow(DAMPING_X, dt * 60);

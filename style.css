@@ -2045,3 +2045,18 @@ html.native-app #fullscreen-btn { display: none !important; }
 /* The coin breakdown must disappear for runs without coins – otherwise the
    previous run's coins and total stayed on screen. */
 .coin-breakdown.hidden { display: none; }
+
+/* ── Control style (main menu) ──────────────────────────────────────────── */
+.control-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; margin: 10px 0 4px; }
+.control-mode-label { font-weight: 700; font-size: 14px; color: #e9dcff; white-space: nowrap; }
+.control-mode-btns { display: flex; gap: 4px; padding: 3px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+.control-mode-btn {
+  border: 0; border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700;
+  background: transparent; color: rgba(233, 220, 255, 0.7); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.control-mode-btn.active { background: linear-gradient(135deg, #ff2fd6, #8a3dff); color: #fff; box-shadow: 0 0 10px rgba(255, 47, 214, 0.4); }
+
+/* Finger mode: no on-screen buttons; the playfield takes the touches */
+#game-container.controls-touch #mobile-controls { display: none; }
+#game-container.controls-joystick #gameCanvas { touch-action: none; }

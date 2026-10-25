@@ -682,6 +682,13 @@ class Game {
     this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= VOID_RATE_MAX
       ? Math.max(VOID_RATE_MIN, voidRateRaw) : VOID_RATE_DEFAULT;
 
+    // Control style: 'buttons' (on-screen buttons), 'touch' (drag joystick on
+    // the playfield, no buttons) or 'both'. Persisted in localStorage.
+    let ctrl = 'buttons';
+    try { ctrl = localStorage.getItem('mrControls') || 'buttons'; } catch (_) { /* ignore */ }
+    this.controlMode = (ctrl === 'touch' || ctrl === 'both') ? ctrl : 'buttons';
+    this.input.setControlMode(this.controlMode);
+
     // Ghost of the best endless run (see ghost.js)
     this.ghostMode = GhostStore.loadMode();
     this.ghosts    = GhostStore.loadAll();       // { best, slots: [5] }
@@ -726,6 +733,7 @@ class Game {
     // Wire up void speed controls in the start overlay
     this._initVoidRateControls();
     this._initGhostToggle();
+    this._initControlMode();
 
     // Achievements – loaded once and persisted across runs
     this._achievements = this._loadAchievements();
@@ -2041,6 +2049,68 @@ class Game {
     if (window.MarbleNative) window.MarbleNative.heavyImpact();
   }
 
+  // ── Control style (buttons / finger / both) ───────────────────────────────
+  setControlMode(mode) {
+    this.controlMode = (mode === 'touch' || mode === 'both') ? mode : 'buttons';
+    try { localStorage.setItem('mrControls', this.controlMode); } catch (_) { /* ignore */ }
+    this.input.setControlMode(this.controlMode);
+    this._applyControlMode();
+  }
+
+  _applyControlMode() {
+    const container = document.getElementById('game-container');
+    if (container) {
+      container.classList.toggle('controls-touch', this.controlMode === 'touch');
+      container.classList.toggle('controls-joystick', this.controlMode !== 'buttons');
+    }
+    document.querySelectorAll('.control-mode-btn').forEach((b) => {
+      const on = b.dataset.mode === this.controlMode;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  }
+
+  _initControlMode() {
+    document.querySelectorAll('.control-mode-btn').forEach((b) => {
+      b.addEventListener('click', () => this.setControlMode(b.dataset.mode));
+    });
+    this._applyControlMode();
+  }
+
+  // Joystick ring + knob while the finger is down; hint during the countdown
+  _renderTouchControls(ctx) {
+    if (this.controlMode === 'buttons') return;
+    const j = this.input.joystick;
+    if (j && (this.state === STATE.RUNNING || this.state === STATE.COUNTDOWN)) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(j.ox, j.oy, j.range, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 0, 255, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255, 0, 255, 0.06)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(j.x, j.y, Math.max(14, j.range * 0.32), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 120, 255, 0.35)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 170, 255, 0.7)';
+      ctx.stroke();
+      ctx.restore();
+    }
+    if (this.state === STATE.COUNTDOWN && !this.input.joystick) {
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillStyle = 'rgba(255, 200, 255, 0.9)';
+      ctx.fillText('☝ Drag to steer', CANVAS_W / 2, CANVAS_H * 0.68);
+      ctx.font = '13px sans-serif';
+      ctx.fillStyle = 'rgba(255, 200, 255, 0.7)';
+      ctx.fillText('↑ slow  ·  ↓ boost', CANVAS_W / 2, CANVAS_H * 0.68 + 20);
+      ctx.restore();
+    }
+  }
+
   // ── Ghost (best run replay) ───────────────────────────────────────────────
   get bestGhost() { return this.ghosts ? this.ghosts.best : null; }
 
@@ -2401,6 +2471,7 @@ class Game {
     this._renderMarble(ctx);
     ctx.restore();
     this._renderGhostGap(ctx);
+    this._renderTouchControls(ctx);
 
     // ── Screen-space overlays ───────────────────────────────────────────────
 

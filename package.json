@@ -1,6 +1,6 @@
 {
   "name": "marble-speed-run",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Marble Rush – a vanilla JS canvas speed-run game. Outrun the fog. Survive forever.",
   "private": true,
   "scripts": {

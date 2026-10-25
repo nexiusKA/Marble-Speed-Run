@@ -1,3 +1,11 @@
+# Marble Rush 1.4.0
+
+New in 1.4.0:
+- 🎮 Control style in the main menu: Buttons (as before), Finger or Both.
+  Finger: put your thumb anywhere on the playfield and drag – left/right steers,
+  up slows down, down boosts, the further you drag the stronger (never stronger
+  than a button). A ring shows where you started. Finger mode hides the buttons.
+
 # Marble Rush 1.3.0
 
 New in 1.3.0:
