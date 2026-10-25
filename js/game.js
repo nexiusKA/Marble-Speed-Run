@@ -1238,6 +1238,8 @@ class Game {
 
   // ── Main update ───────────────────────────────────────────────────────────
   update(dt) {
+    this.input.update(dt);  // joystick smoothing
+
     // Debug-mode toggle (works in any state)
     if (this.input.consumeDebugToggle()) {
       this.debugMode = !this.debugMode;
@@ -2077,27 +2079,9 @@ class Game {
     this._applyControlMode();
   }
 
-  // Joystick ring + knob while the finger is down; hint during the countdown
+  // Finger mode: short hint during the countdown (no on-screen joystick ring)
   _renderTouchControls(ctx) {
     if (this.controlMode === 'buttons') return;
-    const j = this.input.joystick;
-    if (j && (this.state === STATE.RUNNING || this.state === STATE.COUNTDOWN)) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(j.ox, j.oy, j.range, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 0, 255, 0.35)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(255, 0, 255, 0.06)';
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(j.x, j.y, Math.max(14, j.range * 0.32), 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 120, 255, 0.35)';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 170, 255, 0.7)';
-      ctx.stroke();
-      ctx.restore();
-    }
     if (this.state === STATE.COUNTDOWN && !this.input.joystick) {
       ctx.save();
       ctx.textAlign = 'center';

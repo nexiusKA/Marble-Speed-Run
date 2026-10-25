@@ -22,6 +22,8 @@ class Input {
     this.throttleY  = 0;
     this.joystick   = null;        // { ox, oy, x, y } in canvas coordinates while dragging
     this._joyPointer = null;
+    this._steerTarget = 0;
+    this._throttleTarget = 0;
     this.controlMode = 'buttons';  // 'buttons' | 'touch' | 'both' (set by the game)
 
     this._bindMobileButtons();
@@ -119,8 +121,9 @@ class Input {
   _bindTouchJoystick() {
     const canvas = document.getElementById('gameCanvas');
     if (!canvas) return;
-    const JOY_RANGE = 55;    // px on screen for full deflection
-    const DEAD      = 0.12;  // fraction of the range ignored around the centre
+    const JOY_RANGE = 85;    // px on screen for full deflection (more travel = finer control)
+    const DEAD      = 0.10;  // fraction of the range ignored around the centre
+    const CURVE     = 1.6;   // response curve: gentle near the centre, full at the edge
     const toCanvas = (clientX, clientY) => {
       const r = canvas.getBoundingClientRect();
       return {
@@ -132,7 +135,8 @@ class Input {
     const axis = (d) => {
       const v = Math.max(-1, Math.min(1, d / JOY_RANGE));
       if (Math.abs(v) < DEAD) return 0;
-      return Math.sign(v) * (Math.abs(v) - DEAD) / (1 - DEAD);
+      const lin = (Math.abs(v) - DEAD) / (1 - DEAD);
+      return Math.sign(v) * Math.pow(lin, CURVE);
     };
     const active = () => this.controlMode !== 'buttons';
 
@@ -141,15 +145,18 @@ class Input {
       this._joyPointer = id;
       this._joyStart = { x: clientX, y: clientY };
       const p = toCanvas(clientX, clientY);
-      this.joystick = { ox: p.x, oy: p.y, x: p.x, y: p.y, range: JOY_RANGE * p.scale };
+      this.joystick = { ox: p.x, oy: p.y, x: p.x, y: p.y, range: JOY_RANGE * p.scale,
+                        t0: (typeof performance !== 'undefined' ? performance.now() : Date.now()) };
       this.steerX = this.throttleY = 0;
+      this._steerTarget = this._throttleTarget = 0;
       if (window.MarbleNative) window.MarbleNative.lightImpact();
       return true;
     };
     const move = (id, clientX, clientY) => {
       if (id !== this._joyPointer || !this._joyStart) return;
-      this.steerX    = axis(clientX - this._joyStart.x);
-      this.throttleY = axis(clientY - this._joyStart.y);
+      // targets – the values the marble uses ease towards them in update()
+      this._steerTarget    = axis(clientX - this._joyStart.x);
+      this._throttleTarget = axis(clientY - this._joyStart.y);
       const j = this.joystick;
       if (j) {
         const p = toCanvas(clientX, clientY);
@@ -215,6 +222,23 @@ class Input {
     this.joystick = null;
     this.steerX = 0;
     this.throttleY = 0;
+    this._steerTarget = 0;
+    this._throttleTarget = 0;
+  }
+
+  // Called once per frame by the game: the joystick axes follow the finger
+  // with a short time constant, so tiny finger jitter does not twitch the
+  // marble. Releasing the finger stops immediately (see _endJoystick).
+  update(dt) {
+    if (this._joyPointer === null) return;
+    const TAU = 0.09; // seconds
+    const k = 1 - Math.exp(-Math.max(0, dt) / TAU);
+    const ease = (cur, target) => {
+      const v = cur + ((target || 0) - cur) * k;
+      return Math.abs(v - (target || 0)) < 0.02 ? (target || 0) : v;
+    };
+    this.steerX    = ease(this.steerX, this._steerTarget);
+    this.throttleY = ease(this.throttleY, this._throttleTarget);
   }
 
   // Consume the restart flag so it fires once per press

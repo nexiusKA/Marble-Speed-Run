@@ -882,13 +882,13 @@ async function newPage(browser, baseUrl, errors, storage) {
     const top = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y).id, p0);
     assert(top === 'gameCanvas', `touches on the playfield land on "${top}", not the canvas`);
     await page.mouse.move(p0.x, p0.y); await page.mouse.down();
-    await page.mouse.move(p0.x + 70, p0.y, { steps: 4 });
+    await page.mouse.move(p0.x + 110, p0.y, { steps: 4 }); await page.waitForTimeout(450);
     const right = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, j: !!window.__marbleGame.input.joystick }));
-    await page.mouse.move(p0.x, p0.y - 70, { steps: 4 });
+    await page.mouse.move(p0.x, p0.y - 110, { steps: 4 }); await page.waitForTimeout(450);
     const up = await page.evaluate(() => window.__marbleGame.input.throttleY);
-    await page.mouse.move(p0.x, p0.y + 70, { steps: 4 });
+    await page.mouse.move(p0.x, p0.y + 110, { steps: 4 }); await page.waitForTimeout(450);
     const down = await page.evaluate(() => window.__marbleGame.input.throttleY);
-    await page.mouse.move(p0.x + 3, p0.y + 2, { steps: 2 });
+    await page.mouse.move(p0.x + 3, p0.y + 2, { steps: 2 }); await page.waitForTimeout(450);
     const centre = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY }));
     await page.mouse.up();
     const after = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY, j: window.__marbleGame.input.joystick }));
@@ -914,7 +914,7 @@ async function newPage(browser, baseUrl, errors, storage) {
       window.addEventListener('touchstart', (e) => window.__prevented.push(e.defaultPrevented), { passive: true });
     });
     await touch('touchStart', p0.x, p0.y);
-    await touch('touchMove', p0.x + 70, p0.y);
+    await touch('touchMove', p0.x + 110, p0.y);
     const samples = [];
     for (let i = 0; i < 8; i++) {
       await page.waitForTimeout(500);
@@ -940,13 +940,49 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  await test('joystick feel: smooth follow, gentle near the centre, no on-screen ring', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
+    const p0 = await canvasPoint(page, 0.5, 0.6);
+    await page.mouse.move(p0.x, p0.y); await page.mouse.down();
+    await page.mouse.move(p0.x + 47, p0.y, { steps: 3 });            // ~half of the 85 px travel
+    await page.waitForTimeout(500);
+    const half = await page.evaluate(() => window.__marbleGame.input.steerX);
+    const smooth = await page.evaluate(() => {
+      const inp = window.__marbleGame.input;
+      inp._steerTarget = 1; inp.steerX = 0;
+      inp.update(1 / 60); const first = inp.steerX;
+      for (let i = 0; i < 30; i++) inp.update(1 / 60);
+      return { first, later: inp.steerX };
+    });
+    // nothing joystick-like may be drawn while the finger is down
+    const arcs = await page.evaluate(() => {
+      const g = window.__marbleGame; const j = g.input.joystick;
+      const P = CanvasRenderingContext2D.prototype; const orig = P.arc; let n = 0;
+      P.arc = function (x, y, rad, ...rest) {
+        if (this === g.ctx && Math.abs(x - j.ox) < 1 && Math.abs(y - j.oy) < 1) n++;
+        return orig.call(this, x, y, rad, ...rest);
+      };
+      g.render(); P.arc = orig;
+      return n;
+    });
+    await page.mouse.up();
+    assert(half > 0.15 && half < 0.45, `half travel should steer gently (got ${half.toFixed(2)})`);
+    assert(smooth.first > 0 && smooth.first < 0.35, `no smoothing (first frame ${smooth.first.toFixed(2)})`);
+    assert(smooth.later > 0.97, `smoothing too slow (${smooth.later.toFixed(2)} after 0.5 s)`);
+    assert(arcs === 0, `a joystick ring is still drawn (${arcs} arcs at the touch point)`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await test('buttons mode: dragging on the playfield does nothing', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, { mrControls: 'buttons' });
     await startRunUi(page);
     const p0 = await canvasPoint(page, 0.5, 0.55);
     await page.mouse.move(p0.x, p0.y); await page.mouse.down();
-    await page.mouse.move(p0.x + 70, p0.y, { steps: 4 });
+    await page.mouse.move(p0.x + 110, p0.y, { steps: 4 }); await page.waitForTimeout(300);
     const s = await page.evaluate(() => window.__marbleGame.input.steerX);
     await page.mouse.up();
     assert(s === 0, `joystick active in Buttons mode (${s})`);
