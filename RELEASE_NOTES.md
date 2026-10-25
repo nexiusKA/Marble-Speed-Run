@@ -1,3 +1,9 @@
+# Marble Rush 1.4.2
+
+- Finger controls feel smoother: more travel for full steering, gentle response
+  near the centre, small finger jitter is smoothed out
+- The pink joystick circle is gone
+
 # Marble Rush 1.4.1
 
 - Fixed: in Finger mode the joystick stopped after 1–2 seconds when the finger
