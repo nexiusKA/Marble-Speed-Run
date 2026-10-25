@@ -1,3 +1,9 @@
+# Marble Rush 1.4.3
+
+- Finger controls now feel exactly like the buttons: drag a little to the side
+  and it steers at full strength right away, drag up/down a bit further to
+  slow down/boost. No more half-strength steering or smoothing.
+
 # Marble Rush 1.4.2
 
 - Finger controls feel smoother: more travel for full steering, gentle response
