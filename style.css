@@ -2046,7 +2046,7 @@ html.native-app #fullscreen-btn { display: none !important; }
    previous run's coins and total stayed on screen. */
 .coin-breakdown.hidden { display: none; }
 
-/* ── Control style (main menu) ──────────────────────────────────────────── */
+/* ── Control style (Options panel) ──────────────────────────────────────────── */
 .control-mode { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; margin: 10px 0 4px; }
 .control-mode-label { font-weight: 700; font-size: 14px; color: #e9dcff; white-space: nowrap; }
 .control-mode-btns { display: flex; gap: 4px; padding: 3px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -2057,9 +2057,9 @@ html.native-app #fullscreen-btn { display: none !important; }
 }
 .control-mode-btn.active { background: linear-gradient(135deg, #ff2fd6, #8a3dff); color: #fff; box-shadow: 0 0 10px rgba(255, 47, 214, 0.4); }
 
-/* Finger mode: no on-screen buttons; the playfield takes the touches */
+/* Finger mode: the playfield halves steer, sliding boosts / slows – no buttons */
 #game-container.controls-touch #mobile-controls { display: none; }
-#game-container.controls-joystick #gameCanvas { touch-action: none; }
+#game-container.controls-zones #gameCanvas { touch-action: none; }
 
 /* No long-press callout or text selection anywhere on the game (a held
    finger must stay a held finger) */
@@ -2067,4 +2067,158 @@ html.native-app #fullscreen-btn { display: none !important; }
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* ── Main menu footer: Achievements + Options side by side ─────────────── */
+#menu-panel-main .btn-options {
+  flex: 1;
+  width: auto;
+  margin-top: 0;
+  padding: 11px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 12px;
+  color: #d9ccff;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+
+/* ── Options panel ─────────────────────────────────────────────────────── */
+#menu-panel-options { width: 372px; }
+
+#menu-panel-options .panel-title {
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 22px rgba(120, 110, 255, 0.5);
+  margin-bottom: 18px;
+}
+
+.option-card {
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.option-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a8ac0;
+  margin-bottom: 10px;
+}
+
+#menu-panel-options .sound-controls {
+  justify-content: flex-start;
+  gap: 12px;
+  margin: 0;
+}
+
+#menu-panel-options .sound-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+}
+
+#menu-panel-options .volume-slider { flex: 1; width: auto; }
+
+#menu-panel-options .control-mode { display: block; margin: 0 0 10px; }
+#menu-panel-options .control-mode-btns { width: 100%; }
+#menu-panel-options .control-mode-btn { flex: 1; padding: 9px 0; font-size: 14px; }
+
+.option-hint {
+  margin: 8px 2px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #9a9ad6;
+}
+
+#menu-panel-options .pickup-legend {
+  justify-content: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+}
+
+#menu-panel-options .pickup-legend span {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#menu-panel-options .btn-back {
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #9a9ad6;
+}
+
+/* ── Achievements: progress header + cards ─────────────────────────────── */
+#achievements-overlay .ach-box { width: 360px; }
+
+.ach-progress {
+  height: 8px;
+  margin: 4px 0 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.ach-progress-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffd23f, #ff9a3d 60%, #ff5c8a);
+  box-shadow: 0 0 12px rgba(255, 170, 60, 0.6);
+  transition: width 0.4s ease;
+}
+
+.ach-progress-text {
+  margin-bottom: 12px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffd76a;
+}
+
+#achievements-overlay .ach-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 2px 6px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a8ac0;
+  border-bottom: none;
+}
+
+.ach-section-count {
+  color: #ffd76a;
+  letter-spacing: 0.04em;
+}
+
+#achievements-overlay .btn-back {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  box-shadow: none;
+  color: #9a9ad6;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }

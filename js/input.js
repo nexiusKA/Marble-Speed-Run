@@ -17,15 +17,18 @@ class Input {
     window.addEventListener('blur',             this._onBlur);
     document.addEventListener('visibilitychange', this._onBlur);
 
-    // Touch joystick (Finger / Both control modes): analog axes in -1…1
+    // Split-screen steering (Finger / Both control modes): a finger held on the
+    // left half of the playfield is ◀, on the right half ▶; sliding it down is ▼
+    // boost, up is ▲ slow. steerX / throttleY are -1, 0 or 1 – exactly like
+    // holding a button.
     this.steerX     = 0;
     this.throttleY  = 0;
-    this.joystick   = null;        // { ox, oy, x, y } in canvas coordinates while dragging
-    this._joyPointer = null;
-    this.controlMode = 'buttons';  // 'buttons' | 'touch' | 'both' (set by the game)
+    this.zones      = { left: false, right: false }; // which half is held (for the glow)
+    this._zoneTouches = new Map();  // touch / pointer id → { side, y0, slide }
+    this.controlMode = 'buttons';   // 'buttons' | 'touch' | 'both' (set by the game)
 
     this._bindMobileButtons();
-    this._bindTouchJoystick();
+    this._bindTouchZones();
   }
 
   // Reset directional flags whenever the page loses focus so keys/touches
@@ -35,10 +38,7 @@ class Input {
     this.right = false;
     this.down  = false;
     this.up    = false;
-    this.steerX = 0;
-    this.throttleY = 0;
-    this.joystick = null;
-    this._joyPointer = null;
+    this._clearZones();
   }
 
   _onKeyDown(e) {
@@ -104,88 +104,57 @@ class Input {
 
   setControlMode(mode) {
     this.controlMode = (mode === 'touch' || mode === 'both') ? mode : 'buttons';
-    if (this.controlMode === 'buttons') this._endJoystick();
+    if (this.controlMode === 'buttons') this._clearZones();
   }
 
-  // Drag anywhere on the playfield: left/right steers, up brakes, down boosts.
-  // The touch point is the joystick centre; JOY_RANGE screen pixels of drag is
-  // full deflection, a small dead zone keeps a resting thumb neutral.
+  // Split-screen steering: hold a finger on the left half of the playfield for
+  // ◀, on the right half for ▶ – the same as holding the button. Sliding a held
+  // finger across the middle switches direction; fingers on both halves cancel
+  // out; lifting all fingers stops steering.
+  // Boost / slow: while holding, slide the finger down (▼ boost) or up (▲ slow)
+  // by SLIDE_THRESHOLD px from where it touched down; back near that point is
+  // neutral again. Steering keeps working while sliding.
   //
   // Fingers are read from Touch Events with preventDefault: on Android Chrome a
   // finger held still for ~1 s turns into a long-press (text selection /
-  // context menu) and the browser cancels the *pointer* events – the joystick
+  // context menu) and the browser cancels the *pointer* events – steering
   // stopped although the finger was still down. Cancelling touchstart/touchmove
   // suppresses those gestures. Pointer events are only used for the mouse.
-  _bindTouchJoystick() {
+  _bindTouchZones() {
     const canvas = document.getElementById('gameCanvas');
     if (!canvas) return;
-    // Feels like the on-screen buttons: past a small threshold a direction is
-    // simply "pressed" at full strength, back inside it is "released".
-    // Vertical needs a bit more travel so steering does not brake/boost by accident.
-    const STEER_THRESHOLD    = 15;  // px sideways  → ◀ / ▶
-    const THROTTLE_THRESHOLD = 30;  // px up / down → ▲ slow / ▼ boost
-    const JOY_RANGE = 85;           // only used for the (invisible) knob position
-    const toCanvas = (clientX, clientY) => {
-      const r = canvas.getBoundingClientRect();
-      return {
-        x: (clientX - r.left) * (canvas.width / (r.width || 1)),
-        y: (clientY - r.top) * (canvas.height / (r.height || 1)),
-        scale: canvas.width / (r.width || 1),
-      };
-    };
-    const axis = (d, threshold) => (Math.abs(d) >= threshold ? Math.sign(d) : 0);
+    const SLIDE_THRESHOLD = 35;  // screen px up / down → ▲ slow / ▼ boost
     const active = () => this.controlMode !== 'buttons';
-
-    const start = (id, clientX, clientY) => {
-      if (!active() || this._joyPointer !== null) return false;
-      this._joyPointer = id;
-      this._joyStart = { x: clientX, y: clientY };
-      const p = toCanvas(clientX, clientY);
-      this.joystick = { ox: p.x, oy: p.y, x: p.x, y: p.y, range: JOY_RANGE * p.scale,
-                        t0: (typeof performance !== 'undefined' ? performance.now() : Date.now()) };
-      this.steerX = this.throttleY = 0;
-      if (window.MarbleNative) window.MarbleNative.lightImpact();
-      return true;
+    const sideOf = (clientX) => {
+      const r = canvas.getBoundingClientRect();
+      return clientX < r.left + r.width / 2 ? 'left' : 'right';
     };
-    const move = (id, clientX, clientY) => {
-      if (id !== this._joyPointer || !this._joyStart) return;
-      this.steerX    = axis(clientX - this._joyStart.x, STEER_THRESHOLD);
-      this.throttleY = axis(clientY - this._joyStart.y, THROTTLE_THRESHOLD);
-      const j = this.joystick;
-      if (j) {
-        const p = toCanvas(clientX, clientY);
-        const ddx = p.x - j.ox, ddy = p.y - j.oy;
-        const len = Math.hypot(ddx, ddy) || 1;
-        const k = Math.min(1, j.range / len);
-        j.x = j.ox + ddx * k;
-        j.y = j.oy + ddy * k;
-      }
+    const set = (id, clientX, clientY) => {
+      let t = this._zoneTouches.get(id);
+      const isNew = !t;
+      if (isNew) { t = { side: null, y0: clientY, slide: 0 }; this._zoneTouches.set(id, t); }
+      const dy = clientY - t.y0;
+      const side = sideOf(clientX);
+      const slide = dy >= SLIDE_THRESHOLD ? 1 : dy <= -SLIDE_THRESHOLD ? -1 : 0;
+      if (t.side === side && t.slide === slide) return;
+      t.side = side; t.slide = slide;
+      this._updateZones();
+      if (isNew && window.MarbleNative) window.MarbleNative.lightImpact();
     };
-    const end = (id) => { if (id === this._joyPointer) this._endJoystick(); };
+    const end = (id) => { if (this._zoneTouches.delete(id)) this._updateZones(); };
 
     // ── Touch (fingers) ──
-    const findTouch = (list, id) => {
-      for (let i = 0; i < list.length; i++) if (list[i].identifier === id) return list[i];
-      return null;
-    };
     canvas.addEventListener('touchstart', (e) => {
       if (!active()) return;
       e.preventDefault();                       // no long-press, selection, scroll or zoom
-      if (this._joyPointer !== null) return;    // a second finger does not take over
-      const t = e.changedTouches[0];
-      if (t) start('t' + t.identifier, t.clientX, t.clientY);
+      for (const t of e.changedTouches) set('t' + t.identifier, t.clientX, t.clientY);
     }, { passive: false });
     canvas.addEventListener('touchmove', (e) => {
       if (!active()) return;
       e.preventDefault();
-      if (typeof this._joyPointer !== 'string') return;
-      const t = findTouch(e.touches, Number(this._joyPointer.slice(1)));
-      if (t) move(this._joyPointer, t.clientX, t.clientY);
+      for (const t of e.changedTouches) if (this._zoneTouches.has('t' + t.identifier)) set('t' + t.identifier, t.clientX, t.clientY);
     }, { passive: false });
-    const touchEnd = (e) => {
-      if (typeof this._joyPointer !== 'string') return;
-      if (findTouch(e.changedTouches, Number(this._joyPointer.slice(1)))) end(this._joyPointer);
-    };
+    const touchEnd = (e) => { for (const t of e.changedTouches) end('t' + t.identifier); };
     canvas.addEventListener('touchend', touchEnd);
     canvas.addEventListener('touchcancel', touchEnd);
 
@@ -193,13 +162,12 @@ class Input {
     canvas.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'touch' || !active()) return;
       e.preventDefault();
-      if (start('p' + e.pointerId, e.clientX, e.clientY)) {
-        try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
-      }
+      set('p' + e.pointerId, e.clientX, e.clientY);
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
     });
     canvas.addEventListener('pointermove', (e) => {
-      if (e.pointerType === 'touch') return;
-      move('p' + e.pointerId, e.clientX, e.clientY);
+      if (e.pointerType === 'touch' || !this._zoneTouches.has('p' + e.pointerId)) return;
+      set('p' + e.pointerId, e.clientX, e.clientY);
     });
     const pointerEnd = (e) => { if (e.pointerType !== 'touch') end('p' + e.pointerId); };
     canvas.addEventListener('pointerup', pointerEnd);
@@ -210,15 +178,26 @@ class Input {
     container.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
-  _endJoystick() {
-    this._joyPointer = null;
-    this._joyStart = null;
-    this.joystick = null;
+  _updateZones() {
+    let left = false, right = false, boost = false, slow = false;
+    for (const t of this._zoneTouches.values()) {
+      if (t.side === 'left') left = true; else right = true;
+      if (t.slide > 0) boost = true; else if (t.slide < 0) slow = true;
+    }
+    this.zones.left = left;
+    this.zones.right = right;
+    this.steerX = (right ? 1 : 0) - (left ? 1 : 0);
+    this.throttleY = (boost ? 1 : 0) - (slow ? 1 : 0);
+  }
+
+  _clearZones() {
+    this._zoneTouches.clear();
+    this.zones.left = this.zones.right = false;
     this.steerX = 0;
     this.throttleY = 0;
   }
 
-  // Called once per frame by the game (kept as a hook; the finger joystick is
+  // Called once per frame by the game (kept as a hook; split-screen steering is
   // button-like and needs no per-frame smoothing).
   update(_dt) {}
 

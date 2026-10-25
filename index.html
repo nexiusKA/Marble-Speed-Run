@@ -86,25 +86,7 @@
           </button>
           <div class="menu-footer">
             <button id="achievements-btn" class="btn btn-achievements">🏆 Achievements</button>
-            <div class="sound-controls">
-              <button id="sound-toggle" class="sound-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
-              <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
-            </div>
-          </div>
-          <div class="control-mode" role="radiogroup" aria-label="Controls">
-            <span class="control-mode-label">🎮 Controls</span>
-            <div class="control-mode-btns">
-              <button class="control-mode-btn" data-mode="buttons" role="radio">Buttons</button>
-              <button class="control-mode-btn" data-mode="touch" role="radio">Finger</button>
-              <button class="control-mode-btn" data-mode="both" role="radio">Both</button>
-            </div>
-          </div>
-          <div class="pickup-legend">
-            <span class="pl-speed">⚡ Speed</span>
-            <span class="pl-magnet">🧲 Magnet</span>
-            <span class="pl-fog">❄ Bar Slow</span>
-            <span class="pl-shield">◆ Shield</span>
-            <span class="pl-powerrush">⚡⚡ Power Rush</span>
+            <button id="options-btn" class="btn btn-options">⚙ Options</button>
           </div>
           <div class="controls-info">
             <span>← → &nbsp;Steer</span>
@@ -187,10 +169,42 @@
           <button id="back-pvp-btn" class="btn btn-back">← BACK</button>
         </div>
 
+        <!-- ── Options Panel ───────────────────────────────── -->
+        <div id="menu-panel-options" class="menu-panel">
+          <h2 class="panel-title">⚙ Options</h2>
+          <div class="option-card">
+            <div class="option-label">🔊 Sound</div>
+            <div class="sound-controls">
+              <button id="sound-toggle" class="sound-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
+              <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
+            </div>
+          </div>
+          <div class="option-card control-mode" role="radiogroup" aria-label="Controls">
+            <div class="option-label">🎮 Controls</div>
+            <div class="control-mode-btns">
+              <button class="control-mode-btn" data-mode="buttons" role="radio">Buttons</button>
+              <button class="control-mode-btn" data-mode="touch" role="radio">Finger</button>
+              <button class="control-mode-btn" data-mode="both" role="radio">Both</button>
+            </div>
+            <p id="control-mode-hint" class="option-hint"></p>
+          </div>
+          <div class="option-card">
+            <div class="option-label">✨ Power-ups</div>
+            <div class="pickup-legend">
+              <span class="pl-speed">⚡ Speed</span>
+              <span class="pl-magnet">🧲 Magnet</span>
+              <span class="pl-fog">❄ Bar Slow</span>
+              <span class="pl-shield">◆ Shield</span>
+              <span class="pl-powerrush">⚡⚡ Power Rush</span>
+            </div>
+          </div>
+          <button id="back-options-btn" class="btn btn-back">← BACK</button>
+        </div>
+
       </div>
     </div>
 
-    <div id="version-tag">v1.1.0</div>
+    <div id="version-tag">v1.5.0</div>
 
     <div id="gameover-overlay" class="overlay hidden">
       <div class="overlay-box">
@@ -257,10 +271,12 @@
     </div>
 
     <div id="achievements-overlay" class="overlay hidden">
-      <div class="overlay-box">
-        <h2 class="achievements-title">🏆 ACHIEVEMENTS</h2>
+      <div class="overlay-box ach-box">
+        <h2 class="achievements-title">🏆 Achievements</h2>
+        <div class="ach-progress" aria-hidden="true"><div id="ach-progress-bar" class="ach-progress-bar"></div></div>
+        <p id="ach-progress-text" class="ach-progress-text"></p>
         <div id="achievements-list" class="achievements-list"></div>
-        <button id="achievements-close-btn" class="btn">CLOSE</button>
+        <button id="achievements-close-btn" class="btn btn-back">← BACK</button>
       </div>
     </div>
   </div>

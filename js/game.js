@@ -682,8 +682,9 @@ class Game {
     this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= VOID_RATE_MAX
       ? Math.max(VOID_RATE_MIN, voidRateRaw) : VOID_RATE_DEFAULT;
 
-    // Control style: 'buttons' (on-screen buttons), 'touch' (drag joystick on
-    // the playfield, no buttons) or 'both'. Persisted in localStorage.
+    // Control style: 'buttons' (on-screen buttons), 'touch' (hold the left /
+    // right half of the playfield to steer, ▲ ▼ stay as buttons) or 'both'.
+    // Persisted in localStorage.
     let ctrl = 'buttons';
     try { ctrl = localStorage.getItem('mrControls') || 'buttons'; } catch (_) { /* ignore */ }
     this.controlMode = (ctrl === 'touch' || ctrl === 'both') ? ctrl : 'buttons';
@@ -1239,7 +1240,7 @@ class Game {
 
   // ── Main update ───────────────────────────────────────────────────────────
   update(dt) {
-    this.input.update(dt);  // joystick smoothing
+    this.input.update(dt);
 
     // Debug-mode toggle (works in any state)
     if (this.input.consumeDebugToggle()) {
@@ -1971,19 +1972,22 @@ class Game {
     const openAch = () => {
       const earned  = this._achievements.size;
       const total   = ACHIEVEMENT_DEFS.length;
-      const achTitleEl = achOverlay ? achOverlay.querySelector('.achievements-title') : null;
-      if (achTitleEl) achTitleEl.innerHTML = `🏆 Achievements<span class="achievements-count">${earned}/${total}</span>`;
+      const bar  = document.getElementById('ach-progress-bar');
+      const text = document.getElementById('ach-progress-text');
+      if (bar)  bar.style.width = `${Math.round(earned / total * 100)}%`;
+      if (text) text.textContent = `${earned} of ${total} unlocked`;
       const achList = document.getElementById('achievements-list');
       if (achList) {
         achList.innerHTML = '';
         const sections = [
-          { label: '♾️ ENDLESS', defs: ENDLESS_ACHIEVEMENT_DEFS },
-          { label: '⚔️ VERSUS',     defs: PVP_ACHIEVEMENT_DEFS     },
+          { label: '♾️ Endless', defs: ENDLESS_ACHIEVEMENT_DEFS },
+          { label: '⚔️ Versus',  defs: PVP_ACHIEVEMENT_DEFS     },
         ];
         for (const section of sections) {
+          const got = section.defs.filter((d) => this._achievements.has(d.id)).length;
           const header = document.createElement('div');
           header.className = 'ach-section-header';
-          header.textContent = section.label;
+          header.innerHTML = `<span>${section.label}</span><span class="ach-section-count">${got}/${section.defs.length}</span>`;
           achList.appendChild(header);
           for (const def of section.defs) {
             const unlocked = this._achievements.has(def.id);
@@ -2064,13 +2068,21 @@ class Game {
     const container = document.getElementById('game-container');
     if (container) {
       container.classList.toggle('controls-touch', this.controlMode === 'touch');
-      container.classList.toggle('controls-joystick', this.controlMode !== 'buttons');
+      container.classList.toggle('controls-zones', this.controlMode !== 'buttons');
     }
     document.querySelectorAll('.control-mode-btn').forEach((b) => {
       const on = b.dataset.mode === this.controlMode;
       b.classList.toggle('active', on);
       b.setAttribute('aria-checked', on ? 'true' : 'false');
     });
+    const hint = document.getElementById('control-mode-hint');
+    if (hint) {
+      hint.textContent = {
+        buttons: 'Steer, slow down and boost with the four buttons.',
+        touch:   'Hold the left or right half of the screen to steer. While holding, slide down to boost, up to slow down.',
+        both:    'All four buttons, plus the finger controls: hold a screen half to steer, slide down / up to boost / slow.',
+      }[this.controlMode];
+    }
   }
 
   _initControlMode() {
@@ -2080,18 +2092,30 @@ class Game {
     this._applyControlMode();
   }
 
-  // Finger mode: short hint during the countdown (no on-screen joystick ring)
+  // Split-screen steering: a soft glow on the edge of the half that is held,
+  // and a hint during the countdown
   _renderTouchControls(ctx) {
     if (this.controlMode === 'buttons') return;
-    if (this.state === STATE.COUNTDOWN && !this.input.joystick) {
+    const z = this.input.zones;
+    for (const side of ['left', 'right']) {
+      if (!z[side]) continue;
+      const x0 = side === 'left' ? 0 : CANVAS_W;
+      const grad = ctx.createLinearGradient(x0, 0, CANVAS_W / 2, 0);
+      grad.addColorStop(0, 'rgba(255, 0, 255, 0.28)');
+      grad.addColorStop(0.35, 'rgba(255, 0, 255, 0.06)');
+      grad.addColorStop(1, 'rgba(255, 0, 255, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(side === 'left' ? 0 : CANVAS_W / 2, 0, CANVAS_W / 2, CANVAS_H);
+    }
+    if (this.state === STATE.COUNTDOWN && !z.left && !z.right) {
       ctx.save();
       ctx.textAlign = 'center';
       ctx.font = 'bold 15px sans-serif';
       ctx.fillStyle = 'rgba(255, 200, 255, 0.9)';
-      ctx.fillText('☝ Drag to steer', CANVAS_W / 2, CANVAS_H * 0.68);
+      ctx.fillText('◀ Hold left  ·  Hold right ▶', CANVAS_W / 2, CANVAS_H * 0.68);
       ctx.font = '13px sans-serif';
       ctx.fillStyle = 'rgba(255, 200, 255, 0.7)';
-      ctx.fillText('↑ slow  ·  ↓ boost', CANVAS_W / 2, CANVAS_H * 0.68 + 20);
+      ctx.fillText('slide ↓ to boost  ·  ↑ to slow down', CANVAS_W / 2, CANVAS_H * 0.68 + 20);
       ctx.restore();
     }
   }
@@ -2383,7 +2407,7 @@ class Game {
         achOverlay.classList.add('hidden');
         return true;
       }
-      for (const [panelId, backId] of [['menu-panel-endless', 'back-endless-btn'], ['menu-panel-pvp', 'back-pvp-btn']]) {
+      for (const [panelId, backId] of [['menu-panel-endless', 'back-endless-btn'], ['menu-panel-pvp', 'back-pvp-btn'], ['menu-panel-options', 'back-options-btn']]) {
         const panel = document.getElementById(panelId);
         const back  = document.getElementById(backId);
         if (panel && back && panel.classList.contains('active')) { back.click(); return true; }

@@ -1,3 +1,14 @@
+# Marble Rush 1.5.0
+
+- Finger controls are now split-screen: hold the left half of the screen to
+  steer left, the right half to steer right – just like holding the buttons.
+  Slide across the middle to switch. The held half glows softly.
+- While holding, slide your finger down to boost or up to slow down – Finger
+  mode needs no buttons at all (Both keeps the buttons as well)
+- New Options menu: sound, controls and the power-up overview moved there,
+  so the main menu stays clean
+- Achievements reworked: progress bar, count per mode, new card look
+
 # Marble Rush 1.4.3
 
 - Finger controls now feel exactly like the buttons: drag a little to the side

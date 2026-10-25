@@ -845,7 +845,7 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
-  // 11. Control style: buttons / finger (drag joystick) / both
+  // 11. Control style: buttons / finger (split-screen: hold left / right half) / both
   const startRunUi = async (page) => {
     await page.evaluate(() => {
       const g = window.__marbleGame;
@@ -859,67 +859,129 @@ async function newPage(browser, baseUrl, errors, storage) {
     return { x: r.left + r.width * fx, y: r.top + r.height * fy };
   }, { fx, fy });
 
-  await test('controls setting: Buttons by default, Finger hides the buttons, choice is remembered', async () => {
+  await test('controls setting: Buttons by default, Finger hides all buttons, choice is remembered', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors);
     let st = await page.evaluate(() => ({ mode: window.__marbleGame.controlMode, active: document.querySelector('.control-mode-btn.active').dataset.mode }));
     assert(st.mode === 'buttons' && st.active === 'buttons', `default is not Buttons (${JSON.stringify(st)})`);
-    await page.click('.control-mode-btn[data-mode="touch"]');
+    await page.evaluate(() => document.querySelector('.control-mode-btn[data-mode="touch"]').click());
     await startRunUi(page);
-    const hidden = await page.evaluate(() => getComputedStyle(document.getElementById('mobile-controls')).display === 'none');
-    assert(hidden, 'buttons still shown in Finger mode');
+    const visible = () => page.evaluate(() => ['btn-left', 'btn-right', 'btn-up', 'btn-down']
+      .map((id) => document.getElementById(id).offsetParent !== null));   // hidden itself or via #mobile-controls
+    const finger = await visible();
+    assert(finger.every((v) => !v), `Finger mode still shows buttons (${finger.join(',')})`);
     await page.reload(); await page.waitForFunction(() => !!window.__marbleGame);
     st = await page.evaluate(() => ({ mode: window.__marbleGame.controlMode, stored: localStorage.getItem('mrControls') }));
     assert(st.mode === 'touch' && st.stored === 'touch', 'Finger mode not remembered');
-    await page.click('.control-mode-btn[data-mode="both"]');
+    await page.evaluate(() => document.querySelector('.control-mode-btn[data-mode="both"]').click());
     await startRunUi(page);
-    const shown = await page.evaluate(() => getComputedStyle(document.getElementById('mobile-controls')).display !== 'none');
-    assert(shown, 'buttons hidden in Both mode');
+    assert((await visible()).every(Boolean), 'Both mode does not show all four buttons');
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
   });
 
-  await test('finger mode: dragging on the playfield steers, brakes and boosts; release stops', async () => {
-    const errors = [];
-    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
-    await startRunUi(page);
-    const p0 = await canvasPoint(page, 0.5, 0.55);
-    const top = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y).id, p0);
-    assert(top === 'gameCanvas', `touches on the playfield land on "${top}", not the canvas`);
-    await page.mouse.move(p0.x, p0.y); await page.mouse.down();
-    await page.mouse.move(p0.x + 110, p0.y, { steps: 4 }); await page.waitForTimeout(450);
-    const right = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, j: !!window.__marbleGame.input.joystick }));
-    await page.mouse.move(p0.x, p0.y - 110, { steps: 4 }); await page.waitForTimeout(450);
-    const up = await page.evaluate(() => window.__marbleGame.input.throttleY);
-    await page.mouse.move(p0.x, p0.y + 110, { steps: 4 }); await page.waitForTimeout(450);
-    const down = await page.evaluate(() => window.__marbleGame.input.throttleY);
-    await page.mouse.move(p0.x + 3, p0.y + 2, { steps: 2 }); await page.waitForTimeout(450);
-    const centre = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY }));
-    await page.mouse.up();
-    const after = await page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY, j: window.__marbleGame.input.joystick }));
-    assert(right.j && right.s > 0.9, `drag right did not steer right (${right.s})`);
-    assert(up < -0.9, `drag up did not brake (${up})`);
-    assert(down > 0.9, `drag down did not boost (${down})`);
-    assert(centre.s === 0 && centre.t === 0, `dead zone not neutral (${JSON.stringify(centre)})`);
-    assert(after.s === 0 && after.t === 0 && after.j === null, 'release did not reset the joystick');
-    assert(errors.length === 0, errors.join('\n'));
-    await page.context().close();
-  });
-
-  await test('finger held down for 4 s keeps steering, even when Android cancels the pointer (long-press)', async () => {
-    const errors = [];
-    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
-    await startRunUi(page);
+  // Real finger touches through CDP (Touch Events, like a phone)
+  const touchApi = async (page) => {
     const cdp = await page.context().newCDPSession(page);
-    const p0 = await canvasPoint(page, 0.5, 0.6);
-    const touch = (type, x, y) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x: Math.round(x), y: Math.round(y), id: 1 }] });
-    // record whether our handler blocked the browser's default touch actions
+    const pts = new Map();
+    const send = (type) => cdp.send('Input.dispatchTouchEvent', {
+      type, touchPoints: [...pts.entries()].map(([id, p]) => ({ x: Math.round(p.x), y: Math.round(p.y), id })) });
+    return {
+      down: async (id, p) => { pts.set(id, p); await send('touchStart'); },
+      move: async (id, p) => { pts.set(id, p); await send('touchMove'); },
+      // touchPoints lists the fingers still down: lifting one of several is a touchMove
+      // without it; the last finger is a touchEnd with no points
+      up: async (id) => { pts.delete(id); await send(pts.size ? 'touchMove' : 'touchEnd'); },
+    };
+  };
+  const steer = (page) => page.evaluate(() => window.__marbleGame.input.steerX);
+
+  await test('finger mode: hold the right half = ▶, left half = ◀, slide across switches, release stops', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
+    const t = await touchApi(page);
+    const R = await canvasPoint(page, 0.8, 0.6), L = await canvasPoint(page, 0.2, 0.6);
+    const top = await page.evaluate(({ x, y }) => document.elementFromPoint(x, y).id, R);
+    assert(top === 'gameCanvas', `touches on the playfield land on "${top}", not the canvas`);
+    await t.down(1, R);                              const right = await steer(page);
+    await t.move(1, { x: R.x + 30, y: R.y + 80 });   const stillRight = await steer(page);  // wobbling within the half
+    await t.move(1, L);                              const slid = await steer(page);
+    await t.up(1);                                   const after = await steer(page);
+    await t.down(2, L);                              const left = await steer(page);
+    await t.up(2);
+    assert(right === 1, `right half did not steer right (${right})`);
+    assert(stillRight === 1, `moving within the right half changed steering (${stillRight})`);
+    assert(slid === -1, `sliding into the left half did not switch to left (${slid})`);
+    assert(after === 0, `lifting the finger did not stop steering (${after})`);
+    assert(left === -1, `left half did not steer left (${left})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('finger mode: while holding, slide down = boost, up = slow, back = neutral; steering keeps working', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
+    const t = await touchApi(page);
+    const R = await canvasPoint(page, 0.8, 0.5);
+    const read = () => page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY }));
+    await t.down(1, R);                          const held  = await read();
+    await t.move(1, { x: R.x, y: R.y + 20 });    const small = await read();   // below the threshold
+    await t.move(1, { x: R.x, y: R.y + 60 });    const boost = await read();
+    await t.move(1, { x: R.x, y: R.y - 60 });    const slow  = await read();
+    await t.move(1, { x: R.x, y: R.y + 5 });     const back  = await read();
+    await t.up(1);                               const after = await read();
+    const fair = await page.evaluate(() => {
+      const run = (input) => { const m = new Marble(240, 0); m.vy = 200; const flat = { resolveCollision() {} };
+        for (let i = 0; i < 30; i++) m.update(1 / 60, input, flat, 1, 1); return Math.round(m.vy * 1000); };
+      return { boost: [run({ down: true }), run({ throttleY: 1 })], slow: [run({ up: true }), run({ throttleY: -1 })] };
+    });
+    assert(held.s === 1 && held.t === 0, `just holding should only steer (${JSON.stringify(held)})`);
+    assert(small.t === 0, `a small wobble already boosts (${small.t})`);
+    assert(boost.s === 1 && boost.t === 1, `slide down did not boost while steering (${JSON.stringify(boost)})`);
+    assert(slow.s === 1 && slow.t === -1, `slide up did not slow down (${JSON.stringify(slow)})`);
+    assert(back.t === 0, `back near the start point is not neutral (${back.t})`);
+    assert(after.s === 0 && after.t === 0, 'lifting the finger did not reset');
+    assert(fair.boost[0] === fair.boost[1] && fair.slow[0] === fair.slow[1], `finger boost/slow not as strong as the buttons (${JSON.stringify(fair)})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('finger mode: one finger on each half cancels out; lifting one steers to the other side', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
+    // Real TouchEvents with explicit finger ids (CDP's touch emulation pairs
+    // fingers by list position, so it can't lift "the right one" reliably)
+    const r = await page.evaluate(() => {
+      const c = document.getElementById('gameCanvas'); const b = c.getBoundingClientRect();
+      const at = (id, fx) => new Touch({ identifier: id, target: c, clientX: b.left + b.width * fx, clientY: b.top + b.height / 2 });
+      const fire = (type, changed, touches) => c.dispatchEvent(new TouchEvent(type, { changedTouches: changed, touches, cancelable: true, bubbles: true }));
+      const L = at(1, 0.2), R = at(2, 0.8), s = () => window.__marbleGame.input.steerX;
+      fire('touchstart', [L], [L]);
+      fire('touchstart', [R], [L, R]);    const bothHeld = s();
+      fire('touchend',   [R], [L]);       const leftOnly = s();
+      fire('touchend',   [L], []);        const none = s();
+      return { bothHeld, leftOnly, none };
+    });
+    assert(r.bothHeld === 0, `both halves held should not steer (${r.bothHeld})`);
+    assert(r.leftOnly === -1, `after lifting the right finger it should steer left (${r.leftOnly})`);
+    assert(r.none === 0, `no finger → no steering (${r.none})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('finger held still for 4 s keeps steering, even when Android cancels the pointer (long-press)', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
+    await startRunUi(page);
     await page.evaluate(() => {
       window.__prevented = [];
       window.addEventListener('touchstart', (e) => window.__prevented.push(e.defaultPrevented), { passive: true });
     });
-    await touch('touchStart', p0.x, p0.y);
-    await touch('touchMove', p0.x + 110, p0.y);
+    const t = await touchApi(page);
+    await t.down(1, await canvasPoint(page, 0.8, 0.6));
     const samples = [];
     for (let i = 0; i < 8; i++) {
       await page.waitForTimeout(500);
@@ -928,16 +990,16 @@ async function newPage(browser, baseUrl, errors, storage) {
         await page.evaluate(() => document.getElementById('gameCanvas').dispatchEvent(
           new PointerEvent('pointercancel', { pointerId: 1, pointerType: 'touch', bubbles: true })));
       }
-      samples.push(await page.evaluate(() => window.__marbleGame.input.steerX));
+      samples.push(await steer(page));
     }
     const ctx = await page.evaluate(() => {
       const ev = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
       document.getElementById('gameCanvas').dispatchEvent(ev);
       return { contextBlocked: ev.defaultPrevented, prevented: window.__prevented };
     });
-    await touch('touchEnd');
-    const after = await page.evaluate(() => window.__marbleGame.input.steerX);
-    assert(samples.every((v) => v > 0.9), `steering dropped while the finger was held: ${samples.map((v) => v.toFixed(2)).join(', ')}`);
+    await t.up(1);
+    const after = await steer(page);
+    assert(samples.every((v) => v === 1), `steering dropped while the finger was held: ${samples.join(', ')}`);
     assert(after === 0, 'lifting the finger did not stop steering');
     assert(ctx.prevented.length > 0 && ctx.prevented.every(Boolean), 'touchstart not cancelled – browser long-press can still kick in');
     assert(ctx.contextBlocked, 'long-press context menu not blocked');
@@ -945,37 +1007,23 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
-  await test('finger feels like the buttons: past a small threshold it is full strength at once; no ring', async () => {
+  await test('finger mode: the held half glows; mouse works like a finger', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors, { mrControls: 'touch' });
     await startRunUi(page);
-    const p0 = await canvasPoint(page, 0.5, 0.6);
-    const read = () => page.evaluate(() => ({ s: window.__marbleGame.input.steerX, t: window.__marbleGame.input.throttleY }));
-    await page.mouse.move(p0.x, p0.y); await page.mouse.down();
-    await page.mouse.move(p0.x + 10, p0.y);          const tiny  = await read();   // below threshold
-    await page.mouse.move(p0.x + 20, p0.y);          const side  = await read();   // ▶ pressed
-    await page.mouse.move(p0.x - 20, p0.y);          const left  = await read();   // ◀ pressed
-    await page.mouse.move(p0.x + 20, p0.y + 20);     const diag  = await read();   // steering, no accidental boost
-    await page.mouse.move(p0.x + 20, p0.y + 40);     const boost = await read();   // ▶ + ▼
-    await page.mouse.move(p0.x, p0.y - 40);          const brake = await read();   // ▲
-    // nothing joystick-like may be drawn at the touch point
-    const arcs = await page.evaluate(() => {
-      const g = window.__marbleGame; const j = g.input.joystick;
-      const P = CanvasRenderingContext2D.prototype; const orig = P.arc; let n = 0;
-      P.arc = function (x, y, rad, ...rest) {
-        if (this === g.ctx && Math.abs(x - j.ox) < 1 && Math.abs(y - j.oy) < 1) n++;
-        return orig.call(this, x, y, rad, ...rest);
-      };
-      g.render(); P.arc = orig;
-      return n;
+    const R = await canvasPoint(page, 0.75, 0.5);
+    await page.mouse.move(R.x, R.y); await page.mouse.down();
+    const r = await page.evaluate(() => {
+      const g = window.__marbleGame; const P = CanvasRenderingContext2D.prototype; const orig = P.fillRect; const rects = [];
+      P.fillRect = function (x, y, w, h) { if (this === g.ctx && w === CANVAS_W / 2 && h === CANVAS_H) rects.push(x); return orig.apply(this, arguments); };
+      g.render(); P.fillRect = orig;
+      return { steer: g.input.steerX, glowX: rects };
     });
     await page.mouse.up();
-    assert(tiny.s === 0 && tiny.t === 0, `tiny move already steers (${JSON.stringify(tiny)})`);
-    assert(side.s === 1 && left.s === -1, `not full strength immediately (${side.s}, ${left.s})`);
-    assert(diag.s === 1 && diag.t === 0, `diagonal steering boosted by accident (${JSON.stringify(diag)})`);
-    assert(boost.s === 1 && boost.t === 1, `steer + boost failed (${JSON.stringify(boost)})`);
-    assert(brake.s === 0 && brake.t === -1, `brake failed (${JSON.stringify(brake)})`);
-    assert(arcs === 0, `a joystick ring is still drawn (${arcs} arcs at the touch point)`);
+    const after = await page.evaluate(() => window.__marbleGame.input.zones);
+    assert(r.steer === 1, `mouse press on the right half did not steer right (${r.steer})`);
+    assert(r.glowX.length === 1 && r.glowX[0] === 240, `expected one glow on the right half, got ${JSON.stringify(r.glowX)}`);
+    assert(!after.left && !after.right, 'zones still held after mouse up');
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
   });
@@ -989,12 +1037,12 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.mouse.move(p0.x + 110, p0.y, { steps: 4 }); await page.waitForTimeout(300);
     const s = await page.evaluate(() => window.__marbleGame.input.steerX);
     await page.mouse.up();
-    assert(s === 0, `joystick active in Buttons mode (${s})`);
+    assert(s === 0, `finger steering active in Buttons mode (${s})`);
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
   });
 
-  await test('full joystick deflection is exactly as strong as a button (fair)', async () => {
+  await test('finger steering (steerX 1) is exactly as strong as a button (fair)', async () => {
     const errors = [];
     const page = await newPage(browser, baseUrl, errors);
     const r = await page.evaluate(() => {
@@ -1012,10 +1060,55 @@ async function newPage(browser, baseUrl, errors, storage) {
       };
     });
     const eq = (a, b) => a[0] === b[0] && a[1] === b[1];
-    assert(eq(r.steer[0], r.steer[1]), `steer differs: button ${r.steer[0]} vs joystick ${r.steer[1]}`);
+    assert(eq(r.steer[0], r.steer[1]), `steer differs: button ${r.steer[0]} vs finger ${r.steer[1]}`);
     assert(Math.abs(r.steer[2][0]) < Math.abs(r.steer[1][0]), 'half deflection is not weaker');
     assert(eq(r.boost[0], r.boost[1]), `boost differs: ${r.boost[0]} vs ${r.boost[1]}`);
     assert(eq(r.brake[0], r.brake[1]), `brake differs: ${r.brake[0]} vs ${r.brake[1]}`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('options menu: main menu stays clean; sound, controls and power-ups live in Options; back returns', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const visible = (sel) => page.evaluate((s) => { const e = document.querySelector(s); return !!e && !!e.offsetParent; }, sel);
+    const onMain = { slider: await visible('#volume-slider'), controls: await visible('.control-mode-btn'), legend: await visible('.pickup-legend'), options: await visible('#options-btn') };
+    await page.click('#options-btn');
+    const inOptions = { slider: await visible('#volume-slider'), toggle: await visible('#sound-toggle'), controls: await visible('.control-mode-btn'), legend: await visible('.pickup-legend') };
+    await page.evaluate(() => document.querySelector('.control-mode-btn[data-mode="touch"]').click());
+    const hint = await page.evaluate(() => document.getElementById('control-mode-hint').textContent);
+    const back = await page.evaluate(() => window.__marbleGame.handleBackButton());
+    const mainAgain = await page.evaluate(() => document.getElementById('menu-panel-main').classList.contains('active'));
+    await page.click('#options-btn'); await page.click('#back-options-btn');
+    const viaButton = await page.evaluate(() => document.getElementById('menu-panel-main').classList.contains('active'));
+    assert(!onMain.slider && !onMain.controls && !onMain.legend, `main menu still shows options (${JSON.stringify(onMain)})`);
+    assert(onMain.options, 'no Options button on the main menu');
+    assert(Object.values(inOptions).every(Boolean), `Options panel misses something (${JSON.stringify(inOptions)})`);
+    assert(/left or right half/.test(hint), `Finger hint does not explain the screen halves ("${hint}")`);
+    assert(back === true && mainAgain, 'Android back in Options did not return to the main menu');
+    assert(viaButton, '← BACK in Options did not return to the main menu');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('achievements: progress bar and per-mode counts match the unlocked trophies', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrAchievements: JSON.stringify(['reach_1000m', 'reach_5000m', 'pvp_first_race']) });
+    await page.click('#achievements-btn');
+    const r = await page.evaluate(() => ({
+      text: document.getElementById('ach-progress-text').textContent,
+      width: document.getElementById('ach-progress-bar').style.width,
+      counts: [...document.querySelectorAll('#achievements-list .ach-section-count')].map((e) => e.textContent),
+      unlocked: document.querySelectorAll('#achievements-list .achievement-entry.unlocked').length,
+      total: ACHIEVEMENT_DEFS.length, endless: ENDLESS_ACHIEVEMENT_DEFS.length, versus: PVP_ACHIEVEMENT_DEFS.length,
+    }));
+    const back = await page.evaluate(() => window.__marbleGame.handleBackButton());
+    const closed = await page.evaluate(() => document.getElementById('achievements-overlay').classList.contains('hidden'));
+    assert(r.text === `3 of ${r.total} unlocked`, `progress text "${r.text}"`);
+    assert(r.width === `${Math.round(3 / r.total * 100)}%`, `progress bar width ${r.width}`);
+    assert(r.counts[0] === `2/${r.endless}` && r.counts[1] === `1/${r.versus}`, `section counts ${JSON.stringify(r.counts)}`);
+    assert(r.unlocked === 3, `${r.unlocked} cards shown as unlocked`);
+    assert(back === true && closed, 'Android back did not close the achievements');
     assert(errors.length === 0, errors.join('\n'));
     await page.context().close();
   });
