@@ -9,6 +9,12 @@
   so the main menu stays clean
 - Achievements reworked: progress bar, count per mode, new card look
 
+# Marble Rush 1.4.4
+
+- 5 new music tracks: Adventure, Flower Hunt, Ride the Wave, Nightfall and
+  Sunrise. Every run starts with a random song, and when one ends the next
+  random song follows.
+
 # Marble Rush 1.4.3
 
 - Finger controls now feel exactly like the buttons: drag a little to the side
