@@ -1964,3 +1964,44 @@ body {
 /* Inside the Android app the game already runs fullscreen; the browser
    fullscreen button would only toggle the WebView's fullscreen mode. */
 html.native-app #fullscreen-btn { display: none !important; }
+
+/* ── Ghost Mode toggle (endless panel) ─────────────────────────────────── */
+.ghost-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 4px 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(127, 227, 255, 0.35);
+  background: rgba(127, 227, 255, 0.07);
+  color: #dff7ff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ghost-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.ghost-toggle-box {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 2px solid #7fe3ff;
+  box-shadow: 0 0 8px rgba(127, 227, 255, 0.45);
+  position: relative;
+}
+.ghost-toggle input:checked + .ghost-toggle-box { background: #7fe3ff; }
+.ghost-toggle input:checked + .ghost-toggle-box::after {
+  content: '';
+  position: absolute;
+  left: 7px; top: 2px;
+  width: 6px; height: 12px;
+  border: solid #07071a;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.ghost-toggle input:focus-visible + .ghost-toggle-box { outline: 2px solid #fff; outline-offset: 2px; }
+.ghost-toggle-text { display: flex; flex-direction: column; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; text-align: left; }
+.ghost-toggle-info { font-weight: 400; font-size: 12px; opacity: 0.75; margin-top: 2px; letter-spacing: 0; }

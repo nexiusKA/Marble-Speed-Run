@@ -32,7 +32,10 @@ const KNOT_SPACING_MAX  = 480;
 
 // ── Track class ───────────────────────────────────────────────────────────────
 class Track {
-  constructor() {
+  // rng: optional seeded random function. The track has its own stream so its
+  // shape only depends on the seed, not on how fast the player drives.
+  constructor(rng) {
+    this._rng = rng || null;
     this.startX = START_X;
     this.startY = START_Y;
 
@@ -54,9 +57,12 @@ class Track {
 
   // Ensure knots exist at least up to upToWorldY
   extend(upToWorldY) {
-    while (this.knots[this.knots.length - 1][0] < upToWorldY) {
-      this._addKnot();
-    }
+    if (this.knots[this.knots.length - 1][0] >= upToWorldY) return;
+    withRng(this._rng, () => {
+      while (this.knots[this.knots.length - 1][0] < upToWorldY) {
+        this._addKnot();
+      }
+    });
   }
 
   // Remove knots that are far behind the camera (memory management)
