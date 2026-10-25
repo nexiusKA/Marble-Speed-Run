@@ -2060,3 +2060,11 @@ html.native-app #fullscreen-btn { display: none !important; }
 /* Finger mode: no on-screen buttons; the playfield takes the touches */
 #game-container.controls-touch #mobile-controls { display: none; }
 #game-container.controls-joystick #gameCanvas { touch-action: none; }
+
+/* No long-press callout or text selection anywhere on the game (a held
+   finger must stay a held finger) */
+#game-container, #game-container * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

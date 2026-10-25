@@ -1,3 +1,9 @@
+# Marble Rush 1.4.1
+
+- Fixed: in Finger mode the joystick stopped after 1–2 seconds when the finger
+  was held down (the browser turned it into a long-press). Holding now works
+  for as long as you like.
+
 # Marble Rush 1.4.0
 
 New in 1.4.0:
