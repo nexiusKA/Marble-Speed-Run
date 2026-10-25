@@ -543,6 +543,155 @@ async function newPage(browser, baseUrl, errors, storage) {
     await page.context().close();
   });
 
+  // 9. Reproducible levels (seed) and the ghost of the best run
+  const levelSnapshot = () => {
+    const g = window.__marbleGame;
+    const upTo = g.track.startY + 30000;
+    return JSON.stringify({
+      knots: g.track.knots.filter((k) => k[0] < upTo).map((k) => k.map((v) => Math.round(v * 100))),
+      obstacles: g.obstacles.filter((o) => o.worldY < upTo).map((o) => [o.constructor.name, Math.round(o.worldY)]),
+      coins: g.coins.filter((c) => c.worldY < upTo).map((c) => [Math.round(c.x), Math.round(c.worldY)]),
+      pickups: g.pickups.filter((c) => c.worldY < upTo).map((c) => [c.type, Math.round(c.x), Math.round(c.worldY)]),
+    });
+  };
+
+  await test('same seed builds the identical level, no matter how fast it is generated', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate((snapSrc) => {
+      const snap = new Function(`return (${snapSrc})()`);
+      const g = window.__marbleGame;
+      g._init(4242); g._extendLevel(g.track.startY + 32000); const a = snap();
+      // generate in small, uneven steps with other random calls in between
+      g._init(4242);
+      for (let y = g.track.startY; y < g.track.startY + 32000; y += 37) { g._extendLevel(y); Math.random(); Math.random(); }
+      const b = snap();
+      g._init(777); g._extendLevel(g.track.startY + 32000); const c = snap();
+      return { same: a === b, differs: a !== c, size: JSON.parse(a).obstacles.length };
+    }, levelSnapshot.toString());
+    assert(r.size > 50, `too few obstacles generated (${r.size})`);
+    assert(r.same, 'same seed produced a different level');
+    assert(r.differs, 'different seeds produced the same level');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('ghost mode off: every run gets a new random track', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const seeds = await page.evaluate(() => {
+      const g = window.__marbleGame; g.ghostMode = false; const out = [];
+      for (let i = 0; i < 4; i++) { g.startRun(); out.push(g.levelSeed); }
+      return out;
+    });
+    assert(new Set(seeds).size === seeds.length, `seeds repeated: ${seeds.join(', ')}`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  // Drive a run with a fixed input pattern; returns marble positions over time
+  const driveFixed = (frames) => {
+    const g = window.__marbleGame;
+    const out = [];
+    for (let i = 0; i < frames; i++) {
+      const ph = Math.floor(i / 40) % 4; g.input.left = ph === 1; g.input.right = ph === 3;
+      g.shieldTimer = 2; g.update(1 / 60);
+      if (g.state === 'shop') g.closeShop();
+      if (g.state === 'running' && i % 30 === 0) {
+        const pos = g._ghostReplay ? g._ghostReplay.positionAt(g.elapsed) : null;
+        out.push(pos ? Math.hypot(pos.x - g.marble.x, pos.y - g.marble.y) : -1);
+      }
+    }
+    g.input.left = g.input.right = false;
+    return out;
+  };
+  const killRun = () => {
+    const g = window.__marbleGame;
+    g.shieldTimer = 0; g.fog.y = g.marble.y + 1000; g.update(1 / 60);
+    return g.state;
+  };
+
+  await test('best run is saved as ghost; ghost mode replays it on the same track', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame;
+      g.ghostMode = false;
+      g.startRun(); const seed1 = g.levelSeed; drive(60 * 20); const state = kill();
+      const ghost = g.bestGhost;
+      g.ghostMode = true;
+      g.startRun(); const seed2 = g.levelSeed; const gaps = drive(60 * 20);
+      return { state, saved: !!ghost, ghostSeed: ghost && ghost.seed, seed1, seed2, samples: ghost && ghost.length,
+               maxGap: Math.max(...gaps), replaying: !!g._ghostReplay, stored: !!localStorage.getItem('mrGhost') };
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    assert(r.state === 'dead', `run did not end (${r.state})`);
+    assert(r.saved && r.stored, 'ghost was not saved');
+    assert(r.ghostSeed === r.seed1, 'ghost does not store the level seed');
+    assert(r.seed2 === r.seed1, 'ghost mode did not reuse the ghost track');
+    assert(r.samples > 200, `ghost too short (${r.samples} samples)`);
+    assert(r.replaying, 'ghost is not being replayed');
+    assert(r.maxGap < 2 * 12, `ghost drifted ${r.maxGap.toFixed(1)} px from an identical run`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('a worse run keeps the ghost, a better run replaces it', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const r = await page.evaluate(({ driveSrc, killSrc }) => {
+      const drive = new Function(`return (${driveSrc})`)();
+      const kill = new Function(`return (${killSrc})`)();
+      const g = window.__marbleGame; g.ghostMode = true;
+      g.startRun(); drive(60 * 12); kill(); const first = g.bestGhost.result;
+      g.startRun(); drive(60 * 5); kill(); const afterWorse = g.bestGhost.result;
+      g.startRun(); drive(60 * 25); kill(); const afterBetter = g.bestGhost.result;
+      return { first, afterWorse, afterBetter };
+    }, { driveSrc: driveFixed.toString(), killSrc: killRun.toString() });
+    assert(r.afterWorse === r.first, `worse run replaced the ghost (${r.first} -> ${r.afterWorse})`);
+    assert(r.afterBetter > r.first, `better run did not replace the ghost (${r.first} -> ${r.afterBetter})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('Ghost Mode checkbox is in the endless menu and remembered after a restart', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    assert(await page.$('#ghost-mode-toggle'), 'Ghost Mode checkbox missing');
+    const before = await page.evaluate(() => ({ checked: document.getElementById('ghost-mode-toggle').checked, mode: window.__marbleGame.ghostMode }));
+    assert(!before.checked && !before.mode, 'Ghost Mode should be off by default');
+    await page.evaluate(() => { const t = document.getElementById('ghost-mode-toggle'); t.checked = true; t.dispatchEvent(new Event('change')); });
+    await page.reload();
+    await page.waitForFunction(() => !!window.__marbleGame);
+    const after = await page.evaluate(() => ({ checked: document.getElementById('ghost-mode-toggle').checked, mode: window.__marbleGame.ghostMode, info: document.getElementById('ghost-mode-info').textContent }));
+    assert(after.checked && after.mode, 'Ghost Mode was not remembered');
+    assert(/ghost/i.test(after.info), `no ghost info text (${after.info})`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('corrupted ghost data is ignored (random track, no crash)', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors, { mrGhost: '{"v":1,"seed":5,"xs":[1,2],"dy":[1]}', mrGhostMode: '1' });
+    const r = await page.evaluate(() => { const g = window.__marbleGame; g.startRun(); return { ghost: !!g.bestGhost, replay: !!g._ghostReplay }; });
+    assert(!r.ghost && !r.replay, 'invalid ghost data was used');
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
+  await test('menu says "Versus" instead of PvP', async () => {
+    const errors = [];
+    const page = await newPage(browser, baseUrl, errors);
+    const text = await page.evaluate(() => document.body.innerText);
+    assert(/versus/i.test(text), '"Versus" not found in the menu');
+    assert(!/\bPvP\b|\bPVP\b/.test(text), 'visible text still says PvP');
+    const ach = await page.evaluate(() => ACHIEVEMENT_DEFS.filter((a) => /PvP/.test(a.desc)).length);
+    assert(ach === 0, `${ach} achievement descriptions still say PvP`);
+    assert(errors.length === 0, errors.join('\n'));
+    await page.context().close();
+  });
+
   await browser.close();
   server.close();
 

@@ -81,7 +81,7 @@
             <span class="btn-sub-label">How far can you go?</span>
           </button>
           <button id="pvp-btn" class="btn btn-pvp">
-            <span class="btn-main-label">PvP Race</span>
+            <span class="btn-main-label">Versus</span>
             <span class="btn-sub-label">Beat the bots to the finish</span>
           </button>
           <div class="menu-footer">
@@ -136,18 +136,23 @@
             <input type="range" id="void-rate-slider" class="steer-slider" min="50" max="200" step="5" value="100" aria-label="Void speed">
             <div class="void-rate-scale"><span>Slower</span><span>Faster</span></div>
           </div>
+          <label class="ghost-toggle" for="ghost-mode-toggle">
+            <input type="checkbox" id="ghost-mode-toggle">
+            <span class="ghost-toggle-box" aria-hidden="true"></span>
+            <span class="ghost-toggle-text">👻 Ghost Mode<span id="ghost-mode-info" class="ghost-toggle-info"></span></span>
+          </label>
           <button id="play-btn" class="btn btn-play">PLAY</button>
           <button id="back-endless-btn" class="btn btn-back">← BACK</button>
         </div>
 
         <!-- ── PvP Mode Panel ──────────────────────────────── -->
         <div id="menu-panel-pvp" class="menu-panel">
-          <h2 class="panel-title">⚔ PvP Race</h2>
+          <h2 class="panel-title">⚔ Versus</h2>
           <div class="steer-controls">
             <div class="steer-label">Race Distance <span id="pvp-goal-value">10,000</span> m</div>
             <div class="steer-row">
               <span class="slider-emoji">🏁</span>
-              <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="PvP goal distance">
+              <input type="range" id="pvp-goal-slider" class="steer-slider" min="10000" max="50000" step="5000" value="10000" aria-label="Versus race distance">
               <button id="pvp-goal-default-btn" class="btn-small">Default</button>
             </div>
           </div>
@@ -155,7 +160,7 @@
             <div class="steer-label">Marbles <span id="pvp-enemy-value">10</span></div>
             <div class="steer-row">
               <span class="slider-emoji">👾</span>
-              <input type="range" id="pvp-enemy-slider" class="steer-slider" min="1" max="100" step="1" value="10" aria-label="PvP marble count">
+              <input type="range" id="pvp-enemy-slider" class="steer-slider" min="1" max="100" step="1" value="10" aria-label="Versus rival count">
               <button id="pvp-enemy-default-btn" class="btn-small">Default</button>
             </div>
           </div>
@@ -204,7 +209,7 @@
 
     <div id="pvp-overlay" class="overlay hidden">
       <div class="overlay-box">
-        <h2 id="pvp-result-title" class="pvp-result-title">PVP</h2>
+        <h2 id="pvp-result-title" class="pvp-result-title">VERSUS</h2>
         <p id="pvp-result-sub" class="pvp-result-sub"></p>
         <div id="pvp-rankings" class="pvp-rankings"></div>
         <button id="pvp-retry-btn" class="btn btn-pvp-sm">RACE AGAIN</button>
@@ -251,6 +256,7 @@
   <script src="js/native.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/quality.js"></script>
+  <script src="js/ghost.js"></script>
   <script src="js/input.js"></script>
   <script src="js/marble.js"></script>
   <script src="js/obstacle.js"></script>

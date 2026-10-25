@@ -70,24 +70,24 @@ const ENDLESS_ACHIEVEMENT_DEFS = [
 ];
 
 const PVP_ACHIEVEMENT_DEFS = [
-  { id: 'pvp_first_race',     icon: '🏁', name: 'Race Day',          desc: 'Complete your first PvP race'                              },
-  { id: 'pvp_first_win',      icon: '🥇', name: 'Victory Lap',       desc: 'Win your first PvP race'                                   },
-  { id: 'pvp_podium',         icon: '🎖️', name: 'Podium Finish',     desc: 'Finish in 1st or 2nd place in a PvP race'                  },
-  { id: 'pvp_5_wins',         icon: '⚔️', name: 'Rival',             desc: 'Win 5 PvP races'                                          },
-  { id: 'pvp_10_wins',        icon: '🏆', name: 'Champion',          desc: 'Win 10 PvP races'                                         },
-  { id: 'pvp_25_wins',        icon: '👑', name: 'Legend of the Track', desc: 'Win 25 PvP races'                                       },
-  { id: 'pvp_easy_win',       icon: '🐣', name: 'Warm-Up Win',       desc: 'Win a PvP race on Easy difficulty'                         },
-  { id: 'pvp_hard_win',       icon: '💀', name: 'Hard Knocks',       desc: 'Win a PvP race on Hard difficulty'                         },
-  { id: 'pvp_max_bots',       icon: '🌊', name: 'One vs Many',       desc: 'Win a PvP race against 5 or more bots'                     },
-  { id: 'pvp_long_race',      icon: '📏', name: 'Long Haul',         desc: 'Finish a PvP race of 25,000m or more'                      },
-  { id: 'pvp_ultra_race',     icon: '🌌', name: 'Endurance King',    desc: 'Finish a PvP race of 50,000m or more'                      },
+  { id: 'pvp_first_race',     icon: '🏁', name: 'Race Day',          desc: 'Complete your first Versus race'                              },
+  { id: 'pvp_first_win',      icon: '🥇', name: 'Victory Lap',       desc: 'Win your first Versus race'                                   },
+  { id: 'pvp_podium',         icon: '🎖️', name: 'Podium Finish',     desc: 'Finish in 1st or 2nd place in a Versus race'                  },
+  { id: 'pvp_5_wins',         icon: '⚔️', name: 'Rival',             desc: 'Win 5 Versus races'                                          },
+  { id: 'pvp_10_wins',        icon: '🏆', name: 'Champion',          desc: 'Win 10 Versus races'                                         },
+  { id: 'pvp_25_wins',        icon: '👑', name: 'Legend of the Track', desc: 'Win 25 Versus races'                                       },
+  { id: 'pvp_easy_win',       icon: '🐣', name: 'Warm-Up Win',       desc: 'Win a Versus race on Easy difficulty'                         },
+  { id: 'pvp_hard_win',       icon: '💀', name: 'Hard Knocks',       desc: 'Win a Versus race on Hard difficulty'                         },
+  { id: 'pvp_max_bots',       icon: '🌊', name: 'One vs Many',       desc: 'Win a Versus race against 5 or more bots'                     },
+  { id: 'pvp_long_race',      icon: '📏', name: 'Long Haul',         desc: 'Finish a Versus race of 25,000m or more'                      },
+  { id: 'pvp_ultra_race',     icon: '🌌', name: 'Endurance King',    desc: 'Finish a Versus race of 50,000m or more'                      },
   { id: 'pvp_dominant',       icon: '💪', name: 'Untouchable',       desc: 'Win while none of the bots cross the finish line'           },
-  { id: 'pvp_speedster',      icon: '⚡', name: 'Blitz Victory',     desc: 'Win a PvP race in under 45 seconds'                        },
+  { id: 'pvp_speedster',      icon: '⚡', name: 'Blitz Victory',     desc: 'Win a Versus race in under 45 seconds'                        },
   { id: 'pvp_landslide',      icon: '🚀', name: 'Landslide',         desc: 'Win by more than 5,000m ahead of 2nd place'                },
   { id: 'pvp_close_call',     icon: '😅', name: 'Photo Finish',      desc: 'Win with 2nd place within 500m of you'                     },
-  { id: 'pvp_coin_collector', icon: '💰', name: 'Rich Racer',        desc: 'Collect 10 coins in a single PvP race'                     },
-  { id: 'pvp_triple_threat',  icon: '🔥', name: 'Hat-Trick',         desc: 'Win 3 PvP races in a row'                                  },
-  { id: 'pvp_comeback',       icon: '🔄', name: 'Never Say Die',     desc: 'Win a PvP race after being in last place'                  },
+  { id: 'pvp_coin_collector', icon: '💰', name: 'Rich Racer',        desc: 'Collect 10 coins in a single Versus race'                     },
+  { id: 'pvp_triple_threat',  icon: '🔥', name: 'Hat-Trick',         desc: 'Win 3 Versus races in a row'                                  },
+  { id: 'pvp_comeback',       icon: '🔄', name: 'Never Say Die',     desc: 'Win a Versus race after being in last place'                  },
 ];
 
 const ACHIEVEMENT_DEFS = [...ENDLESS_ACHIEVEMENT_DEFS, ...PVP_ACHIEVEMENT_DEFS];
@@ -682,6 +682,12 @@ class Game {
     this._voidRateSetting  = Number.isFinite(voidRateRaw) && voidRateRaw >= 10 && voidRateRaw <= VOID_RATE_MAX
       ? Math.max(VOID_RATE_MIN, voidRateRaw) : VOID_RATE_DEFAULT;
 
+    // Ghost of the best endless run (see ghost.js)
+    this.ghostMode = GhostStore.loadMode();
+    this.bestGhost = GhostStore.load();
+    this._ghostRecorder = null;
+    this._ghostReplay   = null;
+
     this.state = STATE.MENU;
     this.pvpMode = false;  // true while in PVP mode
     this._pvpDifficulty   = 'normal'; // difficulty for PVP bot opponents
@@ -716,6 +722,7 @@ class Game {
 
     // Wire up void speed controls in the start overlay
     this._initVoidRateControls();
+    this._initGhostToggle();
 
     // Achievements – loaded once and persisted across runs
     this._achievements = this._loadAchievements();
@@ -890,8 +897,16 @@ class Game {
   }
 
   // ── Initialise / reset all run-specific state ─────────────────────────────
-  _init() {
-    this.track     = new Track();
+  // seed: optional level seed. The same seed always produces the same track,
+  // obstacles, pickups and coins (used for ghost runs). Without a seed every
+  // run gets a fresh random level.
+  _init(seed) {
+    this.levelSeed   = (seed === undefined || seed === null) ? randomSeed() : (seed >>> 0);
+    // Separate streams: track, regular content and Power Rush content are
+    // generated interleaved depending on speed, so each needs its own RNG.
+    this._contentRng = makeRng(this.levelSeed ^ 0x9E3779B9);
+    this._rushRng    = makeRng(this.levelSeed ^ 0x85EBCA6B);
+    this.track     = new Track(makeRng(this.levelSeed));
     this.marble    = new Marble(this.track.startX, this.track.startY);
     this.fog       = new Fog(this.track.startY);
     this.obstacles = [];
@@ -970,7 +985,12 @@ class Game {
 
   startRun() {
     this.pvpMode = false;
-    this._init();
+    // Ghost Mode: race your best run on its own track. Otherwise a new random level.
+    const ghost = (this.ghostMode && this.bestGhost) ? this.bestGhost : null;
+    this._init(ghost ? ghost.seed : undefined);
+    this._ghostReplay   = ghost;
+    this._ghostRecorder = new GhostRecorder(this.levelSeed);
+    this._ghostSavedThisRun = false;
     this.state = STATE.COUNTDOWN;
     this.ui.setPvpHud(false);
     this.ui.updateDistance(0);
@@ -1009,6 +1029,8 @@ class Game {
     this.ui.hideGameOver();
     this.pvpMode = false;
     this._init();
+    this._ghostReplay = null;
+    this._ghostRecorder = null;
     this.state = STATE.MENU;
     this.ui.setPvpHud(false);
     this.ui.showStart(this._onMenuDifficulty, this._onMenuPlay, this._onPvpDifficulty);
@@ -1034,6 +1056,8 @@ class Game {
   startPvpRun() {
     this.pvpMode = true;
     this._init();
+    this._ghostReplay = null;
+    this._ghostRecorder = null;
 
     // Spawn bots spread slightly around the player start X
     const sx = this.track.startX;
@@ -1242,6 +1266,9 @@ class Game {
     }
 
     this.elapsed += dt * 1000;
+    if (this._ghostRecorder && !this.pvpMode) {
+      this._ghostRecorder.sample(this.elapsed, this.marble.x, this.marble.y, this.powerRushActive);
+    }
 
     // ── Power Rush Mode – disabled in PVP ───────────────────────────────────
     // Auto-trigger every POWER_RUSH_INTERVAL metres instead of via a pickup
@@ -1555,7 +1582,11 @@ class Game {
 
   // ── Level content management ──────────────────────────────────────────────
   _extendLevel(upToY) {
-    this.track.extend(upToY);
+    // Content for a segment reads the walls inside (and a bit beyond) it, so
+    // the track must always be complete well past the segment being filled –
+    // otherwise positions depend on how far the track happened to exist yet
+    // and the same seed would not give the same level.
+    this.track.extend(Math.max(upToY, this.levelGenY) + GEN_SEGMENT * 3);
     while (this.levelGenY < upToY) {
       const nextY = this.levelGenY + GEN_SEGMENT;
       this._generateContent(this.levelGenY, nextY);
@@ -1564,6 +1595,10 @@ class Game {
   }
 
   _generateContent(fromY, toY) {
+    withRng(this._contentRng, () => this._generateContentImpl(fromY, toY));
+  }
+
+  _generateContentImpl(fromY, toY) {
     // Leave the very beginning clear so the player can get moving
     if (fromY < this.track.startY + 300) return;
 
@@ -1635,6 +1670,10 @@ class Game {
 
   // Generate DoorGate obstacles, LaserBeams, and rush-extend pickups up to upToY
   _extendPowerRush(upToY) {
+    withRng(this._rushRng, () => this._extendPowerRushImpl(upToY));
+  }
+
+  _extendPowerRushImpl(upToY) {
     const left  = POWER_RUSH_CORRIDOR_LEFT;
     const right = POWER_RUSH_CORRIDOR_RIGHT;
 
@@ -1923,7 +1962,7 @@ class Game {
         achList.innerHTML = '';
         const sections = [
           { label: '♾️ ENDLESS', defs: ENDLESS_ACHIEVEMENT_DEFS },
-          { label: '⚔️ PVP',     defs: PVP_ACHIEVEMENT_DEFS     },
+          { label: '⚔️ VERSUS',     defs: PVP_ACHIEVEMENT_DEFS     },
         ];
         for (const section of sections) {
           const header = document.createElement('div');
@@ -1991,8 +2030,89 @@ class Game {
       console.log(`[DEBUG] Game over | dist=${dist}m | coins=${this.coinsCollected} | bonus=${coinBonus}m | total=${totalDist}m | best=${this.bestDistance}m | newBest=${isNew}`);
     }
     this.ui.updateBestDistance(this.bestDistance);
+    this._saveGhostIfBetter(totalDist);
     this.ui.showGameOver(dist, totalDist, this.bestDistance, isNew, this.coinsCollected, coinBonus, () => this.restart());
     if (window.MarbleNative) window.MarbleNative.heavyImpact();
+  }
+
+  // ── Ghost (best run replay) ───────────────────────────────────────────────
+  _saveGhostIfBetter(result) {
+    const rec = this._ghostRecorder;
+    if (this.pvpMode || !rec || this._ghostSavedThisRun || rec.length < 2) return false;
+    if (this.bestGhost && result <= this.bestGhost.result) return false;
+    const data = rec.toData(result, { voidRate: this._voidRateSetting });
+    if (!GhostStore.save(data)) return false;
+    this.bestGhost = new GhostReplay(data);
+    this._ghostSavedThisRun = true;
+    this._updateGhostInfo();
+    this._showPickupMsg('👻 NEW GHOST SAVED!');
+    return true;
+  }
+
+  _initGhostToggle() {
+    const toggle = document.getElementById('ghost-mode-toggle');
+    if (!toggle) return;
+    toggle.checked = this.ghostMode;
+    toggle.addEventListener('change', () => {
+      this.ghostMode = !!toggle.checked;
+      GhostStore.saveMode(this.ghostMode);
+      this._updateGhostInfo();
+    });
+    this._updateGhostInfo();
+  }
+
+  _updateGhostInfo() {
+    const info = document.getElementById('ghost-mode-info');
+    if (!info) return;
+    if (!this.bestGhost) {
+      info.textContent = 'No ghost yet – your best run becomes the ghost';
+    } else if (this.ghostMode) {
+      info.textContent = `Race your best run (${this.bestGhost.result} m) on its track`;
+    } else {
+      info.textContent = `Best ghost: ${this.bestGhost.result} m · off = new random track`;
+    }
+  }
+
+  // Ghost marble in world space (called with the camera translation applied)
+  _renderGhost(ctx) {
+    const g = this._ghostReplay;
+    if (!g || this.pvpMode) return;
+    if (this.state !== STATE.RUNNING && this.state !== STATE.COUNTDOWN && this.state !== STATE.PAUSED) return;
+    const pos = g.positionAt(this.elapsed);
+    if (!pos || pos.rush !== this.powerRushActive) return;
+    const alpha = pos.done ? 0.18 : 0.42;
+    const r = MARBLE_RADIUS;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#d8f4ff';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#7fe3ff';
+    ctx.stroke();
+    ctx.globalAlpha = Math.min(1, alpha + 0.3);
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#bff0ff';
+    ctx.fillText(pos.done ? 'GHOST END' : 'GHOST', pos.x, pos.y - r - 5);
+    ctx.restore();
+  }
+
+  // Screen-space gap to the ghost ("+120 m" = ahead)
+  _renderGhostGap(ctx) {
+    const g = this._ghostReplay;
+    if (!g || this.pvpMode || this.state !== STATE.RUNNING) return;
+    const pos = g.positionAt(this.elapsed);
+    if (!pos) return;
+    const gap = Math.round(this.marble.y - pos.y);
+    const ahead = gap >= 0;
+    ctx.save();
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = ahead ? 'rgba(80,255,170,0.9)' : 'rgba(255,110,130,0.9)';
+    ctx.fillText(`👻 ${ahead ? '+' : '−'}${Math.abs(gap)} m`, CANVAS_W / 2, 74);
+    ctx.restore();
   }
 
   // ── App lifecycle (background / foreground) ───────────────────────────────
@@ -2108,11 +2228,13 @@ class Game {
       for (const bot of this.pvpBots) bot.render(ctx, this.cameraY);
     }
 
-    // Marble (world space – translate by -cameraY)
+    // Marble (world space – translate by -cameraY); ghost underneath
     ctx.save();
     ctx.translate(0, -this.cameraY);
+    this._renderGhost(ctx);
     this._renderMarble(ctx);
     ctx.restore();
+    this._renderGhostGap(ctx);
 
     // ── Screen-space overlays ───────────────────────────────────────────────
 

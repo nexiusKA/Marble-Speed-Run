@@ -9,7 +9,7 @@ Stay ahead of the void, weave through obstacles, and use pickups to survive long
 
 Features:
 - Endless run mode with rising pressure
-- PvP race mode against AI marbles
+- Versus mode: race against AI marbles
 - Touch controls optimized for Android
 - Achievements, shop upgrades, and replay-friendly runs
 - Smooth neon visuals and soundtrack

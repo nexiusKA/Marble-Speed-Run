@@ -1,3 +1,12 @@
+# Marble Rush 1.2.0
+
+New in 1.2.0:
+- 👻 Ghost Mode (Endless): race against the ghost of your best run, Trackmania style.
+  With Ghost Mode on you drive the exact track of your best run and see your
+  ghost plus the gap (+/− m). Beat it and your new run becomes the ghost.
+  With Ghost Mode off every run is a new random track, as before.
+- PvP is now called Versus
+
 # Marble Rush 1.1.2
 
 - Fixes the game being shown zoomed in and cropped on Samsung phones: the app now
