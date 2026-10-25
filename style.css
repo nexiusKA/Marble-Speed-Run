@@ -2005,3 +2005,39 @@ html.native-app #fullscreen-btn { display: none !important; }
 .ghost-toggle input:focus-visible + .ghost-toggle-box { outline: 2px solid #fff; outline-offset: 2px; }
 .ghost-toggle-text { display: flex; flex-direction: column; font-weight: 700; font-size: 16px; letter-spacing: 0.5px; text-align: left; }
 .ghost-toggle-info { font-weight: 400; font-size: 12px; opacity: 0.75; margin-top: 2px; letter-spacing: 0; }
+
+/* ── Ghost list (endless panel) ─────────────────────────────────────────── */
+.ghost-list { width: 100%; margin: -4px 0 12px; display: flex; flex-direction: column; gap: 6px; }
+.ghost-list.hidden { display: none; }
+.ghost-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 10px;
+  border: 1px solid rgba(127, 227, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: #dff7ff; cursor: pointer; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.ghost-row.selected { border-color: #7fe3ff; background: rgba(127, 227, 255, 0.14); box-shadow: 0 0 10px rgba(127, 227, 255, 0.25); }
+.ghost-row-name { font-weight: 700; font-size: 14px; white-space: nowrap; }
+.ghost-row-meta { flex: 1; font-size: 12px; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ghost-del {
+  flex: 0 0 auto; border: 1px solid rgba(255, 110, 130, 0.4); background: transparent; color: #ff8a9a;
+  border-radius: 8px; padding: 3px 9px; font-size: 13px; cursor: pointer;
+}
+.ghost-del.confirm { background: rgba(255, 80, 100, 0.25); color: #fff; }
+.ghost-list-hint { font-size: 11px; opacity: 0.7; margin: 2px 2px 0; text-align: left; }
+
+/* ── Ghost actions on the game-over screen ──────────────────────────────── */
+.go-ghost { width: 100%; margin: 6px 0 4px; }
+.go-ghost.hidden { display: none; }
+.go-ghost-msg { font-size: 13px; color: #bff0ff; min-height: 16px; margin: 0 0 6px; }
+.go-ghost-actions .btn-ghost {
+  width: 100%; background: rgba(127, 227, 255, 0.12); border: 1px solid #7fe3ff;
+  color: #dff7ff; box-shadow: 0 0 10px rgba(127, 227, 255, 0.25);
+}
+.go-ghost-replace { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.go-ghost-replace .btn-small { width: 100%; }
+
+/* The coin breakdown must disappear for runs without coins – otherwise the
+   previous run's coins and total stayed on screen. */
+.coin-breakdown.hidden { display: none; }
