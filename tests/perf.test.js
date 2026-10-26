@@ -18,14 +18,14 @@ const { chromium } = require('playwright');
 
 const DIST = path.resolve(__dirname, '..', 'dist');
 
-// Per-frame budgets (average over 300 frames). Measured values (seeded, 412×915
+// Per-frame budgets (average over 300 frames). Measured values (seeded, clock frozen, 412×915
 // viewport → 480×974 canvas since the canvas fills tall phones) are in the
 // comments; budgets leave headroom for new content.
 const BUDGETS = {
-  menu:    { draws: 120, glowDraws: 45,  gradients: 6  }, // 80 / 6 / 5
-  endless: { draws: 240, glowDraws: 110, gradients: 16 }, // 192 / 76 / 10.8
+  menu:    { draws: 120, glowDraws: 45,  gradients: 6  }, // 76 / 7 / 4
+  endless: { draws: 240, glowDraws: 110, gradients: 16 }, // 148 / 33 / 6.7
   rush:    { draws: 180, glowDraws: 30,  gradients: 12 }, // 139 / 21 / 9
-  pvp10:   { draws: 320, glowDraws: 115, gradients: 24 }, // 251 / 90 / 20.5
+  pvp10:   { draws: 320, glowDraws: 115, gradients: 24 }, // 230 / 73 / 16.2
 };
 const MAX_UPDATE_MS = 2;    // avg game.update() time, unthrottled (≈0.2 ms today)
 const MAX_RENDER_MS = 30;   // avg game.render() incl. raster flush, unthrottled
@@ -55,8 +55,16 @@ async function test(name, fn) {
 // Levels, pickups and the simulated steering all use Math.random(), so the
 // per-frame counts used to drift between runs (a few % over budget on CI now
 // and then). A seeded PRNG makes every run measure the same scenes.
+// Track seeds also mix in Date.now() (randomSeed() in utils.js, since Ghost
+// Mode), so the clock is frozen too – otherwise every run measured a different
+// track. The game only uses Date.now() otherwise for glow pulsing.
+// Each scene re-seeds right before its setup, because the live game loop keeps
+// drawing random numbers between scenes.
 function seedRandom() {
   let s = 0x2f6b1a3d;
+  const T0 = 1767225600000;           // 2026-01-01, any fixed time works
+  Date.now = () => T0;
+  window.__reseed = () => { s = 0x2f6b1a3d; };
   Math.random = () => {
     s = (s + 0x6D2B79F5) | 0;
     let t = Math.imul(s ^ (s >>> 15), 1 | s);
@@ -78,6 +86,7 @@ async function newPage(browser, baseUrl, init) {
 // Instrument the game's canvas context and measure one scene.
 async function measureScene(page, setup, glowScale) {
   return page.evaluate(({ setup, glowScale }) => {
+    if (window.__reseed) window.__reseed();
     const g = window.__marbleGame;
     const P = CanvasRenderingContext2D.prototype;
     if (!window.__perfHooked) {
